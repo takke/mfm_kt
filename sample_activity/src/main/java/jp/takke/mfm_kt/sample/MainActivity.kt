@@ -1,0 +1,154 @@
+package jp.takke.mfm_kt.sample
+
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.text.SpannableStringBuilder
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import jp.takke.mfm_kt.syntax_parser.MfmSyntaxParser
+import jp.takke.mfm_kt.syntax_parser.SyntaxParseResult
+import jp.takke.mfm_kt.token_parser.MfmTokenParser
+import jp.takke.mfm_kt.sample.databinding.ActivityMainBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
+    @SuppressLint("SetTextI18n")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+//        binding.inputText.setText("**Hello**, *World*!")
+        binding.inputText.setText(
+            """> abc
+>abc
+
+>>nest
+**Hello**, *World*!
+
+$[x2 なにか]
+</center>←先に閉じてみる
+<center>**はろー**, *World*!</center>
+<small>ほげ</small>`${'$'}abc <- 1` ほげほげ
+"""
+        )
+//        binding.inputText.setText(
+//            """
+//                |**Hello**, *World*!
+//                |**これはBold*ここはBold+Italic*ここもBold**になるかな？
+//            """.trimMargin()
+//        )
+
+        binding.runButton.setOnClickListener {
+            executeParser()
+        }
+
+        lifecycleScope.launch {
+            delay(1000)
+
+            binding.runButton.performClick()
+        }
+    }
+
+    private fun executeParser() {
+
+        val text = binding.inputText.text.toString()
+
+        //--------------------------------------------------
+        // 字句解析
+        //--------------------------------------------------
+        val startTick = System.currentTimeMillis()
+        val tokenizedResult = MfmTokenParser.tokenize(text)
+        val elapsed = System.currentTimeMillis() - startTick
+
+        val ssb = SpannableStringBuilder()
+        ssb.append("▼字句解析結果:(${elapsed}ms)\n")
+        ssb.append(
+            tokenizedResult.holder.tokenList.joinToString("\n") {
+                val extractedValue = it.extractedValue.replace("\n", "\\n")
+                val wholeText = it.wholeText.replace("\n", "\\n")
+                if (extractedValue == wholeText) {
+                    "${it.type}: [${extractedValue}]"
+                } else {
+                    "${it.type}: [${extractedValue}] [${wholeText}]"
+                }
+            }
+        )
+
+        ssb.append("\n----\n")
+
+        //--------------------------------------------------
+        // 構文解析
+        //--------------------------------------------------
+        val startTick2 = System.currentTimeMillis()
+        val parsedResult = MfmSyntaxParser(tokenizedResult, MfmSyntaxParser.Option()).parse()
+        val elapsed2 = System.currentTimeMillis() - startTick2
+        ssb.append("▼構文解析結果:(${elapsed2}ms)\n")
+
+        traverse(parsedResult, 0, ssb)
+
+        //--------------------------------------------------
+        // 構文解析(Boldのみ)
+        //--------------------------------------------------
+        val startTick3 = System.currentTimeMillis()
+        val parsedResult2 = MfmSyntaxParser(
+            tokenizedResult, MfmSyntaxParser.Option(
+                enableBold = true,
+                enableItalic = false,
+                enableCenter = false,
+                enableSmall = false,
+                enableQuote = false,
+                enableFunction = false
+            )
+        ).parse()
+        val elapsed3 = System.currentTimeMillis() - startTick3
+        ssb.append("▼構文解析結果(Boldのみ):(${elapsed3}ms)\n")
+
+        traverse(parsedResult2, 0, ssb)
+
+        binding.resultText.text = ssb
+    }
+
+    private fun traverse(parsedResult: List<SyntaxParseResult>, level: Int, ssb: SpannableStringBuilder) {
+
+        parsedResult.forEach { spr ->
+
+            ssb.append("   ".repeat(level))
+            when (spr) {
+                is SyntaxParseResult.Text -> {
+                    ssb.append("Text: \"${spr.value.replace("\n", "\\n")}\"")
+                    ssb.append("\n")
+                }
+                is SyntaxParseResult.Bold -> {
+                    ssb.append("Bold: \n")
+                    traverse(spr.children, level + 1, ssb)
+                }
+                is SyntaxParseResult.Italic -> {
+                    ssb.append("Italic: \n")
+                    traverse(spr.children, level + 1, ssb)
+                }
+                is SyntaxParseResult.Center -> {
+                    ssb.append("Center: \n")
+                    traverse(spr.children, level + 1, ssb)
+                }
+                is SyntaxParseResult.Small -> {
+                    ssb.append("Small: \n")
+                    traverse(spr.children, level + 1, ssb)
+                }
+                is SyntaxParseResult.Function -> {
+                    ssb.append("Function: ${spr.name} ${spr.args.joinToString(", ")}\n")
+                    traverse(spr.children, level + 1, ssb)
+                }
+                is SyntaxParseResult.Quote -> {
+                    ssb.append("Quote: (${spr.level})\n")
+                    traverse(spr.children, level + 1, ssb)
+                }
+            }
+        }
+    }
+}

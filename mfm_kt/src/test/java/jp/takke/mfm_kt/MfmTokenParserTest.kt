@@ -136,6 +136,16 @@ class MfmTokenParserTest {
                 )
             }
 
+        MfmTokenParser.tokenize("<i>abc</i>")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    TokenResult.italicTagStart(),
+                    TokenResult.string("abc"),
+                    TokenResult.italicTagEnd()
+                )
+            }
+
         MfmTokenParser.tokenize("**abc**")
             .let {
                 assertThat(it.success).isEqualTo(true)

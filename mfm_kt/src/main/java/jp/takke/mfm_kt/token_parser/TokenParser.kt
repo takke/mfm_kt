@@ -12,6 +12,8 @@ data class TokenResult(
         // テスト用
         fun string(string: String) = TokenResult(TokenType.String, string)
         fun italic1() = TokenResult(TokenType.Italic1, "*")
+        fun italicTagStart() = TokenResult(TokenType.ItalicTagStart, "<i>")
+        fun italicTagEnd() = TokenResult(TokenType.ItalicTagEnd, "</i>")
         fun bold1() = TokenResult(TokenType.Bold1, "**")
         fun centerStart() = TokenResult(TokenType.CenterStart, "<center>")
         fun centerEnd() = TokenResult(TokenType.CenterEnd, "</center>")

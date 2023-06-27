@@ -23,7 +23,8 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
     enum class ParseState {
         Normal,
         Bold,
-        Italic,
+        ItalicAsterisk,
+        ItalicTag,
 //        InlineCode,
 //        Quote,
         Function,
@@ -66,13 +67,39 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.Italic1 -> {
                     if (option.enableItalic) {
-                        if (state == ParseState.Italic) {
+                        if (state == ParseState.ItalicAsterisk) {
                             // Italic 終了
                             return result
                         } else {
                             // Italic 開始
-                            val italicResult = parse(ParseState.Italic)
+                            val italicResult = parse(ParseState.ItalicAsterisk)
                             result.add(SyntaxParseResult.Italic(italicResult))
+                        }
+                    } else {
+                        // Italic 無効
+                        result.add(SyntaxParseResult.Text(token.wholeText))
+                    }
+                }
+
+                TokenType.ItalicTagStart -> {
+                    if (option.enableItalic) {
+                        // Italic 開始
+                        val italicResult = parse(ParseState.ItalicTag)
+                        result.add(SyntaxParseResult.Italic(italicResult))
+                    } else {
+                        // Italic 無効
+                        result.add(SyntaxParseResult.Text(token.wholeText))
+                    }
+                }
+
+                TokenType.ItalicTagEnd -> {
+                    if (option.enableItalic) {
+                        // Italic 終了
+                        if (state == ParseState.ItalicTag) {
+                            return result
+                        } else {
+                            // <i>じゃないところで</i>が来たので無視する
+                            result.add(SyntaxParseResult.Text(token.wholeText))
                         }
                     } else {
                         // Italic 無効

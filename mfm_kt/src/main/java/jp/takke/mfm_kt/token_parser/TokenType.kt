@@ -2,7 +2,7 @@ package jp.takke.mfm_kt.token_parser
 
 // 字句解析結果の種別
 enum class TokenType {
-    // 内部でのみ使用
+    // 字句解析内部でのみ使用
     Char,
 
     // Charを連結した任意の文字列
@@ -13,6 +13,9 @@ enum class TokenType {
 
     // *
     Italic1,
+
+    // <i>...</i>
+    ItalicTagStart, ItalicTagEnd,
 
     // `...`
     InlineCode,

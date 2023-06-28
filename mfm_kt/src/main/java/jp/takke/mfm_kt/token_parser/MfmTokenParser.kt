@@ -89,60 +89,6 @@ object MfmTokenParser {
         }
     }
 
-    // 末尾が改行であることに注意(改行コードなしの場合はマッチしない)
-    val pQuoteLine1: () -> TokenParser = {
-        { text, holder ->
-            val regex = "^> ?([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+\n)".toRegex()
-            val m = regex.find(text)
-            if (m != null) {
-
-                TokenParseResult(
-                    true,
-                    holder.append(TokenResult(TokenType.QuoteLine1, m.groupValues[1], m.groupValues[0])),
-                    text.substring(m.groupValues[0].length)
-                )
-            } else {
-                toNGParseResult(text)
-            }
-        }
-    }
-
-    // 末尾が改行であることに注意(改行コードなしの場合はマッチしない)
-    val pQuoteLine2: () -> TokenParser = {
-        { text, holder ->
-            val regex = "^>> ?([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+\n)".toRegex()
-            val m = regex.find(text)
-            if (m != null) {
-
-                TokenParseResult(
-                    true,
-                    holder.append(TokenResult(TokenType.QuoteLine2, m.groupValues[1], m.groupValues[0])),
-                    text.substring(m.groupValues[0].length)
-                )
-            } else {
-                toNGParseResult(text)
-            }
-        }
-    }
-
-    // `$abc <- 1` のような形式
-    val pInlineCode: () -> TokenParser = {
-        { text, holder ->
-            val regex = "^`([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+)`".toRegex()
-            val m = regex.find(text)
-            if (m != null) {
-
-                TokenParseResult(
-                    true,
-                    holder.append(TokenResult(TokenType.InlineCode, m.groupValues[1], m.groupValues[0])),
-                    text.substring(m.groupValues[0].length)
-                )
-            } else {
-                toNGParseResult(text)
-            }
-        }
-    }
-
     val pWord: (TokenType, String) -> TokenParser = { type, word ->
         { text, holder ->
             val invalid = (text.length < word.length)
@@ -188,6 +134,13 @@ object MfmTokenParser {
     val pItalic1: () -> TokenParser = { pWord(TokenType.Italic1, "*") }
     val pItalicTagStart: () -> TokenParser = { pWord(TokenType.ItalicTagStart, "<i>") }
     val pItalicTagEnd: () -> TokenParser = { pWord(TokenType.ItalicTagEnd, "</i>") }
+
+    // 末尾が改行であることに注意(改行コードなしの場合はマッチしない)
+    val pQuoteLine1: () -> TokenParser = { pRegex(TokenType.QuoteLine1, "^> ?([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+\n)".toRegex()) }
+    val pQuoteLine2: () -> TokenParser = { pRegex(TokenType.QuoteLine2, "^>> ?([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+\n)".toRegex()) }
+
+    // `$abc <- 1` のような形式
+    val pInlineCode: () -> TokenParser = { pRegex(TokenType.InlineCode, "^`([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+)`".toRegex()) }
 
     // TODO Mention, URL も追加すること
     val mfmParser = many(

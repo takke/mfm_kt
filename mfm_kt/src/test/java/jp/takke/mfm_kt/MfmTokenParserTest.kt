@@ -200,6 +200,36 @@ class MfmTokenParserTest {
                     TokenResult.centerEnd()
                 )
             }
+
+        MfmTokenParser.tokenize("<center>\nabc\n</center>")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    TokenResult(TokenType.CenterStart, "<center>", "<center>\n"),
+                    TokenResult.string("abc"),
+                    TokenResult(TokenType.CenterEnd, "</center>", "\n</center>")
+                )
+            }
+
+        MfmTokenParser.tokenize("<center>\nabc</center>\n")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    TokenResult(TokenType.CenterStart, "<center>", "<center>\n"),
+                    TokenResult.string("abc"),
+                    TokenResult(TokenType.CenterEnd, "</center>", "</center>\n")
+                )
+            }
+
+        MfmTokenParser.tokenize("<center>\nabc\n</center>\n")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    TokenResult(TokenType.CenterStart, "<center>", "<center>\n"),
+                    TokenResult.string("abc"),
+                    TokenResult(TokenType.CenterEnd, "</center>", "\n</center>\n")
+                )
+            }
     }
 
     @Test

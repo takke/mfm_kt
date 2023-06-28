@@ -121,7 +121,7 @@ object MfmTokenParser {
     }
 
     val pCenterStart: () -> TokenParser = { pRegex(TokenType.CenterStart, "^(<center>)\n?".toRegex()) }
-    val pCenterEnd: () -> TokenParser = { pRegex(TokenType.CenterEnd, "^\n?(</center>)\n?".toRegex()) }
+    val pCenterEnd: () -> TokenParser = { pRegex(TokenType.CenterEnd, "^\n?(</center>)".toRegex()) }
 
     val pSmallStart: () -> TokenParser = { pWord(TokenType.SmallStart, "<small>") }
     val pSmallEnd: () -> TokenParser = { pWord(TokenType.SmallEnd, "</small>") }

@@ -176,7 +176,24 @@ object MfmTokenParser {
         }
     }
 
-    val pCenterStart: () -> TokenParser = { pWord(TokenType.CenterStart, "<center>") }
+    // regex は "()" で囲まれた部分を1つだけ持つこと
+    val pRegex: (TokenType, Regex) -> TokenParser = { type, regex ->
+        { text, holder ->
+            val m = regex.find(text)
+            if (m != null) {
+                TokenParseResult(
+                    true,
+                    holder.append(TokenResult(type, m.groupValues[1], m.groupValues[0])),
+                    text.substring(m.groupValues[0].length)
+                )
+            } else {
+                toNGParseResult(text)
+            }
+        }
+    }
+
+    val pCenterStart: () -> TokenParser = { pRegex(TokenType.CenterStart, "^(<center>)\n?".toRegex()) }
+
     val pCenterEnd: () -> TokenParser = { pWord(TokenType.CenterEnd, "</center>") }
     val pSmallStart: () -> TokenParser = { pWord(TokenType.SmallStart, "<small>") }
     val pSmallEnd: () -> TokenParser = { pWord(TokenType.SmallEnd, "</small>") }

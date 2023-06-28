@@ -173,7 +173,7 @@ class MfmTokenParserTest {
     }
 
     @Test
-    fun tokenize_CenterBoldItalic() {
+    fun tokenize_Center() {
 
         MfmTokenParser.tokenize("<center>abc</center>")
             .let {
@@ -184,6 +184,26 @@ class MfmTokenParserTest {
                     TokenResult.centerEnd()
                 )
             }
+    }
+
+    @Test
+    fun tokenize_Centerと改行() {
+
+        // https://github.com/misskey-dev/mfm.js/blob/develop/src/internal/parser.ts#L264
+        // によると <center>のあとの改行、</center>の前後の改行は無視するらしい
+        MfmTokenParser.tokenize("<center>\nabc</center>")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    TokenResult(TokenType.CenterStart, "<center>", "<center>\n"),
+                    TokenResult.string("abc"),
+                    TokenResult.centerEnd()
+                )
+            }
+    }
+
+    @Test
+    fun tokenize_CenterBoldItalic() {
 
         MfmTokenParser.tokenize("<center>**Hello**, *World*!</center>")
             .let {

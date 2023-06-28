@@ -143,24 +143,6 @@ object MfmTokenParser {
         }
     }
 
-    // $[shake ...] のような形式のうち $[shake まで。
-    val pFunctionStart: () -> TokenParser = {
-        { text, holder ->
-            val regex = "^\\$\\[([$ANY_ASCII_WITHOUT_SPACE_CLS]+) ".toRegex()
-            val m = regex.find(text)
-            if (m != null) {
-
-                TokenParseResult(
-                    true,
-                    holder.append(TokenResult(TokenType.FunctionStart, m.groupValues[1], m.groupValues[0])),
-                    text.substring(m.groupValues[0].length)
-                )
-            } else {
-                toNGParseResult(text)
-            }
-        }
-    }
-
     val pWord: (TokenType, String) -> TokenParser = { type, word ->
         { text, holder ->
             val invalid = (text.length < word.length)
@@ -197,6 +179,9 @@ object MfmTokenParser {
     val pCenterEnd: () -> TokenParser = { pWord(TokenType.CenterEnd, "</center>") }
     val pSmallStart: () -> TokenParser = { pWord(TokenType.SmallStart, "<small>") }
     val pSmallEnd: () -> TokenParser = { pWord(TokenType.SmallEnd, "</small>") }
+
+    // $[shake ...] のような形式のうち $[shake まで。
+    val pFunctionStart: () -> TokenParser = { pRegex(TokenType.FunctionStart, "^\\$\\[([$ANY_ASCII_WITHOUT_SPACE_CLS]+) ".toRegex()) }
     val pFunctionEnd: () -> TokenParser = { pWord(TokenType.FunctionEnd, "]") }
 
     val pBold1: () -> TokenParser = { pWord(TokenType.Bold1, "**") }

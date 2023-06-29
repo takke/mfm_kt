@@ -9,7 +9,9 @@ import jp.takke.mfm_kt.token_parser.TokenType
  */
 class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Option) {
 
+    // 解析対象
     private val tokenList = tokenizedResult.holder.tokenList
+    private var tokenPos = 0
 
     data class Option(
         val enableBold: Boolean = true,
@@ -20,7 +22,11 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         val enableFunction: Boolean = true,
     )
 
-    enum class ParseState {
+    fun parse(): List<MfmNode> {
+        return parse(ParseState.Normal).nodes
+    }
+
+    private enum class ParseState {
         Normal,
         Bold,
         ItalicAsterisk,
@@ -30,14 +36,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         Small,
     }
 
-    private var tokenPos = 0
-
-    fun parse(): List<MfmNode> {
-
-        return parse(ParseState.Normal).nodes
-    }
-
-    data class ParseResult(
+    private data class ParseResult(
         val success: Boolean,
         val nodes: List<MfmNode>,
     )
@@ -91,7 +90,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                                 ) {
                                     nodes.add(MfmNode.Italic(italicResult.nodes))
                                 } else {
-                                    // * の間に不正な文字がある場合は無視する
+                                    // * の間に対象外の文字がある場合は無視する
                                     nodes.addOrMergeText("*")
                                     nodes.addAllWithMergeText(italicResult.nodes)
                                     nodes.addOrMergeText("*")

@@ -164,7 +164,13 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableSmall) {
                         // Small 開始
                         val smallResult = parse(ParseState.Small)
-                        nodes.add(MfmNode.Small(smallResult.nodes))
+                        if (smallResult.success) {
+                            nodes.add(MfmNode.Small(smallResult.nodes))
+                        } else {
+                            // Small が終了しないまま終端に達した
+                            nodes.add(MfmNode.Text(token.wholeText))
+                            nodes.addAll(smallResult.nodes)
+                        }
                     } else {
                         // Small 無効
                         nodes.add(MfmNode.Text(token.wholeText))

@@ -60,7 +60,13 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // Bold 開始
                             val boldResult = parse(ParseState.Bold)
-                            nodes.add(MfmNode.Bold(boldResult.nodes))
+                            if (boldResult.success) {
+                                nodes.add(MfmNode.Bold(boldResult.nodes))
+                            } else {
+                                // Bold が終了しないまま終端に達した
+                                nodes.add(MfmNode.Text(token.wholeText))
+                                nodes.addAll(boldResult.nodes)
+                            }
                         }
                     } else {
                         // Bold 無効
@@ -216,7 +222,8 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             }
         }
 
-        return ParseResult(true, nodes)
+        // Normal 以外で終端に達したらエラー
+        return ParseResult(state == ParseState.Normal, nodes)
     }
 
 }

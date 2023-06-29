@@ -214,22 +214,19 @@ class MfmSyntaxParserTest {
                 MfmNode.Text("bbb"),
             )
         )
+    }
+
+    @Test
+    fun parse_bold_閉じず() {
 
         checkSyntaxParser(
             "bold 閉じず",
             "aaa**hoge",
-            option,
-            // TODO 閉じていない場合は、そのままテキストとして扱うべき
-//            listOf(
-//                SyntaxParseResult.Text("aaa"),
-//                SyntaxParseResult.Text("**"),
-//                SyntaxParseResult.Text("hoge"),
-//            )
+            optionAll,
             listOf(
                 MfmNode.Text("aaa"),
-                MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge"))
-                ),
+                MfmNode.Text("**"),
+                MfmNode.Text("hoge"),
             )
         )
     }

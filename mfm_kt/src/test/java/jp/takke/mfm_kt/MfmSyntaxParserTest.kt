@@ -56,10 +56,7 @@ class MfmSyntaxParserTest {
             "hoge**bold**",
             option,
             listOf(
-                MfmNode.Text("hoge"),
-                MfmNode.Text("**"),
-                MfmNode.Text("bold"),
-                MfmNode.Text("**"),
+                MfmNode.Text("hoge**bold**"),
             )
         )
 
@@ -68,14 +65,7 @@ class MfmSyntaxParserTest {
             "hoge**bold**and*italic*",
             option,
             listOf(
-                MfmNode.Text("hoge"),
-                MfmNode.Text("**"),
-                MfmNode.Text("bold"),
-                MfmNode.Text("**"),
-                MfmNode.Text("and"),
-                MfmNode.Text("*"),
-                MfmNode.Text("italic"),
-                MfmNode.Text("*"),
+                MfmNode.Text("hoge**bold**and*italic*"),
             )
         )
 
@@ -84,16 +74,7 @@ class MfmSyntaxParserTest {
             "<center>hoge**bold**and*italic*</center>",
             option,
             listOf(
-                MfmNode.Text("<center>"),
-                MfmNode.Text("hoge"),
-                MfmNode.Text("**"),
-                MfmNode.Text("bold"),
-                MfmNode.Text("**"),
-                MfmNode.Text("and"),
-                MfmNode.Text("*"),
-                MfmNode.Text("italic"),
-                MfmNode.Text("*"),
-                MfmNode.Text("</center>"),
+                MfmNode.Text("<center>hoge**bold**and*italic*</center>"),
             )
         )
 
@@ -102,19 +83,7 @@ class MfmSyntaxParserTest {
             "<center>hoge**bold**and*italic*</center><small>ちいさい</small>",
             option,
             listOf(
-                MfmNode.Text("<center>"),
-                MfmNode.Text("hoge"),
-                MfmNode.Text("**"),
-                MfmNode.Text("bold"),
-                MfmNode.Text("**"),
-                MfmNode.Text("and"),
-                MfmNode.Text("*"),
-                MfmNode.Text("italic"),
-                MfmNode.Text("*"),
-                MfmNode.Text("</center>"),
-                MfmNode.Text("<small>"),
-                MfmNode.Text("ちいさい"),
-                MfmNode.Text("</small>"),
+                MfmNode.Text("<center>hoge**bold**and*italic*</center><small>ちいさい</small>"),
             )
         )
 
@@ -123,22 +92,7 @@ class MfmSyntaxParserTest {
             "<center>hoge**bold**and*italic*</center><small>ちいさい</small>\n>a\n>>b\n",
             option,
             listOf(
-                MfmNode.Text("<center>"),
-                MfmNode.Text("hoge"),
-                MfmNode.Text("**"),
-                MfmNode.Text("bold"),
-                MfmNode.Text("**"),
-                MfmNode.Text("and"),
-                MfmNode.Text("*"),
-                MfmNode.Text("italic"),
-                MfmNode.Text("*"),
-                MfmNode.Text("</center>"),
-                MfmNode.Text("<small>"),
-                MfmNode.Text("ちいさい"),
-                MfmNode.Text("</small>"),
-                MfmNode.Text("\n"),
-                MfmNode.Text(">a\n"),
-                MfmNode.Text(">>b\n"),
+                MfmNode.Text("<center>hoge**bold**and*italic*</center><small>ちいさい</small>\n>a\n>>b\n"),
             )
         )
 
@@ -147,27 +101,9 @@ class MfmSyntaxParserTest {
             "<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n",
             option,
             listOf(
-                MfmNode.Text("<center>"),
-                MfmNode.Text("hoge"),
-                MfmNode.Text("**"),
-                MfmNode.Text("bold"),
-                MfmNode.Text("**"),
-                MfmNode.Text("$[x2 "),
-                MfmNode.Text("and"),
-                MfmNode.Text("]"),
-                MfmNode.Text("*"),
-                MfmNode.Text("italic"),
-                MfmNode.Text("*"),
-                MfmNode.Text("</center>"),
-                MfmNode.Text("<small>"),
-                MfmNode.Text("ちいさい"),
-                MfmNode.Text("</small>"),
-                MfmNode.Text("\n"),
-                MfmNode.Text(">a\n"),
-                MfmNode.Text(">>b\n"),
+                MfmNode.Text("<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n")
             )
         )
-
     }
 
     @Test
@@ -224,9 +160,7 @@ class MfmSyntaxParserTest {
             "aaa**hoge",
             optionAll,
             listOf(
-                MfmNode.Text("aaa"),
-                MfmNode.Text("**"),
-                MfmNode.Text("hoge"),
+                MfmNode.Text("aaa**hoge"),
             )
         )
     }
@@ -262,9 +196,7 @@ class MfmSyntaxParserTest {
             "*ほげ*",
             option,
             listOf(
-                MfmNode.Text("*"),
-                MfmNode.Text("ほげ"),
-                MfmNode.Text("*"),
+                MfmNode.Text("*ほげ*"),
             )
         )
 
@@ -303,8 +235,7 @@ class MfmSyntaxParserTest {
             "*hoge",
             optionAll,
             listOf(
-                MfmNode.Text("*"),
-                MfmNode.Text("hoge"),
+                MfmNode.Text("*hoge"),
             )
         )
 
@@ -313,8 +244,7 @@ class MfmSyntaxParserTest {
             "<i>hoge",
             optionAll,
             listOf(
-                MfmNode.Text("<i>"),
-                MfmNode.Text("hoge"),
+                MfmNode.Text("<i>hoge"),
             )
         )
 
@@ -420,8 +350,7 @@ class MfmSyntaxParserTest {
             "<center>hoge",
             option,
             listOf(
-                MfmNode.Text("<center>"),
-                MfmNode.Text("hoge"),
+                MfmNode.Text("<center>hoge"),
             )
         )
 
@@ -430,9 +359,7 @@ class MfmSyntaxParserTest {
             "a\n<center>hoge\nb",
             option,
             listOf(
-                MfmNode.Text("a\n"),
-                MfmNode.Text("<center>"),
-                MfmNode.Text("hoge\nb"),
+                MfmNode.Text("a\n<center>hoge\nb"),
             )
         )
 
@@ -441,8 +368,7 @@ class MfmSyntaxParserTest {
             "a\n<center>\n**hoge1**\nhoge2\n\nb",
             option,
             listOf(
-                MfmNode.Text("a\n"),
-                MfmNode.Text("<center>\n"),
+                MfmNode.Text("a\n<center>\n"),
                 MfmNode.Bold(
                     listOf(MfmNode.Text("hoge1"))
                 ),
@@ -542,8 +468,7 @@ class MfmSyntaxParserTest {
             "<small>hoge",
             option,
             listOf(
-                MfmNode.Text("<small>"),
-                MfmNode.Text("hoge"),
+                MfmNode.Text("<small>hoge"),
             )
         )
 
@@ -552,9 +477,7 @@ class MfmSyntaxParserTest {
             "a\n<small>hoge\nb",
             option,
             listOf(
-                MfmNode.Text("a\n"),
-                MfmNode.Text("<small>"),
-                MfmNode.Text("hoge\nb"),
+                MfmNode.Text("a\n<small>hoge\nb"),
             )
         )
 
@@ -563,9 +486,7 @@ class MfmSyntaxParserTest {
             "a\n<small>\n**hoge1**\nhoge2\n\nb",
             option,
             listOf(
-                MfmNode.Text("a\n"),
-                MfmNode.Text("<small>"),
-                MfmNode.Text("\n"),
+                MfmNode.Text("a\n<small>\n"),
                 MfmNode.Bold(
                     listOf(MfmNode.Text("hoge1"))
                 ),
@@ -754,8 +675,7 @@ class MfmSyntaxParserTest {
             "$[x2 hoge",
             optionAll,
             listOf(
-                MfmNode.Text("$[x2 "),
-                MfmNode.Text("hoge"),
+                MfmNode.Text("$[x2 hoge"),
             )
         )
 

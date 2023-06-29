@@ -469,6 +469,98 @@ class MfmSyntaxParserTest {
         )
     }
 
+    @Test
+    fun parse_quote() {
+
+        val option = MfmSyntaxParser.Option(
+            enableBold = true,
+            enableItalic = true,
+            enableCenter = true,
+            enableSmall = true,
+            enableQuote = true,
+            enableFunction = false
+        )
+
+        // >aaa
+        // > aaa
+        // >bbb
+        // >>a
+        // >> b
+
+        checkSyntaxParser(
+            "quote1 1行(改行なし)",
+            ">aaa",
+            option,
+            listOf(
+                MfmNode.Text(">aaa"),
+            )
+        )
+
+        checkSyntaxParser(
+            "quote1 1行",
+            ">aaa\n",
+            option,
+            listOf(
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level1,
+                    listOf(MfmNode.Text("aaa\n"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "quote1 2行 => 結合されること",
+            ">aaa\n>bbb\n",
+            option,
+            listOf(
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level1,
+                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "quote1 2行 => 行頭のスペースは無視されること",
+            ">aaa\n> bbb\n",
+            option,
+            listOf(
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level1,
+                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "quote2 2行 => 行頭のスペースは無視されること",
+            ">>aaa\n>> bbb\n",
+            option,
+            listOf(
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level2,
+                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "quote1+2 2行 => 行頭のスペースは無視されること",
+            ">>aaa\n>> bbb\n>c\n",
+            option,
+            listOf(
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level2,
+                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                ),
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level1,
+                    listOf(MfmNode.Text("c\n"))
+                ),
+            )
+        )
+    }
+
     //--------------------------------------------------
     // custom checker
     //--------------------------------------------------
@@ -479,7 +571,7 @@ class MfmSyntaxParserTest {
 
         println("---- [$scenarioName] start")
         println("input: [$inputText]")
-        println("result:")
+        println("actual:")
         dump(result)
         println("expected:")
         dump(expected)

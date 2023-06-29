@@ -196,7 +196,13 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableFunction) {
                         // Function 開始
                         val functionResult = parse(ParseState.Function)
-                        nodes.add(MfmNode.Function(token.extractedValue, functionResult.nodes))
+                        if (functionResult.success) {
+                            nodes.add(MfmNode.Function(token.extractedValue, functionResult.nodes))
+                        } else {
+                            // Function が終了しないまま終端に達した
+                            nodes.add(MfmNode.Text(token.wholeText))
+                            nodes.addAll(functionResult.nodes)
+                        }
                     } else {
                         // Function 無効
                         nodes.add(MfmNode.Text(token.wholeText))

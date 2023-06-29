@@ -734,6 +734,32 @@ class MfmSyntaxParserTest {
         )
     }
 
+    @Test
+    fun parse_function_閉じず() {
+
+        checkSyntaxParser(
+            "Function x2",
+            "$[x2 hoge",
+            optionAll,
+            listOf(
+                MfmNode.Text("$[x2 "),
+                MfmNode.Text("hoge"),
+            )
+        )
+
+        checkSyntaxParser(
+            "Function + Bold",
+            "$[x4 **hoge**",
+            optionAll,
+            listOf(
+                MfmNode.Text("$[x4 "),
+                MfmNode.Bold(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+    }
+
     //--------------------------------------------------
     // custom checker
     //--------------------------------------------------

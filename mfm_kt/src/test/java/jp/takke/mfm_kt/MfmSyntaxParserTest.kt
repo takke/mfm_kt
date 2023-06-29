@@ -395,6 +395,80 @@ class MfmSyntaxParserTest {
         )
     }
 
+    @Test
+    fun parse_small() {
+
+        val option = MfmSyntaxParser.Option(
+            enableBold = true,
+            enableItalic = true,
+            enableCenter = true,
+            enableSmall = true,
+            enableQuote = false,
+            enableFunction = false
+        )
+
+        // <small>...</small>
+
+        checkSyntaxParser(
+            "small",
+            "<small>hoge</small>",
+            option,
+            listOf(
+                MfmNode.Small(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "small 複数行1",
+            "a\n<small>hoge</small>\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Small(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+                MfmNode.Text("\nb"),
+            )
+        )
+
+        checkSyntaxParser(
+            "small 複数行2",
+            "a\n<small>\nhoge1\nhoge2\n</small>\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Small(
+                    listOf(
+                        MfmNode.Text("\nhoge1\nhoge2\n")
+                    )
+                ),
+                MfmNode.Text("\nb"),
+            )
+        )
+
+        checkSyntaxParser(
+            "small 複数行+bold",
+            "a\n<small>\n**hoge1**\nhoge2\n</small>\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Small(
+                    listOf(
+
+                        MfmNode.Text("\n"),
+                        MfmNode.Bold(
+                            listOf(MfmNode.Text("hoge1"))
+                        ),
+                        MfmNode.Text("\nhoge2\n")
+                    )
+                ),
+                MfmNode.Text("\nb"),
+            )
+        )
+    }
+
     //--------------------------------------------------
     // custom checker
     //--------------------------------------------------

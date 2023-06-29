@@ -1,6 +1,6 @@
 package jp.takke.mfm_kt.token_parser
 
-data class TokenResult(
+data class Token(
     // 識別結果
     val type: TokenType,
     // 抽出した文字列
@@ -10,32 +10,32 @@ data class TokenResult(
 ) {
     companion object {
         // テスト用
-        fun string(string: String) = TokenResult(TokenType.String, string)
-        fun italicAsta() = TokenResult(TokenType.ItalicAsta, "*")
-        fun italicTagStart() = TokenResult(TokenType.ItalicTagStart, "<i>")
-        fun italicTagEnd() = TokenResult(TokenType.ItalicTagEnd, "</i>")
-        fun boldAsta() = TokenResult(TokenType.BoldAsta, "**")
-        fun centerStart() = TokenResult(TokenType.CenterStart, "<center>")
-        fun centerEnd() = TokenResult(TokenType.CenterEnd, "</center>")
-        fun smallStart() = TokenResult(TokenType.SmallStart, "<small>")
-        fun smallEnd() = TokenResult(TokenType.SmallEnd, "</small>")
-        fun inlineCode(s: String) = TokenResult(TokenType.InlineCode, s, "`$s`")
-        fun functionStart(s: String) = TokenResult(TokenType.FunctionStart, s, "$[$s ")
-        fun functionEnd() = TokenResult(TokenType.FunctionEnd, "]", "]")
+        fun string(string: String) = Token(TokenType.String, string)
+        fun italicAsta() = Token(TokenType.ItalicAsta, "*")
+        fun italicTagStart() = Token(TokenType.ItalicTagStart, "<i>")
+        fun italicTagEnd() = Token(TokenType.ItalicTagEnd, "</i>")
+        fun boldAsta() = Token(TokenType.BoldAsta, "**")
+        fun centerStart() = Token(TokenType.CenterStart, "<center>")
+        fun centerEnd() = Token(TokenType.CenterEnd, "</center>")
+        fun smallStart() = Token(TokenType.SmallStart, "<small>")
+        fun smallEnd() = Token(TokenType.SmallEnd, "</small>")
+        fun inlineCode(s: String) = Token(TokenType.InlineCode, s, "`$s`")
+        fun functionStart(s: String) = Token(TokenType.FunctionStart, s, "$[$s ")
+        fun functionEnd() = Token(TokenType.FunctionEnd, "]", "]")
     }
 }
 
-data class TokenParseResult(val success: Boolean, val holder: TokenResultHolder, val next: String)
+data class TokenParseResult(val success: Boolean, val holder: TokenHolder, val next: String)
 
-data class TokenResultHolder(
-    val tokenList: List<TokenResult>
+data class TokenHolder(
+    val tokenList: List<Token>
 ) {
-    fun append(newResult: TokenResult): TokenResultHolder {
-        return TokenResultHolder(mutableListOf<TokenResult>().also {
+    fun append(newResult: Token): TokenHolder {
+        return TokenHolder(mutableListOf<Token>().also {
             it.addAll(this.tokenList)
             it.add(newResult)
         })
     }
 }
 
-typealias TokenParser = (String, TokenResultHolder) -> TokenParseResult
+typealias TokenParser = (String, TokenHolder) -> TokenParseResult

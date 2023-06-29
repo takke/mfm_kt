@@ -3,7 +3,7 @@
 package jp.takke.mfm_kt
 
 import jp.takke.mfm_kt.token_parser.MfmTokenParser
-import jp.takke.mfm_kt.token_parser.TokenResult
+import jp.takke.mfm_kt.token_parser.Token
 import jp.takke.mfm_kt.token_parser.TokenType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -24,7 +24,7 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.string("hoge")
+                    Token.string("hoge")
                 )
             }
 
@@ -32,7 +32,7 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.string("hoge\nfuga")
+                    Token.string("hoge\nfuga")
                 )
             }
     }
@@ -44,8 +44,8 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.string("hoge\ntest=>"),
-                    TokenResult.inlineCode("fuga")
+                    Token.string("hoge\ntest=>"),
+                    Token.inlineCode("fuga")
                 )
             }
     }
@@ -57,7 +57,7 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.string(">")
+                    Token.string(">")
                 )
             }
 
@@ -65,7 +65,7 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.string("> ")
+                    Token.string("> ")
                 )
             }
 
@@ -74,7 +74,7 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.string("> a")
+                    Token.string("> a")
                 )
             }
 
@@ -82,7 +82,7 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult(TokenType.QuoteLine1, "a\n", "> a\n")
+                    Token(TokenType.QuoteLine1, "a\n", "> a\n")
                 )
             }
 
@@ -90,7 +90,7 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult(TokenType.QuoteLine2, "a\n", ">> a\n")
+                    Token(TokenType.QuoteLine2, "a\n", ">> a\n")
                 )
             }
 
@@ -99,7 +99,7 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult(TokenType.QuoteLine1, "a\nb\n", "> a\n> b\n")
+                    Token(TokenType.QuoteLine1, "a\nb\n", "> a\n> b\n")
                 )
             }
 
@@ -108,8 +108,8 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult(TokenType.QuoteLine1, "a\nb\n", "> a\n> b\n"),
-                    TokenResult.string("hoge")
+                    Token(TokenType.QuoteLine1, "a\nb\n", "> a\n> b\n"),
+                    Token.string("hoge")
                 )
             }
 
@@ -117,7 +117,7 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult(TokenType.QuoteLine2, "a\nb\n", ">> a\n>> b\n")
+                    Token(TokenType.QuoteLine2, "a\nb\n", ">> a\n>> b\n")
                 )
             }
 
@@ -130,9 +130,9 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.italicAsta(),
-                    TokenResult.string("abc"),
-                    TokenResult.italicAsta()
+                    Token.italicAsta(),
+                    Token.string("abc"),
+                    Token.italicAsta()
                 )
             }
 
@@ -140,9 +140,9 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.italicTagStart(),
-                    TokenResult.string("abc"),
-                    TokenResult.italicTagEnd()
+                    Token.italicTagStart(),
+                    Token.string("abc"),
+                    Token.italicTagEnd()
                 )
             }
 
@@ -150,9 +150,9 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.boldAsta(),
-                    TokenResult.string("abc"),
-                    TokenResult.boldAsta()
+                    Token.boldAsta(),
+                    Token.string("abc"),
+                    Token.boldAsta()
                 )
             }
 
@@ -160,14 +160,14 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.boldAsta(),
-                    TokenResult.string("Hello"),
-                    TokenResult.boldAsta(),
-                    TokenResult.string(", "),
-                    TokenResult.italicAsta(),
-                    TokenResult.string("World"),
-                    TokenResult.italicAsta(),
-                    TokenResult.string("!")
+                    Token.boldAsta(),
+                    Token.string("Hello"),
+                    Token.boldAsta(),
+                    Token.string(", "),
+                    Token.italicAsta(),
+                    Token.string("World"),
+                    Token.italicAsta(),
+                    Token.string("!")
                 )
             }
     }
@@ -179,9 +179,9 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.centerStart(),
-                    TokenResult.string("abc"),
-                    TokenResult.centerEnd()
+                    Token.centerStart(),
+                    Token.string("abc"),
+                    Token.centerEnd()
                 )
             }
     }
@@ -195,9 +195,9 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult(TokenType.CenterStart, "<center>", "<center>\n"),
-                    TokenResult.string("abc"),
-                    TokenResult.centerEnd()
+                    Token(TokenType.CenterStart, "<center>", "<center>\n"),
+                    Token.string("abc"),
+                    Token.centerEnd()
                 )
             }
 
@@ -205,9 +205,9 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult(TokenType.CenterStart, "<center>", "<center>\n"),
-                    TokenResult.string("abc"),
-                    TokenResult(TokenType.CenterEnd, "</center>", "\n</center>")
+                    Token(TokenType.CenterStart, "<center>", "<center>\n"),
+                    Token.string("abc"),
+                    Token(TokenType.CenterEnd, "</center>", "\n</center>")
                 )
             }
     }
@@ -219,16 +219,16 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.centerStart(),
-                    TokenResult.boldAsta(),
-                    TokenResult.string("Hello"),
-                    TokenResult.boldAsta(),
-                    TokenResult.string(", "),
-                    TokenResult.italicAsta(),
-                    TokenResult.string("World"),
-                    TokenResult.italicAsta(),
-                    TokenResult.string("!"),
-                    TokenResult.centerEnd()
+                    Token.centerStart(),
+                    Token.boldAsta(),
+                    Token.string("Hello"),
+                    Token.boldAsta(),
+                    Token.string(", "),
+                    Token.italicAsta(),
+                    Token.string("World"),
+                    Token.italicAsta(),
+                    Token.string("!"),
+                    Token.centerEnd()
                 )
             }
     }
@@ -240,9 +240,9 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.smallStart(),
-                    TokenResult.string("abc"),
-                    TokenResult.smallEnd()
+                    Token.smallStart(),
+                    Token.string("abc"),
+                    Token.smallEnd()
                 )
             }
 
@@ -250,16 +250,16 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.smallStart(),
-                    TokenResult.boldAsta(),
-                    TokenResult.string("Hello"),
-                    TokenResult.boldAsta(),
-                    TokenResult.string(", "),
-                    TokenResult.italicAsta(),
-                    TokenResult.string("World"),
-                    TokenResult.italicAsta(),
-                    TokenResult.string("!"),
-                    TokenResult.smallEnd()
+                    Token.smallStart(),
+                    Token.boldAsta(),
+                    Token.string("Hello"),
+                    Token.boldAsta(),
+                    Token.string(", "),
+                    Token.italicAsta(),
+                    Token.string("World"),
+                    Token.italicAsta(),
+                    Token.string("!"),
+                    Token.smallEnd()
                 )
             }
     }
@@ -271,9 +271,9 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.functionStart("x2"),
-                    TokenResult.string("abc"),
-                    TokenResult.functionEnd()
+                    Token.functionStart("x2"),
+                    Token.string("abc"),
+                    Token.functionEnd()
                 )
             }
 
@@ -281,11 +281,11 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.functionStart("x2"),
-                    TokenResult.functionStart("rotate.deg=340"),
-                    TokenResult.string("abc"),
-                    TokenResult.functionEnd(),
-                    TokenResult.functionEnd()
+                    Token.functionStart("x2"),
+                    Token.functionStart("rotate.deg=340"),
+                    Token.string("abc"),
+                    Token.functionEnd(),
+                    Token.functionEnd()
                 )
             }
     }

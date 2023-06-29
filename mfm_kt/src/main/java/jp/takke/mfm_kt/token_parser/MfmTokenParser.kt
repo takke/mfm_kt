@@ -19,7 +19,7 @@ object MfmTokenParser {
     private const val ANY_ひらがなカナカナ漢字_CLS = ANY_ひらがなカタカナ_CLS + ANY_記号_CLS + ANY_漢字_CLS
 
     val toNGParseResult: (String) -> TokenParseResult = { next ->
-        TokenParseResult(false, TokenResultHolder(emptyList()), next)
+        TokenParseResult(false, TokenHolder(emptyList()), next)
     }
 
     @Suppress("unused")
@@ -73,14 +73,14 @@ object MfmTokenParser {
         }
     }
 
-    private val EMPTY_HOLDER = TokenResultHolder(emptyList())
+    private val EMPTY_HOLDER = TokenHolder(emptyList())
 
     val pAnyChar: () -> TokenParser = {
         { text, holder ->
             if (text.isNotEmpty()) {
                 TokenParseResult(
                     true,
-                    holder.append(TokenResult(TokenType.Char, text[0].toString())),
+                    holder.append(Token(TokenType.Char, text[0].toString())),
                     text.substring(1)
                 )
             } else {
@@ -95,7 +95,7 @@ object MfmTokenParser {
             if (!invalid && text.substring(0, word.length) == word) {
                 TokenParseResult(
                     true,
-                    holder.append(TokenResult(type, word)),
+                    holder.append(Token(type, word)),
                     text.substring(word.length)
                 )
             } else {
@@ -111,7 +111,7 @@ object MfmTokenParser {
             if (m != null) {
                 TokenParseResult(
                     true,
-                    holder.append(TokenResult(type, m.groupValues[1], m.groupValues[0])),
+                    holder.append(Token(type, m.groupValues[1], m.groupValues[0])),
                     text.substring(m.groupValues[0].length)
                 )
             } else {
@@ -180,14 +180,14 @@ object MfmTokenParser {
             newTokens1
         }
 
-        return TokenParseResult(true, TokenResultHolder(newTokens2), result.next)
+        return TokenParseResult(true, TokenHolder(newTokens2), result.next)
     }
 
-    private fun integrateChars(tokenList: List<TokenResult>): MutableList<TokenResult> {
+    private fun integrateChars(tokenList: List<Token>): MutableList<Token> {
 
         // 連続するCharをStringにする
 
-        val newTokens = mutableListOf<TokenResult>()
+        val newTokens = mutableListOf<Token>()
 
         val sb = StringBuilder()
 
@@ -198,24 +198,24 @@ object MfmTokenParser {
             } else {
                 if (sb.isNotEmpty()) {
                     // Char終了
-                    newTokens.add(TokenResult(TokenType.String, sb.toString()))
+                    newTokens.add(Token(TokenType.String, sb.toString()))
                     sb.clear()
                 }
                 newTokens.add(token)
             }
         }
         if (sb.isNotEmpty()) {
-            newTokens.add(TokenResult(TokenType.String, sb.toString()))
+            newTokens.add(Token(TokenType.String, sb.toString()))
         }
 
         return newTokens
     }
 
-    private fun integrateQuoteLines(tokenList: List<TokenResult>, quoteLineType: TokenType = TokenType.QuoteLine1): List<TokenResult> {
+    private fun integrateQuoteLines(tokenList: List<Token>, quoteLineType: TokenType = TokenType.QuoteLine1): List<Token> {
 
         // 連続するquoteLineを1つに統合する
 
-        val newTokens = mutableListOf<TokenResult>()
+        val newTokens = mutableListOf<Token>()
 
         val sbExtracted = StringBuilder()
         val sbOriginal = StringBuilder()
@@ -227,7 +227,7 @@ object MfmTokenParser {
                 sbOriginal.append(token.wholeText)
             } else {
                 if (sbExtracted.isNotEmpty()) {
-                    newTokens.add(TokenResult(quoteLineType, sbExtracted.toString(), sbOriginal.toString()))
+                    newTokens.add(Token(quoteLineType, sbExtracted.toString(), sbOriginal.toString()))
                     sbExtracted.clear()
                     sbOriginal.clear()
                 }
@@ -235,7 +235,7 @@ object MfmTokenParser {
             }
         }
         if (sbExtracted.isNotEmpty()) {
-            newTokens.add(TokenResult(quoteLineType, sbExtracted.toString(), sbOriginal.toString()))
+            newTokens.add(Token(quoteLineType, sbExtracted.toString(), sbOriginal.toString()))
         }
 
         return newTokens

@@ -247,12 +247,24 @@ class MfmSyntaxParserTest {
 
         checkSyntaxParser(
             "italic*",
-            "*hoge*",
+            "*hoge1*",
             option,
             listOf(
                 MfmNode.Italic(
-                    listOf(MfmNode.Text("hoge"))
+                    listOf(MfmNode.Text("hoge1"))
                 ),
+            )
+        )
+
+        // *と*の間はローマ字と数値のみ許可
+        checkSyntaxParser(
+            "italic* ローマ字と数値以外",
+            "*ほげ*",
+            option,
+            listOf(
+                MfmNode.Text("*"),
+                MfmNode.Text("ほげ"),
+                MfmNode.Text("*"),
             )
         )
 

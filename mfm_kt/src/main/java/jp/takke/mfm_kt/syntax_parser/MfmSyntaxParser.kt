@@ -82,8 +82,20 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // Italic 開始
                             val italicResult = parse(ParseState.ItalicAsterisk)
+
                             if (italicResult.success) {
-                                nodes.add(MfmNode.Italic(italicResult.nodes))
+                                // * の間は[a-zA-Z0-9_]のみ許可
+                                // https://github.com/misskey-dev/mfm.js/blob/develop/src/internal/parser.ts#L354
+                                if (italicResult.nodes.size == 1 &&
+                                    (italicResult.nodes[0] as? MfmNode.Text)?.value?.matches(Regex("^[a-zA-Z0-9]+")) == true
+                                ) {
+                                    nodes.add(MfmNode.Italic(italicResult.nodes))
+                                } else {
+                                    // * の間に不正な文字がある場合は無視する
+                                    nodes.add(MfmNode.Text("*"))
+                                    nodes.addAll(italicResult.nodes)
+                                    nodes.add(MfmNode.Text("*"))
+                                }
                             } else {
                                 // Italic が終了しないまま終端に達した
                                 nodes.add(MfmNode.Text(token.wholeText))

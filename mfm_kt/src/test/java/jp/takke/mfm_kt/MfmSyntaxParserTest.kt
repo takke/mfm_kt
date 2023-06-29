@@ -284,7 +284,120 @@ class MfmSyntaxParserTest {
                 ),
             )
         )
+
+        checkSyntaxParser(
+            "italic* 閉じず",
+            "*hoge",
+            option,
+            listOf(
+                MfmNode.Italic(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "italic tag  閉じず",
+            "<i>hoge",
+            option,
+            listOf(
+                MfmNode.Italic(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "italic + bold",
+            "<i>**hoge**",
+            option,
+            listOf(
+                MfmNode.Italic(
+                    listOf(
+                        MfmNode.Bold(
+                            listOf(MfmNode.Text("hoge"))
+                        )
+                    )
+                ),
+            )
+        )
     }
+
+    @Test
+    fun parse_center() {
+
+        val option = MfmSyntaxParser.Option(
+            enableBold = true,
+            enableItalic = true,
+            enableCenter = true,
+            enableSmall = false,
+            enableQuote = false,
+            enableFunction = false
+        )
+
+        // <center>...</center>
+
+        checkSyntaxParser(
+            "center",
+            "<center>hoge</center>",
+            option,
+            listOf(
+                MfmNode.Center(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "center 複数行1",
+            "a\n<center>hoge</center>\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Center(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+                MfmNode.Text("\nb"),
+            )
+        )
+
+        checkSyntaxParser(
+            "center 複数行2",
+            "a\n<center>\nhoge1\nhoge2\n</center>\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Center(
+                    listOf(
+                        MfmNode.Text("hoge1\nhoge2")
+                    )
+                ),
+                MfmNode.Text("\nb"),
+            )
+        )
+
+        checkSyntaxParser(
+            "center 複数行+bold",
+            "a\n<center>\n**hoge1**\nhoge2\n</center>\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Center(
+                    listOf(
+                        MfmNode.Bold(
+                            listOf(MfmNode.Text("hoge1"))
+                        ),
+                        MfmNode.Text("\nhoge2")
+                    )
+                ),
+                MfmNode.Text("\nb"),
+            )
+        )
+    }
+
+    //--------------------------------------------------
+    // custom checker
+    //--------------------------------------------------
 
     private fun checkSyntaxParser(scenarioName: String, inputText: String, option: MfmSyntaxParser.Option, expected: List<MfmNode>) {
 

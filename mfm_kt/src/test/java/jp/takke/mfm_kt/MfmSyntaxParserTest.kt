@@ -281,41 +281,40 @@ class MfmSyntaxParserTest {
                 ),
             )
         )
+    }
+
+    @Test
+    fun parse_italic_閉じず() {
 
         checkSyntaxParser(
             "italic* 閉じず",
             "*hoge",
-            option,
+            optionAll,
             listOf(
-                MfmNode.Italic(
-                    listOf(MfmNode.Text("hoge"))
-                ),
+                MfmNode.Text("*"),
+                MfmNode.Text("hoge"),
             )
         )
 
         checkSyntaxParser(
-            "italic tag  閉じず",
+            "italic tag 閉じず",
             "<i>hoge",
-            option,
+            optionAll,
             listOf(
-                MfmNode.Italic(
-                    listOf(MfmNode.Text("hoge"))
-                ),
+                MfmNode.Text("<i>"),
+                MfmNode.Text("hoge"),
             )
         )
 
         checkSyntaxParser(
-            "italic + bold",
+            "italic + bold 閉じず",
             "<i>**hoge**",
-            option,
+            optionAll,
             listOf(
-                MfmNode.Italic(
-                    listOf(
-                        MfmNode.Bold(
-                            listOf(MfmNode.Text("hoge"))
-                        )
-                    )
-                ),
+                MfmNode.Text("<i>"),
+                MfmNode.Bold(
+                    listOf(MfmNode.Text("hoge"))
+                )
             )
         )
     }

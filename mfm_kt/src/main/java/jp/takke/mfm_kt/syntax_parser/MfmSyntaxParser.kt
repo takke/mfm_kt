@@ -82,7 +82,13 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // Italic 開始
                             val italicResult = parse(ParseState.ItalicAsterisk)
-                            nodes.add(MfmNode.Italic(italicResult.nodes))
+                            if (italicResult.success) {
+                                nodes.add(MfmNode.Italic(italicResult.nodes))
+                            } else {
+                                // Italic が終了しないまま終端に達した
+                                nodes.add(MfmNode.Text(token.wholeText))
+                                nodes.addAll(italicResult.nodes)
+                            }
                         }
                     } else {
                         // Italic 無効
@@ -94,7 +100,13 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableItalic) {
                         // Italic 開始
                         val italicResult = parse(ParseState.ItalicTag)
-                        nodes.add(MfmNode.Italic(italicResult.nodes))
+                        if (italicResult.success) {
+                            nodes.add(MfmNode.Italic(italicResult.nodes))
+                        } else {
+                            // Italic が終了しないまま終端に達した
+                            nodes.add(MfmNode.Text(token.wholeText))
+                            nodes.addAll(italicResult.nodes)
+                        }
                     } else {
                         // Italic 無効
                         nodes.add(MfmNode.Text(token.wholeText))

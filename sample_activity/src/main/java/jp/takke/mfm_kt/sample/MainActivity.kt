@@ -6,7 +6,7 @@ import android.text.SpannableStringBuilder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import jp.takke.mfm_kt.syntax_parser.MfmSyntaxParser
-import jp.takke.mfm_kt.syntax_parser.SyntaxParseResult
+import jp.takke.mfm_kt.syntax_parser.MfmNode
 import jp.takke.mfm_kt.token_parser.MfmTokenParser
 import jp.takke.mfm_kt.sample.databinding.ActivityMainBinding
 import kotlinx.coroutines.delay
@@ -114,37 +114,37 @@ $[x2 なにか]
         binding.resultText.text = ssb
     }
 
-    private fun traverse(parsedResult: List<SyntaxParseResult>, level: Int, ssb: SpannableStringBuilder) {
+    private fun traverse(parsedResult: List<MfmNode>, level: Int, ssb: SpannableStringBuilder) {
 
         parsedResult.forEach { spr ->
 
             ssb.append("   ".repeat(level))
             when (spr) {
-                is SyntaxParseResult.Text -> {
+                is MfmNode.Text -> {
                     ssb.append("Text: \"${spr.value.replace("\n", "\\n")}\"")
                     ssb.append("\n")
                 }
-                is SyntaxParseResult.Bold -> {
+                is MfmNode.Bold -> {
                     ssb.append("Bold: \n")
                     traverse(spr.children, level + 1, ssb)
                 }
-                is SyntaxParseResult.Italic -> {
+                is MfmNode.Italic -> {
                     ssb.append("Italic: \n")
                     traverse(spr.children, level + 1, ssb)
                 }
-                is SyntaxParseResult.Center -> {
+                is MfmNode.Center -> {
                     ssb.append("Center: \n")
                     traverse(spr.children, level + 1, ssb)
                 }
-                is SyntaxParseResult.Small -> {
+                is MfmNode.Small -> {
                     ssb.append("Small: \n")
                     traverse(spr.children, level + 1, ssb)
                 }
-                is SyntaxParseResult.Function -> {
+                is MfmNode.Function -> {
                     ssb.append("Function: ${spr.name} ${spr.args.joinToString(", ")}\n")
                     traverse(spr.children, level + 1, ssb)
                 }
-                is SyntaxParseResult.Quote -> {
+                is MfmNode.Quote -> {
                     ssb.append("Quote: (${spr.level})\n")
                     traverse(spr.children, level + 1, ssb)
                 }

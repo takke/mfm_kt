@@ -3,7 +3,7 @@
 package jp.takke.mfm_kt
 
 import jp.takke.mfm_kt.syntax_parser.MfmSyntaxParser
-import jp.takke.mfm_kt.syntax_parser.SyntaxParseResult
+import jp.takke.mfm_kt.syntax_parser.MfmNode
 import jp.takke.mfm_kt.token_parser.MfmTokenParser
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -24,7 +24,7 @@ class MfmSyntaxParserTest {
             .parse()
             .let {
                 assertThat(it).containsExactly(
-                    SyntaxParseResult.Text("hoge")
+                    MfmNode.Text("hoge")
                 )
             }
     }
@@ -47,7 +47,7 @@ class MfmSyntaxParserTest {
             "hoge",
             option,
             listOf(
-                SyntaxParseResult.Text("hoge"),
+                MfmNode.Text("hoge"),
             )
         )
 
@@ -56,10 +56,10 @@ class MfmSyntaxParserTest {
             "hoge**bold**",
             option,
             listOf(
-                SyntaxParseResult.Text("hoge"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("bold"),
-                SyntaxParseResult.Text("**"),
+                MfmNode.Text("hoge"),
+                MfmNode.Text("**"),
+                MfmNode.Text("bold"),
+                MfmNode.Text("**"),
             )
         )
 
@@ -68,14 +68,14 @@ class MfmSyntaxParserTest {
             "hoge**bold**and*italic*",
             option,
             listOf(
-                SyntaxParseResult.Text("hoge"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("bold"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("and"),
-                SyntaxParseResult.Text("*"),
-                SyntaxParseResult.Text("italic"),
-                SyntaxParseResult.Text("*"),
+                MfmNode.Text("hoge"),
+                MfmNode.Text("**"),
+                MfmNode.Text("bold"),
+                MfmNode.Text("**"),
+                MfmNode.Text("and"),
+                MfmNode.Text("*"),
+                MfmNode.Text("italic"),
+                MfmNode.Text("*"),
             )
         )
 
@@ -84,16 +84,16 @@ class MfmSyntaxParserTest {
             "<center>hoge**bold**and*italic*</center>",
             option,
             listOf(
-                SyntaxParseResult.Text("<center>"),
-                SyntaxParseResult.Text("hoge"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("bold"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("and"),
-                SyntaxParseResult.Text("*"),
-                SyntaxParseResult.Text("italic"),
-                SyntaxParseResult.Text("*"),
-                SyntaxParseResult.Text("</center>"),
+                MfmNode.Text("<center>"),
+                MfmNode.Text("hoge"),
+                MfmNode.Text("**"),
+                MfmNode.Text("bold"),
+                MfmNode.Text("**"),
+                MfmNode.Text("and"),
+                MfmNode.Text("*"),
+                MfmNode.Text("italic"),
+                MfmNode.Text("*"),
+                MfmNode.Text("</center>"),
             )
         )
 
@@ -102,19 +102,19 @@ class MfmSyntaxParserTest {
             "<center>hoge**bold**and*italic*</center><small>ちいさい</small>",
             option,
             listOf(
-                SyntaxParseResult.Text("<center>"),
-                SyntaxParseResult.Text("hoge"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("bold"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("and"),
-                SyntaxParseResult.Text("*"),
-                SyntaxParseResult.Text("italic"),
-                SyntaxParseResult.Text("*"),
-                SyntaxParseResult.Text("</center>"),
-                SyntaxParseResult.Text("<small>"),
-                SyntaxParseResult.Text("ちいさい"),
-                SyntaxParseResult.Text("</small>"),
+                MfmNode.Text("<center>"),
+                MfmNode.Text("hoge"),
+                MfmNode.Text("**"),
+                MfmNode.Text("bold"),
+                MfmNode.Text("**"),
+                MfmNode.Text("and"),
+                MfmNode.Text("*"),
+                MfmNode.Text("italic"),
+                MfmNode.Text("*"),
+                MfmNode.Text("</center>"),
+                MfmNode.Text("<small>"),
+                MfmNode.Text("ちいさい"),
+                MfmNode.Text("</small>"),
             )
         )
 
@@ -123,22 +123,22 @@ class MfmSyntaxParserTest {
             "<center>hoge**bold**and*italic*</center><small>ちいさい</small>\n>a\n>>b\n",
             option,
             listOf(
-                SyntaxParseResult.Text("<center>"),
-                SyntaxParseResult.Text("hoge"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("bold"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("and"),
-                SyntaxParseResult.Text("*"),
-                SyntaxParseResult.Text("italic"),
-                SyntaxParseResult.Text("*"),
-                SyntaxParseResult.Text("</center>"),
-                SyntaxParseResult.Text("<small>"),
-                SyntaxParseResult.Text("ちいさい"),
-                SyntaxParseResult.Text("</small>"),
-                SyntaxParseResult.Text("\n"),
-                SyntaxParseResult.Text(">a\n"),
-                SyntaxParseResult.Text(">>b\n"),
+                MfmNode.Text("<center>"),
+                MfmNode.Text("hoge"),
+                MfmNode.Text("**"),
+                MfmNode.Text("bold"),
+                MfmNode.Text("**"),
+                MfmNode.Text("and"),
+                MfmNode.Text("*"),
+                MfmNode.Text("italic"),
+                MfmNode.Text("*"),
+                MfmNode.Text("</center>"),
+                MfmNode.Text("<small>"),
+                MfmNode.Text("ちいさい"),
+                MfmNode.Text("</small>"),
+                MfmNode.Text("\n"),
+                MfmNode.Text(">a\n"),
+                MfmNode.Text(">>b\n"),
             )
         )
 
@@ -147,24 +147,24 @@ class MfmSyntaxParserTest {
             "<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n",
             option,
             listOf(
-                SyntaxParseResult.Text("<center>"),
-                SyntaxParseResult.Text("hoge"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("bold"),
-                SyntaxParseResult.Text("**"),
-                SyntaxParseResult.Text("$[x2 "),
-                SyntaxParseResult.Text("and"),
-                SyntaxParseResult.Text("]"),
-                SyntaxParseResult.Text("*"),
-                SyntaxParseResult.Text("italic"),
-                SyntaxParseResult.Text("*"),
-                SyntaxParseResult.Text("</center>"),
-                SyntaxParseResult.Text("<small>"),
-                SyntaxParseResult.Text("ちいさい"),
-                SyntaxParseResult.Text("</small>"),
-                SyntaxParseResult.Text("\n"),
-                SyntaxParseResult.Text(">a\n"),
-                SyntaxParseResult.Text(">>b\n"),
+                MfmNode.Text("<center>"),
+                MfmNode.Text("hoge"),
+                MfmNode.Text("**"),
+                MfmNode.Text("bold"),
+                MfmNode.Text("**"),
+                MfmNode.Text("$[x2 "),
+                MfmNode.Text("and"),
+                MfmNode.Text("]"),
+                MfmNode.Text("*"),
+                MfmNode.Text("italic"),
+                MfmNode.Text("*"),
+                MfmNode.Text("</center>"),
+                MfmNode.Text("<small>"),
+                MfmNode.Text("ちいさい"),
+                MfmNode.Text("</small>"),
+                MfmNode.Text("\n"),
+                MfmNode.Text(">a\n"),
+                MfmNode.Text(">>b\n"),
             )
         )
 
@@ -187,7 +187,7 @@ class MfmSyntaxParserTest {
             "hoge",
             option,
             listOf(
-                SyntaxParseResult.Text("hoge"),
+                MfmNode.Text("hoge"),
             )
         )
 
@@ -196,8 +196,8 @@ class MfmSyntaxParserTest {
             "**hoge**",
             option,
             listOf(
-                SyntaxParseResult.Bold(
-                    listOf(SyntaxParseResult.Text("hoge"))
+                MfmNode.Bold(
+                    listOf(MfmNode.Text("hoge"))
                 ),
             )
         )
@@ -207,11 +207,11 @@ class MfmSyntaxParserTest {
             "aaa**hoge**bbb",
             option,
             listOf(
-                SyntaxParseResult.Text("aaa"),
-                SyntaxParseResult.Bold(
-                    listOf(SyntaxParseResult.Text("hoge"))
+                MfmNode.Text("aaa"),
+                MfmNode.Bold(
+                    listOf(MfmNode.Text("hoge"))
                 ),
-                SyntaxParseResult.Text("bbb"),
+                MfmNode.Text("bbb"),
             )
         )
 
@@ -226,9 +226,9 @@ class MfmSyntaxParserTest {
 //                SyntaxParseResult.Text("hoge"),
 //            )
             listOf(
-                SyntaxParseResult.Text("aaa"),
-                SyntaxParseResult.Bold(
-                    listOf(SyntaxParseResult.Text("hoge"))
+                MfmNode.Text("aaa"),
+                MfmNode.Bold(
+                    listOf(MfmNode.Text("hoge"))
                 ),
             )
         )
@@ -253,8 +253,8 @@ class MfmSyntaxParserTest {
             "*hoge*",
             option,
             listOf(
-                SyntaxParseResult.Italic(
-                    listOf(SyntaxParseResult.Text("hoge"))
+                MfmNode.Italic(
+                    listOf(MfmNode.Text("hoge"))
                 ),
             )
         )
@@ -264,8 +264,8 @@ class MfmSyntaxParserTest {
             "<i>hoge</i>",
             option,
             listOf(
-                SyntaxParseResult.Italic(
-                    listOf(SyntaxParseResult.Text("hoge"))
+                MfmNode.Italic(
+                    listOf(MfmNode.Text("hoge"))
                 ),
             )
         )
@@ -275,10 +275,10 @@ class MfmSyntaxParserTest {
             "<i>**hoge**</i>",
             option,
             listOf(
-                SyntaxParseResult.Italic(
+                MfmNode.Italic(
                     listOf(
-                        SyntaxParseResult.Bold(
-                            listOf(SyntaxParseResult.Text("hoge"))
+                        MfmNode.Bold(
+                            listOf(MfmNode.Text("hoge"))
                         )
                     )
                 ),
@@ -286,7 +286,7 @@ class MfmSyntaxParserTest {
         )
     }
 
-    private fun checkSyntaxParser(scenarioName: String, inputText: String, option: MfmSyntaxParser.Option, expected: List<SyntaxParseResult>) {
+    private fun checkSyntaxParser(scenarioName: String, inputText: String, option: MfmSyntaxParser.Option, expected: List<MfmNode>) {
 
         val result = MfmSyntaxParser(MfmTokenParser.tokenize(inputText), option).parse()
 
@@ -301,40 +301,40 @@ class MfmSyntaxParserTest {
         assertThat(result).containsExactlyElementsOf(expected)
     }
 
-    private fun dump(it: List<SyntaxParseResult>) {
+    private fun dump(it: List<MfmNode>) {
         traverse(it, 1)
     }
 
-    private fun traverse(parsedResult: List<SyntaxParseResult>, level: Int) {
+    private fun traverse(parsedResult: List<MfmNode>, level: Int) {
 
         parsedResult.forEach { spr ->
 
             print("   ".repeat(level))
             when (spr) {
-                is SyntaxParseResult.Text -> {
+                is MfmNode.Text -> {
                     println("Text: \"${spr.value.replace("\n", "\\n")}\"")
                 }
-                is SyntaxParseResult.Bold -> {
+                is MfmNode.Bold -> {
                     println("Bold: ")
                     traverse(spr.children, level + 1)
                 }
-                is SyntaxParseResult.Italic -> {
+                is MfmNode.Italic -> {
                     println("Italic: ")
                     traverse(spr.children, level + 1)
                 }
-                is SyntaxParseResult.Center -> {
+                is MfmNode.Center -> {
                     println("Center: ")
                     traverse(spr.children, level + 1)
                 }
-                is SyntaxParseResult.Small -> {
+                is MfmNode.Small -> {
                     println("Small: ")
                     traverse(spr.children, level + 1)
                 }
-                is SyntaxParseResult.Function -> {
+                is MfmNode.Function -> {
                     println("Function: ${spr.name} ${spr.args.joinToString(", ")}")
                     traverse(spr.children, level + 1)
                 }
-                is SyntaxParseResult.Quote -> {
+                is MfmNode.Quote -> {
                     println("Quote: (${spr.level})")
                     traverse(spr.children, level + 1)
                 }

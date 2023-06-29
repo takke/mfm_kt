@@ -12,7 +12,7 @@ enum class TokenType {
     Bold1,
 
     // *
-    Italic1,
+    ItalicAsta,
 
     // <i>...</i>
     ItalicTagStart, ItalicTagEnd,

@@ -11,7 +11,7 @@ data class TokenResult(
     companion object {
         // テスト用
         fun string(string: String) = TokenResult(TokenType.String, string)
-        fun italic1() = TokenResult(TokenType.Italic1, "*")
+        fun italic1() = TokenResult(TokenType.ItalicAsta, "*")
         fun italicTagStart() = TokenResult(TokenType.ItalicTagStart, "<i>")
         fun italicTagEnd() = TokenResult(TokenType.ItalicTagEnd, "</i>")
         fun bold1() = TokenResult(TokenType.Bold1, "**")

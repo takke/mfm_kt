@@ -74,7 +74,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     }
                 }
 
-                TokenType.Italic1 -> {
+                TokenType.ItalicAsta -> {
                     if (option.enableItalic) {
                         if (state == ParseState.ItalicAsterisk) {
                             // Italic 終了

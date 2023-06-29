@@ -52,7 +52,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
             // 初期状態
             when (token.type) {
-                TokenType.Bold1 -> {
+                TokenType.BoldAsta -> {
                     if (option.enableBold) {
                         if (state == ParseState.Bold) {
                             // Bold 終了

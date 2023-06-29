@@ -130,7 +130,7 @@ object MfmTokenParser {
     val pFunctionStart: () -> TokenParser = { pRegex(TokenType.FunctionStart, "^\\$\\[([$ANY_ASCII_WITHOUT_SPACE_CLS]+) ".toRegex()) }
     val pFunctionEnd: () -> TokenParser = { pWord(TokenType.FunctionEnd, "]") }
 
-    val pBold1: () -> TokenParser = { pWord(TokenType.Bold1, "**") }
+    val pBoldAsta: () -> TokenParser = { pWord(TokenType.BoldAsta, "**") }
     val pItalicAsta: () -> TokenParser = { pWord(TokenType.ItalicAsta, "*") }
     val pItalicTagStart: () -> TokenParser = { pWord(TokenType.ItalicTagStart, "<i>") }
     val pItalicTagEnd: () -> TokenParser = { pWord(TokenType.ItalicTagEnd, "</i>") }
@@ -145,7 +145,7 @@ object MfmTokenParser {
     // TODO Mention, URL も追加すること
     val mfmParser = many(
         pQuoteLine2() or pQuoteLine1() or
-                pBold1() or pItalicAsta() or
+                pBoldAsta() or pItalicAsta() or
                 pInlineCode() or
                 pCenterStart() or pCenterEnd() or
                 pItalicTagStart() or pItalicTagEnd() or

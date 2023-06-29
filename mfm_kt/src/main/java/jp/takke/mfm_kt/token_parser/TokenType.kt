@@ -9,7 +9,7 @@ enum class TokenType {
     String,
 
     // **
-    Bold1,
+    BoldAsta,
 
     // *
     ItalicAsta,

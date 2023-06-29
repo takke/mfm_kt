@@ -170,13 +170,62 @@ class MfmSyntaxParserTest {
 
     }
 
-    private fun checkSyntaxParser(scenarioName: String, inputText: String, option: MfmSyntaxParser.Option, expected: List<SyntaxParseResult.Text>) {
+    @Test
+    fun parse_bold() {
+
+        val option = MfmSyntaxParser.Option(
+            enableBold = true,
+            enableItalic = false,
+            enableCenter = false,
+            enableSmall = false,
+            enableQuote = false,
+            enableFunction = false
+        )
+
+        checkSyntaxParser(
+            "1 word",
+            "hoge",
+            option,
+            listOf(
+                SyntaxParseResult.Text("hoge"),
+            )
+        )
+
+        checkSyntaxParser(
+            "bold1",
+            "**hoge**",
+            option,
+            listOf(
+                SyntaxParseResult.Bold(
+                    listOf(SyntaxParseResult.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "bold2",
+            "aaa**hoge**bbb",
+            option,
+            listOf(
+                SyntaxParseResult.Text("aaa"),
+                SyntaxParseResult.Bold(
+                    listOf(SyntaxParseResult.Text("hoge"))
+                ),
+                SyntaxParseResult.Text("bbb"),
+            )
+        )
+    }
+
+    private fun checkSyntaxParser(scenarioName: String, inputText: String, option: MfmSyntaxParser.Option, expected: List<SyntaxParseResult>) {
 
         val result = MfmSyntaxParser(MfmTokenParser.tokenize(inputText), option).parse()
 
         println("---- [$scenarioName] start")
         println("input: [$inputText]")
+        println("result:")
         dump(result)
+        println("expected:")
+        dump(expected)
         println("---- [$scenarioName] end")
 
         assertThat(result).containsExactlyElementsOf(expected)

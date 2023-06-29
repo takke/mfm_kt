@@ -132,7 +132,13 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableCenter) {
                         // Center 開始
                         val centerResult = parse(ParseState.Center)
-                        nodes.add(MfmNode.Center(centerResult.nodes))
+                        if (centerResult.success) {
+                            nodes.add(MfmNode.Center(centerResult.nodes))
+                        } else {
+                            // Center が終了しないまま終端に達した
+                            nodes.add(MfmNode.Text(token.wholeText))
+                            nodes.addAll(centerResult.nodes)
+                        }
                     } else {
                         // Center 無効
                         nodes.add(MfmNode.Text(token.wholeText))

@@ -392,6 +392,54 @@ class MfmSyntaxParserTest {
     }
 
     @Test
+    fun parse_center_閉じず() {
+
+        val option = MfmSyntaxParser.Option(
+            enableBold = true,
+            enableItalic = true,
+            enableCenter = true,
+            enableSmall = false,
+            enableQuote = false,
+            enableFunction = false
+        )
+
+        checkSyntaxParser(
+            "center",
+            "<center>hoge",
+            option,
+            listOf(
+                MfmNode.Text("<center>"),
+                MfmNode.Text("hoge"),
+            )
+        )
+
+        checkSyntaxParser(
+            "center 複数行1",
+            "a\n<center>hoge\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Text("<center>"),
+                MfmNode.Text("hoge\nb"),
+            )
+        )
+
+        checkSyntaxParser(
+            "center 複数行+bold",
+            "a\n<center>\n**hoge1**\nhoge2\n\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Text("<center>\n"),
+                MfmNode.Bold(
+                    listOf(MfmNode.Text("hoge1"))
+                ),
+                MfmNode.Text("\nhoge2\n\nb"),
+            )
+        )
+    }
+
+    @Test
     fun parse_small() {
 
         val option = MfmSyntaxParser.Option(

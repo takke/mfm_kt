@@ -561,6 +561,86 @@ class MfmSyntaxParserTest {
         )
     }
 
+    private val optionAll = MfmSyntaxParser.Option()
+
+    @Test
+    fun parse_function() {
+
+        checkSyntaxParser(
+            "Function x2",
+            "$[x2 hoge]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "x2",
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+        checkSyntaxParser(
+            "Function x3",
+            "$[x3 hoge]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "x3",
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+        checkSyntaxParser(
+            "Function x4",
+            "$[x4 hoge]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "x4",
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+
+        // 実際にはなくてもパースはできること
+        checkSyntaxParser(
+            "Function x1",
+            "$[x1 hoge]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "x1",
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+        checkSyntaxParser(
+            "Function x5",
+            "$[x5 hoge]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "x5",
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "Function + Bold",
+            "$[x4 **hoge**]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "x4",
+                    listOf(
+                        MfmNode.Bold(
+                            listOf(MfmNode.Text("hoge"))
+                        )
+                    )
+                ),
+            )
+        )
+    }
+
     //--------------------------------------------------
     // custom checker
     //--------------------------------------------------

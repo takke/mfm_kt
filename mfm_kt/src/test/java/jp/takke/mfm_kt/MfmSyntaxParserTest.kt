@@ -438,7 +438,6 @@ class MfmSyntaxParserTest {
                 MfmNode.Text("a\n"),
                 MfmNode.Small(
                     listOf(
-
                         MfmNode.Text("\n"),
                         MfmNode.Bold(
                             listOf(MfmNode.Text("hoge1"))

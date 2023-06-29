@@ -214,6 +214,76 @@ class MfmSyntaxParserTest {
                 SyntaxParseResult.Text("bbb"),
             )
         )
+
+        checkSyntaxParser(
+            "bold 閉じず",
+            "aaa**hoge",
+            option,
+            // TODO 閉じていない場合は、そのままテキストとして扱うべき
+//            listOf(
+//                SyntaxParseResult.Text("aaa"),
+//                SyntaxParseResult.Text("**"),
+//                SyntaxParseResult.Text("hoge"),
+//            )
+            listOf(
+                SyntaxParseResult.Text("aaa"),
+                SyntaxParseResult.Bold(
+                    listOf(SyntaxParseResult.Text("hoge"))
+                ),
+            )
+        )
+    }
+
+    @Test
+    fun parse_italic() {
+
+        val option = MfmSyntaxParser.Option(
+            enableBold = true,
+            enableItalic = true,
+            enableCenter = false,
+            enableSmall = false,
+            enableQuote = false,
+            enableFunction = false
+        )
+
+        // *...* と <i>...</i> の2パターンある
+
+        checkSyntaxParser(
+            "italic*",
+            "*hoge*",
+            option,
+            listOf(
+                SyntaxParseResult.Italic(
+                    listOf(SyntaxParseResult.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "italic tag",
+            "<i>hoge</i>",
+            option,
+            listOf(
+                SyntaxParseResult.Italic(
+                    listOf(SyntaxParseResult.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "italic + bold",
+            "<i>**hoge**</i>",
+            option,
+            listOf(
+                SyntaxParseResult.Italic(
+                    listOf(
+                        SyntaxParseResult.Bold(
+                            listOf(SyntaxParseResult.Text("hoge"))
+                        )
+                    )
+                ),
+            )
+        )
     }
 
     private fun checkSyntaxParser(scenarioName: String, inputText: String, option: MfmSyntaxParser.Option, expected: List<SyntaxParseResult>) {

@@ -130,9 +130,9 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.italic1(),
+                    TokenResult.italicAsta(),
                     TokenResult.string("abc"),
-                    TokenResult.italic1()
+                    TokenResult.italicAsta()
                 )
             }
 
@@ -150,9 +150,9 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.bold1(),
+                    TokenResult.boldAsta(),
                     TokenResult.string("abc"),
-                    TokenResult.bold1()
+                    TokenResult.boldAsta()
                 )
             }
 
@@ -160,13 +160,13 @@ class MfmTokenParserTest {
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    TokenResult.bold1(),
+                    TokenResult.boldAsta(),
                     TokenResult.string("Hello"),
-                    TokenResult.bold1(),
+                    TokenResult.boldAsta(),
                     TokenResult.string(", "),
-                    TokenResult.italic1(),
+                    TokenResult.italicAsta(),
                     TokenResult.string("World"),
-                    TokenResult.italic1(),
+                    TokenResult.italicAsta(),
                     TokenResult.string("!")
                 )
             }
@@ -220,13 +220,13 @@ class MfmTokenParserTest {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
                     TokenResult.centerStart(),
-                    TokenResult.bold1(),
+                    TokenResult.boldAsta(),
                     TokenResult.string("Hello"),
-                    TokenResult.bold1(),
+                    TokenResult.boldAsta(),
                     TokenResult.string(", "),
-                    TokenResult.italic1(),
+                    TokenResult.italicAsta(),
                     TokenResult.string("World"),
-                    TokenResult.italic1(),
+                    TokenResult.italicAsta(),
                     TokenResult.string("!"),
                     TokenResult.centerEnd()
                 )
@@ -251,13 +251,13 @@ class MfmTokenParserTest {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
                     TokenResult.smallStart(),
-                    TokenResult.bold1(),
+                    TokenResult.boldAsta(),
                     TokenResult.string("Hello"),
-                    TokenResult.bold1(),
+                    TokenResult.boldAsta(),
                     TokenResult.string(", "),
-                    TokenResult.italic1(),
+                    TokenResult.italicAsta(),
                     TokenResult.string("World"),
-                    TokenResult.italic1(),
+                    TokenResult.italicAsta(),
                     TokenResult.string("!"),
                     TokenResult.smallEnd()
                 )

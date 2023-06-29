@@ -25,8 +25,6 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         Bold,
         ItalicAsterisk,
         ItalicTag,
-//        InlineCode,
-//        Quote,
         Function,
         Center,
         Small,
@@ -36,12 +34,17 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
     fun parse(): List<MfmNode> {
 
-        return parse(ParseState.Normal)
+        return parse(ParseState.Normal).nodes
     }
 
-    private fun parse(state: ParseState): List<MfmNode> {
+    data class ParseResult(
+        val success: Boolean,
+        val nodes: List<MfmNode>,
+    )
 
-        val result = ArrayList<MfmNode>(tokenList.size)
+    private fun parse(state: ParseState): ParseResult {
+
+        val nodes = ArrayList<MfmNode>(tokenList.size)
 
         while (tokenPos < tokenList.size) {
             val token = tokenList[tokenPos]
@@ -53,15 +56,15 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableBold) {
                         if (state == ParseState.Bold) {
                             // Bold 終了
-                            return result
+                            return ParseResult(true, nodes)
                         } else {
                             // Bold 開始
                             val boldResult = parse(ParseState.Bold)
-                            result.add(MfmNode.Bold(boldResult))
+                            nodes.add(MfmNode.Bold(boldResult.nodes))
                         }
                     } else {
                         // Bold 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -69,15 +72,15 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableItalic) {
                         if (state == ParseState.ItalicAsterisk) {
                             // Italic 終了
-                            return result
+                            return ParseResult(true, nodes)
                         } else {
                             // Italic 開始
                             val italicResult = parse(ParseState.ItalicAsterisk)
-                            result.add(MfmNode.Italic(italicResult))
+                            nodes.add(MfmNode.Italic(italicResult.nodes))
                         }
                     } else {
                         // Italic 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -85,10 +88,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableItalic) {
                         // Italic 開始
                         val italicResult = parse(ParseState.ItalicTag)
-                        result.add(MfmNode.Italic(italicResult))
+                        nodes.add(MfmNode.Italic(italicResult.nodes))
                     } else {
                         // Italic 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -96,14 +99,14 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableItalic) {
                         // Italic 終了
                         if (state == ParseState.ItalicTag) {
-                            return result
+                            return ParseResult(true, nodes)
                         } else {
                             // <i>じゃないところで</i>が来たので無視する
-                            result.add(MfmNode.Text(token.wholeText))
+                            nodes.add(MfmNode.Text(token.wholeText))
                         }
                     } else {
                         // Italic 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -111,10 +114,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableCenter) {
                         // Center 開始
                         val centerResult = parse(ParseState.Center)
-                        result.add(MfmNode.Center(centerResult))
+                        nodes.add(MfmNode.Center(centerResult.nodes))
                     } else {
                         // Center 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -122,14 +125,14 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableCenter) {
                         // Center 終了
                         if (state == ParseState.Center) {
-                            return result
+                            return ParseResult(true, nodes)
                         } else {
                             // <center>じゃないところで</center>が来たので無視する
-                            result.add(MfmNode.Text(token.wholeText))
+                            nodes.add(MfmNode.Text(token.wholeText))
                         }
                     } else {
                         // Center 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -137,10 +140,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableSmall) {
                         // Small 開始
                         val smallResult = parse(ParseState.Small)
-                        result.add(MfmNode.Small(smallResult))
+                        nodes.add(MfmNode.Small(smallResult.nodes))
                     } else {
                         // Small 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -148,14 +151,14 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableSmall) {
                         // Small 終了
                         if (state == ParseState.Small) {
-                            return result
+                            return ParseResult(true, nodes)
                         } else {
                             // <small>じゃないところで</small>が来たので無視する
-                            result.add(MfmNode.Text(token.wholeText))
+                            nodes.add(MfmNode.Text(token.wholeText))
                         }
                     } else {
                         // Small 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -163,10 +166,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableFunction) {
                         // Function 開始
                         val functionResult = parse(ParseState.Function)
-                        result.add(MfmNode.Function(token.extractedValue, functionResult))
+                        nodes.add(MfmNode.Function(token.extractedValue, functionResult.nodes))
                     } else {
                         // Function 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -174,14 +177,14 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableFunction) {
                         // Function 終了
                         if (state == ParseState.Function) {
-                            return result
+                            return ParseResult(true, nodes)
                         } else {
                             // "$[" じゃないところで "]" が来たので無視する
-                            result.add(MfmNode.Text(token.wholeText))
+                            nodes.add(MfmNode.Text(token.wholeText))
                         }
                     } else {
                         // Function 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -189,10 +192,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableQuote) {
                         // Quote
                         // TODO 本来はここで extractedValue をさらに字句解析から行う必要がある
-                        result.add(MfmNode.Quote(MfmNode.QuoteLevel.Level1, listOf(MfmNode.Text(token.extractedValue))))
+                        nodes.add(MfmNode.Quote(MfmNode.QuoteLevel.Level1, listOf(MfmNode.Text(token.extractedValue))))
                     } else {
                         // Quote 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
@@ -200,20 +203,20 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     if (option.enableQuote) {
                         // Quote
                         // TODO 本来はここで extractedValue をさらに字句解析から行う必要がある
-                        result.add(MfmNode.Quote(MfmNode.QuoteLevel.Level2, listOf(MfmNode.Text(token.extractedValue))))
+                        nodes.add(MfmNode.Quote(MfmNode.QuoteLevel.Level2, listOf(MfmNode.Text(token.extractedValue))))
                     } else {
                         // Quote 無効
-                        result.add(MfmNode.Text(token.wholeText))
+                        nodes.add(MfmNode.Text(token.wholeText))
                     }
                 }
 
                 else -> {
-                    result.add(MfmNode.Text(token.wholeText))
+                    nodes.add(MfmNode.Text(token.wholeText))
                 }
             }
         }
 
-        return result
+        return ParseResult(true, nodes)
     }
 
 }

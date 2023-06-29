@@ -17,7 +17,7 @@ sealed class MfmNode(val isInline: Boolean) {
         Level2,
     }
 
-    data class Quote(val level: QuoteLevel, val children: List<MfmNode>) : MfmNode(true)
+    data class Quote(val level: QuoteLevel, val children: List<MfmNode>) : MfmNode(false)
 
     data class Function(val props: String, val children: List<MfmNode>) : MfmNode(false) {
         // TODO name+propsに変換すること

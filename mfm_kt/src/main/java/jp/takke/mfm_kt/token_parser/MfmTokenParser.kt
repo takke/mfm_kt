@@ -152,7 +152,7 @@ object MfmTokenParser {
     val pFunctionEnd: () -> TokenParser = { pWord(TokenType.FunctionEnd, "]") }
 
     // `$abc <- 1` のような形式
-    val pInlineCode: () -> TokenParser = { pRegex(TokenType.InlineCode, "^`([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+)`".toRegex()) }
+    val pInlineCode: () -> TokenParser = { pWord(TokenType.InlineCode, "`") }
 
     // TODO Mention, URL も追加すること
     val mfmParser = many(

@@ -29,7 +29,7 @@ data class Token(
         fun strikeWave() = Token(TokenType.StrikeWave, "~~")
         fun functionStart(s: String) = Token(TokenType.FunctionStart, s, "$[$s ")
         fun functionEnd() = Token(TokenType.FunctionEnd, "]", "]")
-        fun inlineCode(s: String) = Token(TokenType.InlineCode, s, "`$s`")
+        fun inlineCode() = Token(TokenType.InlineCode, "`", "`")
     }
 }
 

@@ -31,4 +31,6 @@ sealed class MfmNode(val isInline: Boolean) {
             get() = emptyList()
     }
 
+    data class InlineCode(val children: List<MfmNode>) : MfmNode(true)
+
 }

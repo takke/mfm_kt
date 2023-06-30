@@ -22,6 +22,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         val enableItalic: Boolean = true,
         val enableStrike: Boolean = true,
         val enableFunction: Boolean = true,
+        val enableInline: Boolean = true,
     )
 
     fun parse(): List<MfmNode> {
@@ -42,6 +43,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         StrikeTag,
         StrikeWave,
         Function,
+        InlineCode,
     }
 
     private data class ParseResult(
@@ -363,7 +365,33 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 }
 
                 TokenType.InlineCode -> {
-                    nodes.addOrMergeText(token.wholeText)
+                    if (state == ParseState.InlineCode) {
+                        // InlineCode 終了
+                        return ParseResult(true, nodes)
+                    } else {
+                        // InlineCode 開始
+                        val strikeResult = parse(ParseState.InlineCode)
+
+                        println("InlineCode: ${strikeResult.nodes} (${strikeResult.success})")
+
+                        if (strikeResult.success) {
+                            // ` の間は改行不可
+                            if (strikeResult.nodes.size == 1 &&
+                                (strikeResult.nodes[0] as? MfmNode.Text)?.value?.matches(Regex("^[^\n]+")) == true
+                            ) {
+                                nodes.add(MfmNode.InlineCode(strikeResult.nodes))
+                            } else {
+                                // ~~ の間に対象外の文字がある場合は無視する
+                                nodes.addOrMergeText("`")
+                                nodes.addAllWithMergeText(strikeResult.nodes)
+                                nodes.addOrMergeText("`")
+                            }
+                        } else {
+                            // InlineCode が終了しないまま終端に達した
+                            nodes.addOrMergeText(token.wholeText)
+                            nodes.addAllWithMergeText(strikeResult.nodes)
+                        }
+                    }
                 }
             }
         }
@@ -396,7 +424,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             TokenType.StrikeWave -> option.enableStrike
             TokenType.FunctionStart -> option.enableFunction
             TokenType.FunctionEnd -> option.enableFunction
-            TokenType.InlineCode -> true
+            TokenType.InlineCode -> option.enableInline
         }
     }
 

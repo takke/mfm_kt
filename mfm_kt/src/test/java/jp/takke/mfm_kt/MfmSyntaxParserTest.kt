@@ -44,6 +44,7 @@ class MfmSyntaxParserTest {
             enableSmall = false,
             enableQuote = false,
             enableFunction = false,
+            enableInline = false,
         )
 
         checkSyntaxParser(
@@ -79,6 +80,15 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Text("hoge**bold**"),
+            )
+        )
+
+        checkSyntaxParser(
+            "inline",
+            "hoge`bold`",
+            option,
+            listOf(
+                MfmNode.Text("hoge`bold`"),
             )
         )
 
@@ -896,6 +906,32 @@ class MfmSyntaxParserTest {
         )
     }
 
+    @Test
+    fun parse_inline() {
+
+        val option = optionAll
+
+        checkSyntaxParser(
+            "`inline`",
+            "`inline`",
+            option,
+            listOf(
+                MfmNode.InlineCode(
+                    listOf(MfmNode.Text("inline"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "inline 2",
+            "`in\nline`",
+            option,
+            listOf(
+                MfmNode.Text("`in\nline`")
+            )
+        )
+    }
+
     //--------------------------------------------------
     // custom checker
     //--------------------------------------------------
@@ -958,6 +994,10 @@ class MfmSyntaxParserTest {
                 }
                 is MfmNode.Function -> {
                     println("Function: ${spr.name} ${spr.args.joinToString(", ")}")
+                    traverse(spr.children, level + 1)
+                }
+                is MfmNode.InlineCode -> {
+                    println("InlineCode: ")
                     traverse(spr.children, level + 1)
                 }
             }

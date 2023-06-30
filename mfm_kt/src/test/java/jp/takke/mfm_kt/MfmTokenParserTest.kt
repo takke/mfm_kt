@@ -382,7 +382,9 @@ class MfmTokenParserTest {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
                     Token.string("hoge\ntest=>"),
-                    Token.inlineCode("fuga")
+                    Token.inlineCode(),
+                    Token.string("fuga"),
+                    Token.inlineCode()
                 )
             }
     }

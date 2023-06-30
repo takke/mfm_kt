@@ -70,6 +70,15 @@ class MfmSyntaxParserTest {
         )
 
         checkSyntaxParser(
+            "bold+italic2",
+            "hoge**bold**and*italic*_a_<i>hoge</i>",
+            option,
+            listOf(
+                MfmNode.Text("hoge**bold**and*italic*_a_<i>hoge</i>"),
+            )
+        )
+
+        checkSyntaxParser(
             "bold+italic+center",
             "<center>hoge**bold**and*italic*</center>",
             option,

@@ -196,6 +196,20 @@ class MfmTokenParserTest {
                     Token.boldTagEnd()
                 )
             }
+
+        MfmTokenParser.tokenize("aaa<b><i>hoge</i></b>bbb")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.string("aaa"),
+                    Token.boldTagStart(),
+                    Token.italicTagStart(),
+                    Token.string("hoge"),
+                    Token.italicTagEnd(),
+                    Token.boldTagEnd(),
+                    Token.string("bbb")
+                )
+            }
     }
 
     @Test

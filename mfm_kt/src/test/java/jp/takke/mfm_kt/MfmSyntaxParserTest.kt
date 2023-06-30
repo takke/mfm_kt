@@ -111,7 +111,7 @@ class MfmSyntaxParserTest {
 
         val option = MfmSyntaxParser.Option(
             enableBold = true,
-            enableItalic = false,
+            enableItalic = true,
             enableCenter = false,
             enableSmall = false,
             enableQuote = false,
@@ -146,6 +146,36 @@ class MfmSyntaxParserTest {
                 MfmNode.Text("aaa"),
                 MfmNode.Bold(
                     listOf(MfmNode.Text("hoge"))
+                ),
+                MfmNode.Text("bbb"),
+            )
+        )
+
+        checkSyntaxParser(
+            "bold tag",
+            "aaa<b>hoge</b>bbb",
+            option,
+            listOf(
+                MfmNode.Text("aaa"),
+                MfmNode.Bold(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+                MfmNode.Text("bbb"),
+            )
+        )
+
+        checkSyntaxParser(
+            "bold tag 2",
+            "aaa<b><i>hoge</i></b>bbb",
+            option,
+            listOf(
+                MfmNode.Text("aaa"),
+                MfmNode.Bold(
+                    listOf(
+                        MfmNode.Italic(
+                            listOf(MfmNode.Text("hoge"))
+                        )
+                    )
                 ),
                 MfmNode.Text("bbb"),
             )

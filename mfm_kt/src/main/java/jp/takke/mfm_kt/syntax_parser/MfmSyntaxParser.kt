@@ -28,7 +28,8 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
     private enum class ParseState {
         Normal,
-        Bold,
+        BoldAsta,
+        BoldTag,
         ItalicAsterisk,
         ItalicTag,
         Function,
@@ -97,12 +98,12 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 }
 
                 TokenType.BoldAsta -> {
-                    if (state == ParseState.Bold) {
+                    if (state == ParseState.BoldAsta) {
                         // Bold 終了
                         return ParseResult(true, nodes)
                     } else {
                         // Bold 開始
-                        val boldResult = parse(ParseState.Bold)
+                        val boldResult = parse(ParseState.BoldAsta)
                         if (boldResult.success) {
                             nodes.add(MfmNode.Bold(boldResult.nodes))
                         } else {
@@ -115,19 +116,19 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.BoldTagStart -> {
                     // Bold 開始
-                    val r = parse(ParseState.Bold)
-                    if (r.success) {
-                        nodes.add(MfmNode.Bold(r.nodes))
+                    val boldTagResult = parse(ParseState.BoldTag)
+                    if (boldTagResult.success) {
+                        nodes.add(MfmNode.Bold(boldTagResult.nodes))
                     } else {
                         // Bold が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
-                        nodes.addAllWithMergeText(r.nodes)
+                        nodes.addAllWithMergeText(boldTagResult.nodes)
                     }
                 }
 
                 TokenType.BoldTagEnd -> {
                     // Bold 終了
-                    if (state == ParseState.Bold) {
+                    if (state == ParseState.BoldTag) {
                         return ParseResult(true, nodes)
                     } else {
                         // <bold>じゃないところで</bold>が来たので無視する

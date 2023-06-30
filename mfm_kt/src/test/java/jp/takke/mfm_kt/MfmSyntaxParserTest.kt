@@ -881,7 +881,7 @@ class MfmSyntaxParserTest {
         )
 
         checkSyntaxParser(
-            "Function xxx",
+            "Function quote+function",
             "#ラッキーカラー診断\n" +
                     "今日のラッキーカラーは`#86DB67`でした！\n" +
                     "今日のラッキーカラーはこんにゃ色 -> \$[bg.color=86DB67 :blank::blank::blank:]",
@@ -896,6 +896,20 @@ class MfmSyntaxParserTest {
                     "bg.color=86DB67",
                     listOf(
                         MfmNode.Text(":blank::blank::blank:")
+                    )
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "Function x2 + _",
+            "\$[x2 大きな文字！ :hyper_vibecat:]",
+            optionAll.copy(enableQuote = false),
+            listOf(
+                MfmNode.Function(
+                    "x2",
+                    listOf(
+                        MfmNode.Text("大きな文字！ :hyper_vibecat:")
                     )
                 ),
             )

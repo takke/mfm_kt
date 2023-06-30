@@ -372,6 +372,18 @@ class MfmTokenParserTest {
                     Token.functionEnd()
                 )
             }
+
+        MfmTokenParser.tokenize("\$[x2 大きな文字！ :hyper_vibecat:]")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.functionStart("x2"),
+                    Token.string("大きな文字！ :hyper"),
+                    Token.italicUnder(),
+                    Token.string("vibecat:"),
+                    Token.functionEnd()
+                )
+            }
     }
 
     @Test

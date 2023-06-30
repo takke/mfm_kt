@@ -14,6 +14,9 @@ enum class TokenType {
     // <b>...</b>
     BoldTagStart, BoldTagEnd,
 
+    // __
+    BoldUnder,
+
     // *
     ItalicAsta,
 

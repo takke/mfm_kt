@@ -28,13 +28,14 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
     private enum class ParseState {
         Normal,
+        Center,
         BoldAsta,
         BoldTag,
-        ItalicAsterisk,
-        ItalicTag,
-        Function,
-        Center,
+        BoldUnder,
         Small,
+        ItalicTag,
+        ItalicAsta,
+        Function,
     }
 
     private data class ParseResult(
@@ -136,6 +137,23 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     }
                 }
 
+                TokenType.BoldUnder -> {
+                    if (state == ParseState.BoldUnder) {
+                        // __ 終了
+                        return ParseResult(true, nodes)
+                    } else {
+                        // __ 開始
+                        val boldResult = parse(ParseState.BoldUnder)
+                        if (boldResult.success) {
+                            nodes.add(MfmNode.Bold(boldResult.nodes))
+                        } else {
+                            // __ が終了しないまま終端に達した
+                            nodes.addOrMergeText(token.wholeText)
+                            nodes.addAllWithMergeText(boldResult.nodes)
+                        }
+                    }
+                }
+
                 TokenType.SmallStart -> {
                     // Small 開始
                     val smallResult = parse(ParseState.Small)
@@ -181,12 +199,12 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 }
 
                 TokenType.ItalicAsta -> {
-                    if (state == ParseState.ItalicAsterisk) {
+                    if (state == ParseState.ItalicAsta) {
                         // Italic 終了
                         return ParseResult(true, nodes)
                     } else {
                         // Italic 開始
-                        val italicResult = parse(ParseState.ItalicAsterisk)
+                        val italicResult = parse(ParseState.ItalicAsta)
 
                         if (italicResult.success) {
                             // * の間は[a-zA-Z0-9_]のみ許可
@@ -252,6 +270,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             TokenType.BoldAsta -> option.enableBold
             TokenType.BoldTagStart -> option.enableBold
             TokenType.BoldTagEnd -> option.enableBold
+            TokenType.BoldUnder -> option.enableBold
             TokenType.SmallStart -> option.enableSmall
             TokenType.SmallEnd -> option.enableSmall
             TokenType.ItalicTagStart -> option.enableItalic

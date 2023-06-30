@@ -134,6 +134,8 @@ object MfmTokenParser {
     val pFunctionEnd: () -> TokenParser = { pWord(TokenType.FunctionEnd, "]") }
 
     val pBoldAsta: () -> TokenParser = { pWord(TokenType.BoldAsta, "**") }
+    val pBoldUnder: () -> TokenParser = { pWord(TokenType.BoldUnder, "__") }
+
     val pItalicAsta: () -> TokenParser = { pWord(TokenType.ItalicAsta, "*") }
     val pItalicTagStart: () -> TokenParser = { pWord(TokenType.ItalicTagStart, "<i>") }
     val pItalicTagEnd: () -> TokenParser = { pWord(TokenType.ItalicTagEnd, "</i>") }
@@ -148,6 +150,7 @@ object MfmTokenParser {
     // TODO Mention, URL も追加すること
     val mfmParser = many(
         pQuoteLine2() or pQuoteLine1() or
+                pBoldUnder() or
                 pBoldAsta() or pItalicAsta() or
                 pInlineCode() or
                 pCenterStart() or pCenterEnd() or

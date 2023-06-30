@@ -380,12 +380,11 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.FunctionEnd -> {
                     // Function 終了
-                    return if (state == ParseState.Function) {
-                        ParseResult(true, nodes)
+                    if (state == ParseState.Function) {
+                        return ParseResult(true, nodes)
                     } else {
                         // "$[" じゃないところで "]" が来たので無視する
-                        tokenPos--
-                        ParseResult(false, nodes)
+                        nodes.addOrMergeText(token.wholeText)
                     }
                 }
 

@@ -399,6 +399,16 @@ class MfmTokenParserTest {
                     Token.functionEnd()
                 )
             }
+
+        MfmTokenParser.tokenize("あれこれ[第1話]ほげほげ")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.string("あれこれ[第1話"),
+                    Token.functionEnd(),
+                    Token.string("ほげほげ"),
+                )
+            }
     }
 
     @Test

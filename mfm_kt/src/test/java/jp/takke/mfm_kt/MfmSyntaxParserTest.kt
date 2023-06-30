@@ -2,17 +2,16 @@
 
 package jp.takke.mfm_kt
 
-import jp.takke.mfm_kt.syntax_parser.MfmSyntaxParser
 import jp.takke.mfm_kt.syntax_parser.MfmNode
+import jp.takke.mfm_kt.syntax_parser.MfmSyntaxParser
 import jp.takke.mfm_kt.token_parser.MfmTokenParser
-import jp.takke.mfm_kt.token_parser.Token
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 
 class MfmSyntaxParserTest {
 
-    private val optionAll = MfmSyntaxParser.Option()
+    private val optionAll = MfmSyntaxParser.Option(enableEmoji = false)
 
     @Test
     fun parse_simple() {
@@ -973,7 +972,7 @@ class MfmSyntaxParserTest {
 
         checkSyntaxParser("その他",
             "\$[x2 **:vjtakagi_confused:**]",
-            optionAll.copy(enableEmoji = false),
+            optionAll,
             listOf(
                 MfmNode.Function(
                     "x2",
@@ -985,6 +984,14 @@ class MfmSyntaxParserTest {
                         )
                     )
                 ),
+            )
+        )
+
+        checkSyntaxParser("その他2",
+            "あれこれ[第1話]ほげほげ",
+            optionAll,
+            listOf(
+                MfmNode.Text("あれこれ[第1話]ほげほげ")
             )
         )
     }

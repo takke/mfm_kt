@@ -171,7 +171,7 @@ class MfmTokenParserTest {
     }
 
     @Test
-    fun tokenize_BoldItalic() {
+    fun tokenize_BoldAsta() {
 
         MfmTokenParser.tokenize("**abc**")
             .let {
@@ -182,6 +182,10 @@ class MfmTokenParserTest {
                     Token.boldAsta()
                 )
             }
+    }
+
+    @Test
+    fun tokenize_BoldItalic() {
 
         MfmTokenParser.tokenize("**Hello**, *World*!")
             .let {

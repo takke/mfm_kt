@@ -932,6 +932,40 @@ class MfmSyntaxParserTest {
         )
     }
 
+    @Test
+    fun function_props() {
+
+        val option = optionAll
+
+        // $[x2 ] => []
+        MfmSyntaxParser(MfmTokenParser.tokenize("$[x2 ]"), option).parse().also {
+            val function = it[0] as MfmNode.Function
+            assertThat(function.name).isEqualTo("x2")
+            assertThat(function.args).isEqualTo(emptyMap<String, String>())
+        }
+
+        // $[font.serif ] => [("serif", "")]
+        MfmSyntaxParser(MfmTokenParser.tokenize("$[font.serif ]"), option).parse().also {
+            val function = it[0] as MfmNode.Function
+            assertThat(function.name).isEqualTo("font")
+            assertThat(function.args).isEqualTo(mapOf("serif" to ""))
+        }
+
+        // $[bg.color=00ee22 ] => (["color", "00ee22")]
+        MfmSyntaxParser(MfmTokenParser.tokenize("$[bg.color=00ee22 ]"), option).parse().also {
+            val function = it[0] as MfmNode.Function
+            assertThat(function.name).isEqualTo("bg")
+            assertThat(function.args).isEqualTo(mapOf("color" to "00ee22"))
+        }
+
+        // $[scale.x=1.2,y=1.5 ] => [("x", "1.2"), ("y", "1.5")]
+        MfmSyntaxParser(MfmTokenParser.tokenize("$[scale.x=1.2,y=1.5 :waai:]"), option).parse().also {
+            val function = it[0] as MfmNode.Function
+            assertThat(function.name).isEqualTo("scale")
+            assertThat(function.args).isEqualTo(mapOf("x" to "1.2", "y" to "1.5"))
+        }
+    }
+
     //--------------------------------------------------
     // custom checker
     //--------------------------------------------------
@@ -993,7 +1027,7 @@ class MfmSyntaxParserTest {
                     traverse(spr.children, level + 1)
                 }
                 is MfmNode.Function -> {
-                    println("Function: ${spr.name} ${spr.args.joinToString(", ")}")
+                    println("Function: ${spr.name} ${spr.args.map { "${it.key}=${it.value}" }}")
                     traverse(spr.children, level + 1)
                 }
                 is MfmNode.InlineCode -> {

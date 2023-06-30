@@ -24,11 +24,30 @@ sealed class MfmNode(val isInline: Boolean) {
     data class Strike(val children: List<MfmNode>) : MfmNode(true)
 
     data class Function(val props: String, val children: List<MfmNode>) : MfmNode(true) {
-        // TODO name+propsに変換すること
-        val name: String
-            get() = props
-        val args: List<String>
-            get() = emptyList()
+        val name: String by lazy { props.substringBefore('.') }
+        val args: Map<String, String> by lazy {
+            // $[x2 ] => []
+            // $[font.serif ] => [("serif", "")]
+            // $[bg.color=00ee22 ] => (["color", "00ee22")]
+            // $[scale.x=1.2,y=1.5 ] => [("x", "1.2"), ("y", "1.5")]
+
+            val after = props.substringAfter('.', "")
+            if (after.isEmpty()) {
+                return@lazy emptyMap<String, String>()
+            }
+
+            val result = HashMap<String, String>()
+            after.split(',').forEach {
+                if (it.contains('=')) {
+                    val (key, value) = it.split('=')
+                    result[key] = value
+                } else {
+                    result[it] = ""
+                }
+            }
+
+            result
+        }
     }
 
     data class InlineCode(val children: List<MfmNode>) : MfmNode(true)

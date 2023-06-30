@@ -145,6 +145,7 @@ object MfmTokenParser {
 
     val pStrikeTagStart: () -> TokenParser = { pWord(TokenType.StrikeTagStart, "<s>") }
     val pStrikeTagEnd: () -> TokenParser = { pWord(TokenType.StrikeTagEnd, "</s>") }
+    val pStrikeWave: () -> TokenParser = { pWord(TokenType.StrikeWave, "~~") }
 
     // $[shake ...] のような形式のうち $[shake まで。
     val pFunctionStart: () -> TokenParser = { pRegex(TokenType.FunctionStart, "^\\$\\[([$ANY_ASCII_WITHOUT_SPACE_CLS]+) ".toRegex()) }
@@ -166,6 +167,7 @@ object MfmTokenParser {
                 pItalicAsta() or
                 pItalicUnder() or
                 pStrikeTagStart() or pStrikeTagEnd() or
+                pStrikeWave() or
                 pFunctionStart() or pFunctionEnd() or
                 pInlineCode() or
                 pAnyChar()

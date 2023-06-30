@@ -40,6 +40,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         ItalicAsta,
         ItalicUnder,
         StrikeTag,
+        StrikeWave,
         Function,
     }
 
@@ -311,6 +312,34 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     }
                 }
 
+                TokenType.StrikeWave -> {
+                    if (state == ParseState.StrikeWave) {
+                        // StrikeWave 終了
+                        return ParseResult(true, nodes)
+                    } else {
+                        // StrikeWave 開始
+                        val strikeResult = parse(ParseState.StrikeWave)
+
+                        if (strikeResult.success) {
+                            // ~~ の間は改行不可
+                            if (strikeResult.nodes.size == 1 &&
+                                (strikeResult.nodes[0] as? MfmNode.Text)?.value?.matches(Regex("^[^\n]+")) == true
+                            ) {
+                                nodes.add(MfmNode.Strike(strikeResult.nodes))
+                            } else {
+                                // ~~ の間に対象外の文字がある場合は無視する
+                                nodes.addOrMergeText("~~")
+                                nodes.addAllWithMergeText(strikeResult.nodes)
+                                nodes.addOrMergeText("~~")
+                            }
+                        } else {
+                            // StrikeWave が終了しないまま終端に達した
+                            nodes.addOrMergeText(token.wholeText)
+                            nodes.addAllWithMergeText(strikeResult.nodes)
+                        }
+                    }
+                }
+
                 TokenType.FunctionStart -> {
                     // Function 開始
                     val functionResult = parse(ParseState.Function)
@@ -364,6 +393,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             TokenType.ItalicUnder -> option.enableItalic
             TokenType.StrikeTagStart -> option.enableStrike
             TokenType.StrikeTagEnd -> option.enableStrike
+            TokenType.StrikeWave -> option.enableStrike
             TokenType.FunctionStart -> option.enableFunction
             TokenType.FunctionEnd -> option.enableFunction
             TokenType.InlineCode -> true

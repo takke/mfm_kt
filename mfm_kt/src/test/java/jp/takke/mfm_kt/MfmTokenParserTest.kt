@@ -337,13 +337,13 @@ class MfmTokenParserTest {
                 )
             }
 
-        MfmTokenParser.tokenize("_abc_")
+        MfmTokenParser.tokenize("~~abc~~")
             .let {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
-                    Token.italicUnder(),
+                    Token.strikeWave(),
                     Token.string("abc"),
-                    Token.italicUnder(),
+                    Token.strikeWave()
                 )
             }
     }

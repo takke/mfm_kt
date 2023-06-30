@@ -771,6 +771,26 @@ class MfmSyntaxParserTest {
                 ),
             )
         )
+
+        checkSyntaxParser(
+            "strike wave",
+            "~~strike~~",
+            option,
+            listOf(
+                MfmNode.Strike(
+                    listOf(MfmNode.Text("strike"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "strike wave2",
+            "~~str\nike~~",
+            option,
+            listOf(
+                MfmNode.Text("~~str\nike~~")
+            )
+        )
     }
 
     @Test

@@ -29,9 +29,6 @@ enum class TokenType {
     // __
     BoldUnder,
 
-    // <s>...</s>
-    StrikeTagStart, StrikeTagEnd,
-
     // <small>...</small>
     SmallStart, SmallEnd,
 
@@ -43,6 +40,12 @@ enum class TokenType {
 
     // _
     ItalicUnder,
+
+    // <s>...</s>
+    StrikeTagStart, StrikeTagEnd,
+
+    // ~~
+    StrikeWave,
 
     // $[...]
     FunctionStart, FunctionEnd,

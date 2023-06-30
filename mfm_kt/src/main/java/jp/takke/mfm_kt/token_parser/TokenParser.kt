@@ -11,19 +11,19 @@ data class Token(
     companion object {
         // テスト用
         fun string(string: String) = Token(TokenType.String, string)
-        fun italicAsta() = Token(TokenType.ItalicAsta, "*")
-        fun italicTagStart() = Token(TokenType.ItalicTagStart, "<i>")
-        fun italicTagEnd() = Token(TokenType.ItalicTagEnd, "</i>")
+        fun centerStart() = Token(TokenType.CenterStart, "<center>")
+        fun centerEnd() = Token(TokenType.CenterEnd, "</center>")
         fun boldAsta() = Token(TokenType.BoldAsta, "**")
         fun boldTagStart() = Token(TokenType.BoldTagStart, "<b>")
         fun boldTagEnd() = Token(TokenType.BoldTagEnd, "</b>")
-        fun centerStart() = Token(TokenType.CenterStart, "<center>")
-        fun centerEnd() = Token(TokenType.CenterEnd, "</center>")
         fun smallStart() = Token(TokenType.SmallStart, "<small>")
         fun smallEnd() = Token(TokenType.SmallEnd, "</small>")
-        fun inlineCode(s: String) = Token(TokenType.InlineCode, s, "`$s`")
+        fun italicTagStart() = Token(TokenType.ItalicTagStart, "<i>")
+        fun italicTagEnd() = Token(TokenType.ItalicTagEnd, "</i>")
+        fun italicAsta() = Token(TokenType.ItalicAsta, "*")
         fun functionStart(s: String) = Token(TokenType.FunctionStart, s, "$[$s ")
         fun functionEnd() = Token(TokenType.FunctionEnd, "]", "]")
+        fun inlineCode(s: String) = Token(TokenType.InlineCode, s, "`$s`")
     }
 }
 

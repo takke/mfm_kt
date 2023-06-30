@@ -14,13 +14,13 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
     private var tokenPos = 0
 
     data class Option(
+        val enableQuote: Boolean = true,
+        val enableCenter: Boolean = true,
         val enableBig: Boolean = true,
         val enableBold: Boolean = true,
+        val enableSmall: Boolean = true,
         val enableItalic: Boolean = true,
         val enableStrike: Boolean = true,
-        val enableCenter: Boolean = true,
-        val enableSmall: Boolean = true,
-        val enableQuote: Boolean = true,
         val enableFunction: Boolean = true,
     )
 

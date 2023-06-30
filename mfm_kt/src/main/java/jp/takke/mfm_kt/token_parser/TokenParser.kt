@@ -30,6 +30,7 @@ data class Token(
         fun functionStart(s: String) = Token(TokenType.FunctionStart, s, "$[$s ")
         fun functionEnd() = Token(TokenType.FunctionEnd, "]", "]")
         fun inlineCode() = Token(TokenType.InlineCode, "`", "`")
+        fun emojiCode(emojiCode: String) = Token(TokenType.EmojiCode, emojiCode)
     }
 }
 

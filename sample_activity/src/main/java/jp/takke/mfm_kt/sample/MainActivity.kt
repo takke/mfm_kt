@@ -141,11 +141,26 @@ $[x2 なにか]
                     traverse(spr.children, level + 1, ssb)
                 }
                 is MfmNode.Function -> {
-                    ssb.append("Function: ${spr.name} ${spr.args.joinToString(", ")}\n")
+                    ssb.append("Function: ${spr.name} ${spr.args.map { it.key + "=" + it.value }}")
                     traverse(spr.children, level + 1, ssb)
                 }
                 is MfmNode.Quote -> {
                     ssb.append("Quote: (${spr.level})\n")
+                    traverse(spr.children, level + 1, ssb)
+                }
+                is MfmNode.Big -> {
+                    ssb.append("Big: \n")
+                    traverse(spr.children, level + 1, ssb)
+                }
+                is MfmNode.EmojiCode -> {
+                    ssb.append("EmojiCode: ${spr.value}\n")
+                }
+                is MfmNode.InlineCode -> {
+                    ssb.append("InlineCode: \n")
+                    traverse(spr.children, level + 1, ssb)
+                }
+                is MfmNode.Strike -> {
+                    ssb.append("Strike: \n")
                     traverse(spr.children, level + 1, ssb)
                 }
             }

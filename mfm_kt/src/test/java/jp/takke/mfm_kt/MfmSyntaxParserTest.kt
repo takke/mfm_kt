@@ -886,7 +886,7 @@ class MfmSyntaxParserTest {
             "#ラッキーカラー診断\n" +
                     "今日のラッキーカラーは`#86DB67`でした！\n" +
                     "今日のラッキーカラーはこんにゃ色 -> \$[bg.color=86DB67 :blank::blank::blank:]",
-            optionAll.copy(enableQuote = false),
+            optionAll.copy(enableQuote = false, enableEmoji = false),
             listOf(
                 MfmNode.Text("#ラッキーカラー診断\n今日のラッキーカラーは"),
                 MfmNode.InlineCode(
@@ -905,7 +905,7 @@ class MfmSyntaxParserTest {
         checkSyntaxParser(
             "Function x2 + _",
             "\$[x2 大きな文字！ :hyper_vibecat:]",
-            optionAll.copy(enableQuote = false),
+            optionAll.copy(enableQuote = false, enableEmoji = false),
             listOf(
                 MfmNode.Function(
                     "x2",
@@ -973,7 +973,7 @@ class MfmSyntaxParserTest {
 
         checkSyntaxParser("その他",
             "\$[x2 **:vjtakagi_confused:**]",
-            optionAll,
+            optionAll.copy(enableEmoji = false),
             listOf(
                 MfmNode.Function(
                     "x2",
@@ -1090,6 +1090,9 @@ class MfmSyntaxParserTest {
                 is MfmNode.InlineCode -> {
                     println("InlineCode: ")
                     traverse(spr.children, level + 1)
+                }
+                is MfmNode.EmojiCode -> {
+                    println("EmojiCode: ${spr.value}")
                 }
             }
         }

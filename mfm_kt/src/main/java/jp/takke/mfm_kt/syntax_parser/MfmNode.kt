@@ -52,4 +52,6 @@ sealed class MfmNode(val isInline: Boolean) {
 
     data class InlineCode(val children: List<MfmNode>) : MfmNode(true)
 
+    data class EmojiCode(val value: String) : MfmNode(true)
+
 }

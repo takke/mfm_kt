@@ -24,6 +24,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         val enableStrike: Boolean = true,
         val enableFunction: Boolean = true,
         val enableInline: Boolean = true,
+        val enableEmoji: Boolean = true,
     )
 
     fun parse(): List<MfmNode> {
@@ -417,6 +418,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         }
                     }
                 }
+
+                TokenType.EmojiCode -> {
+                    nodes.add(MfmNode.EmojiCode(token.extractedValue))
+                }
             }
         }
 
@@ -449,6 +454,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             TokenType.FunctionStart -> option.enableFunction
             TokenType.FunctionEnd -> option.enableFunction
             TokenType.InlineCode -> option.enableInline
+            TokenType.EmojiCode -> option.enableEmoji
         }
     }
 

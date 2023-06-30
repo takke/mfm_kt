@@ -378,9 +378,8 @@ class MfmTokenParserTest {
                 assertThat(it.success).isEqualTo(true)
                 assertThat(it.holder.tokenList).containsExactly(
                     Token.functionStart("x2"),
-                    Token.string("大きな文字！ :hyper"),
-                    Token.italicUnder(),
-                    Token.string("vibecat:"),
+                    Token.string("大きな文字！ "),
+                    Token.emojiCode(":hyper_vibecat:"),
                     Token.functionEnd()
                 )
             }
@@ -395,9 +394,7 @@ class MfmTokenParserTest {
                 assertThat(it.holder.tokenList).containsExactly(
                     Token.functionStart("x2"),
                     Token.boldAsta(),
-                    Token.string(":vjtakagi"),
-                    Token.italicUnder(),
-                    Token.string("confused:"),
+                    Token.emojiCode(":vjtakagi_confused:"),
                     Token.boldAsta(),
                     Token.functionEnd()
                 )

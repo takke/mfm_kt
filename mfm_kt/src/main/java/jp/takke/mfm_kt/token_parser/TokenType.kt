@@ -53,4 +53,7 @@ enum class TokenType {
     // `...`
     InlineCode,
 
+    // :emoji:
+    EmojiCode,
+
 }

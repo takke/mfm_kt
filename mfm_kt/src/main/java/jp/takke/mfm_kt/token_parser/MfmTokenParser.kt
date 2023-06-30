@@ -154,6 +154,8 @@ object MfmTokenParser {
     // `$abc <- 1` のような形式
     val pInlineCode: () -> TokenParser = { pWord(TokenType.InlineCode, "`") }
 
+    val pEmojiCode: () -> TokenParser = { pRegex(TokenType.EmojiCode, "^(:[a-zA-Z0-9_+-]+:)".toRegex()) }
+
     // TODO Mention, URL も追加すること
     val mfmParser = many(
         pQuoteLine2() or pQuoteLine1() or
@@ -170,6 +172,7 @@ object MfmTokenParser {
                 pStrikeWave() or
                 pFunctionStart() or pFunctionEnd() or
                 pInlineCode() or
+                pEmojiCode() or
                 pAnyChar()
     )
 

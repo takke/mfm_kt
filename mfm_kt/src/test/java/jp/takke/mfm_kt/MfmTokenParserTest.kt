@@ -185,6 +185,20 @@ class MfmTokenParserTest {
     }
 
     @Test
+    fun tokenize_BoldTag() {
+
+        MfmTokenParser.tokenize("<b>abc</b>")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.boldTagStart(),
+                    Token.string("abc"),
+                    Token.boldTagEnd()
+                )
+            }
+    }
+
+    @Test
     fun tokenize_BoldItalic() {
 
         MfmTokenParser.tokenize("**Hello**, *World*!")

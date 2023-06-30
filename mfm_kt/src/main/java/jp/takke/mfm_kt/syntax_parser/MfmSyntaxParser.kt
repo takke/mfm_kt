@@ -113,6 +113,28 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     }
                 }
 
+                TokenType.BoldTagStart -> {
+                    // Bold 開始
+                    val r = parse(ParseState.Bold)
+                    if (r.success) {
+                        nodes.add(MfmNode.Bold(r.nodes))
+                    } else {
+                        // Bold が終了しないまま終端に達した
+                        nodes.addOrMergeText(token.wholeText)
+                        nodes.addAllWithMergeText(r.nodes)
+                    }
+                }
+
+                TokenType.BoldTagEnd -> {
+                    // Bold 終了
+                    if (state == ParseState.Bold) {
+                        return ParseResult(true, nodes)
+                    } else {
+                        // <bold>じゃないところで</bold>が来たので無視する
+                        nodes.addOrMergeText(token.wholeText)
+                    }
+                }
+
                 TokenType.SmallStart -> {
                     // Small 開始
                     val smallResult = parse(ParseState.Small)
@@ -227,6 +249,8 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             TokenType.CenterStart -> option.enableCenter
             TokenType.CenterEnd -> option.enableCenter
             TokenType.BoldAsta -> option.enableBold
+            TokenType.BoldTagStart -> option.enableBold
+            TokenType.BoldTagEnd -> option.enableBold
             TokenType.SmallStart -> option.enableSmall
             TokenType.SmallEnd -> option.enableSmall
             TokenType.ItalicTagStart -> option.enableItalic

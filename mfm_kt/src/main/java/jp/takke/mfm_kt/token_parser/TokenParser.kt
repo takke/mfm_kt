@@ -15,6 +15,8 @@ data class Token(
         fun italicTagStart() = Token(TokenType.ItalicTagStart, "<i>")
         fun italicTagEnd() = Token(TokenType.ItalicTagEnd, "</i>")
         fun boldAsta() = Token(TokenType.BoldAsta, "**")
+        fun boldTagStart() = Token(TokenType.BoldTagStart, "<b>")
+        fun boldTagEnd() = Token(TokenType.BoldTagEnd, "</b>")
         fun centerStart() = Token(TokenType.CenterStart, "<center>")
         fun centerEnd() = Token(TokenType.CenterEnd, "</center>")
         fun smallStart() = Token(TokenType.SmallStart, "<small>")

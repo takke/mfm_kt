@@ -126,6 +126,9 @@ object MfmTokenParser {
     val pSmallStart: () -> TokenParser = { pWord(TokenType.SmallStart, "<small>") }
     val pSmallEnd: () -> TokenParser = { pWord(TokenType.SmallEnd, "</small>") }
 
+    val pBoldTagStart: () -> TokenParser = { pWord(TokenType.BoldTagStart, "<b>") }
+    val pBoldTagEnd: () -> TokenParser = { pWord(TokenType.BoldTagEnd, "</b>") }
+
     // $[shake ...] のような形式のうち $[shake まで。
     val pFunctionStart: () -> TokenParser = { pRegex(TokenType.FunctionStart, "^\\$\\[([$ANY_ASCII_WITHOUT_SPACE_CLS]+) ".toRegex()) }
     val pFunctionEnd: () -> TokenParser = { pWord(TokenType.FunctionEnd, "]") }
@@ -150,6 +153,7 @@ object MfmTokenParser {
                 pCenterStart() or pCenterEnd() or
                 pItalicTagStart() or pItalicTagEnd() or
                 pSmallStart() or pSmallEnd() or
+                pBoldTagStart() or pBoldTagEnd() or
                 pFunctionStart() or pFunctionEnd() or
                 pAnyChar()
     )

@@ -194,21 +194,30 @@ class MfmSyntaxParserTest {
             )
         )
 
-        // TODO 本来はこれはNG、__ の間は alpha+num+sp
+        checkSyntaxParser(
+            "bold under",
+            "aaa__ho ge__bbb",
+            option,
+            listOf(
+                MfmNode.Text("aaa"),
+                MfmNode.Bold(
+                    listOf(MfmNode.Text("ho ge"))
+                ),
+                MfmNode.Text("bbb"),
+            )
+        )
+
+        // __ の間は alpha+num+sp
         checkSyntaxParser(
             "bold under 2",
             "aaa__<i>hoge</i>__bbb",
             option,
             listOf(
-                MfmNode.Text("aaa"),
-                MfmNode.Bold(
-                    listOf(
-                        MfmNode.Italic(
-                            listOf(MfmNode.Text("hoge"))
-                        )
-                    )
+                MfmNode.Text("aaa__"),
+                MfmNode.Italic(
+                    listOf(MfmNode.Text("hoge"))
                 ),
-                MfmNode.Text("bbb"),
+                MfmNode.Text("__bbb"),
             )
         )
     }

@@ -145,7 +145,18 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         // __ 開始
                         val boldResult = parse(ParseState.BoldUnder)
                         if (boldResult.success) {
-                            nodes.add(MfmNode.Bold(boldResult.nodes))
+                            // __ の間は[a-zA-Z0-9_ ]のみ許可
+                            // https://github.com/misskey-dev/mfm.js/blob/develop/src/internal/parser.ts#L354
+                            if (boldResult.nodes.size == 1 &&
+                                (boldResult.nodes[0] as? MfmNode.Text)?.value?.matches(Regex("^[a-zA-Z0-9 ]+")) == true
+                            ) {
+                                nodes.add(MfmNode.Bold(boldResult.nodes))
+                            } else {
+                                // __ の間に対象外の文字がある場合は無視する
+                                nodes.addOrMergeText("__")
+                                nodes.addAllWithMergeText(boldResult.nodes)
+                                nodes.addOrMergeText("__")
+                            }
                         } else {
                             // __ が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)

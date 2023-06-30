@@ -879,6 +879,27 @@ class MfmSyntaxParserTest {
                 ),
             )
         )
+
+        checkSyntaxParser(
+            "Function xxx",
+            "#ラッキーカラー診断\n" +
+                    "今日のラッキーカラーは`#86DB67`でした！\n" +
+                    "今日のラッキーカラーはこんにゃ色 -> \$[bg.color=86DB67 :blank::blank::blank:]",
+            optionAll.copy(enableQuote = false),
+            listOf(
+                MfmNode.Text("#ラッキーカラー診断\n今日のラッキーカラーは"),
+                MfmNode.InlineCode(
+                    listOf(MfmNode.Text("#86DB67"))
+                ),
+                MfmNode.Text("でした！\n今日のラッキーカラーはこんにゃ色 -> "),
+                MfmNode.Function(
+                    "bg.color=86DB67",
+                    listOf(
+                        MfmNode.Text(":blank::blank::blank:")
+                    )
+                ),
+            )
+        )
     }
 
     @Test

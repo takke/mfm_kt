@@ -1,5 +1,6 @@
 package jp.takke.mfm_kt.syntax_parser
 
+import jp.takke.mfm_kt.token_parser.MfmTokenParser
 import jp.takke.mfm_kt.token_parser.TokenParseResult
 import jp.takke.mfm_kt.token_parser.TokenType
 
@@ -59,9 +60,26 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             val token = tokenList[tokenPos]
             tokenPos++
 
+            // オプションで無効化されたタグはそのまま出力する
             if (!isOptionEnabled(token.type)) {
-                // オプションで無効化されたタグなのでそのまま出力する
-                nodes.addOrMergeText(token.wholeText)
+                when (token.type) {
+                    TokenType.QuoteLine1 -> {
+                        // extractedValue をさらに字句解析から行う
+                        val children = MfmSyntaxParser(MfmTokenParser.tokenize(token.extractedValue), option).parse()
+                        nodes.addOrMergeText(">")
+                        nodes.addAllWithMergeText(children)
+                    }
+                    TokenType.QuoteLine2 -> {
+                        // extractedValue をさらに字句解析から行う
+                        val children = MfmSyntaxParser(MfmTokenParser.tokenize(token.extractedValue), option).parse()
+                        nodes.addOrMergeText(">>")
+                        nodes.addAllWithMergeText(children)
+                    }
+                    else -> {
+                        // オプションで無効化されたタグなのでそのまま出力する
+                        nodes.addOrMergeText(token.wholeText)
+                    }
+                }
                 continue
             }
 
@@ -74,14 +92,16 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.QuoteLine1 -> {
                     // Quote
-                    // TODO 本来はここで extractedValue をさらに字句解析から行う必要がある
-                    nodes.add(MfmNode.Quote(MfmNode.QuoteLevel.Level1, listOf(MfmNode.Text(token.extractedValue))))
+                    // ここで extractedValue をさらに字句解析から行う
+                    val children = MfmSyntaxParser(MfmTokenParser.tokenize(token.extractedValue), option).parse()
+                    nodes.add(MfmNode.Quote(MfmNode.QuoteLevel.Level1, children))
                 }
 
                 TokenType.QuoteLine2 -> {
                     // Quote
-                    // TODO 本来はここで extractedValue をさらに字句解析から行う必要がある
-                    nodes.add(MfmNode.Quote(MfmNode.QuoteLevel.Level2, listOf(MfmNode.Text(token.extractedValue))))
+                    // ここで extractedValue をさらに字句解析から行う
+                    val children = MfmSyntaxParser(MfmTokenParser.tokenize(token.extractedValue), option).parse()
+                    nodes.add(MfmNode.Quote(MfmNode.QuoteLevel.Level2, children))
                 }
 
                 TokenType.CenterStart -> {

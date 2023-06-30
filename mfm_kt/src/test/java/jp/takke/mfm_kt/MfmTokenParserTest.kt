@@ -38,20 +38,7 @@ class MfmTokenParserTest {
     }
 
     @Test
-    fun tokenize_InlineCode() {
-
-        MfmTokenParser.tokenize("hoge\ntest=>`fuga`")
-            .let {
-                assertThat(it.success).isEqualTo(true)
-                assertThat(it.holder.tokenList).containsExactly(
-                    Token.string("hoge\ntest=>"),
-                    Token.inlineCode("fuga")
-                )
-            }
-    }
-
-    @Test
-    fun tokenize_引用() {
+    fun tokenize_Quote() {
 
         MfmTokenParser.tokenize(">")
             .let {
@@ -120,56 +107,6 @@ class MfmTokenParserTest {
                     Token(TokenType.QuoteLine2, "a\nb\n", ">> a\n>> b\n")
                 )
             }
-
-    }
-
-    @Test
-    fun tokenize_BoldItalic() {
-
-        MfmTokenParser.tokenize("*abc*")
-            .let {
-                assertThat(it.success).isEqualTo(true)
-                assertThat(it.holder.tokenList).containsExactly(
-                    Token.italicAsta(),
-                    Token.string("abc"),
-                    Token.italicAsta()
-                )
-            }
-
-        MfmTokenParser.tokenize("<i>abc</i>")
-            .let {
-                assertThat(it.success).isEqualTo(true)
-                assertThat(it.holder.tokenList).containsExactly(
-                    Token.italicTagStart(),
-                    Token.string("abc"),
-                    Token.italicTagEnd()
-                )
-            }
-
-        MfmTokenParser.tokenize("**abc**")
-            .let {
-                assertThat(it.success).isEqualTo(true)
-                assertThat(it.holder.tokenList).containsExactly(
-                    Token.boldAsta(),
-                    Token.string("abc"),
-                    Token.boldAsta()
-                )
-            }
-
-        MfmTokenParser.tokenize("**Hello**, *World*!")
-            .let {
-                assertThat(it.success).isEqualTo(true)
-                assertThat(it.holder.tokenList).containsExactly(
-                    Token.boldAsta(),
-                    Token.string("Hello"),
-                    Token.boldAsta(),
-                    Token.string(", "),
-                    Token.italicAsta(),
-                    Token.string("World"),
-                    Token.italicAsta(),
-                    Token.string("!")
-                )
-            }
     }
 
     @Test
@@ -234,6 +171,35 @@ class MfmTokenParserTest {
     }
 
     @Test
+    fun tokenize_BoldItalic() {
+
+        MfmTokenParser.tokenize("**abc**")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.boldAsta(),
+                    Token.string("abc"),
+                    Token.boldAsta()
+                )
+            }
+
+        MfmTokenParser.tokenize("**Hello**, *World*!")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.boldAsta(),
+                    Token.string("Hello"),
+                    Token.boldAsta(),
+                    Token.string(", "),
+                    Token.italicAsta(),
+                    Token.string("World"),
+                    Token.italicAsta(),
+                    Token.string("!")
+                )
+            }
+    }
+
+    @Test
     fun tokenize_Small() {
 
         MfmTokenParser.tokenize("<small>abc</small>")
@@ -265,6 +231,30 @@ class MfmTokenParserTest {
     }
 
     @Test
+    fun tokenize_Italic() {
+
+        MfmTokenParser.tokenize("*abc*")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.italicAsta(),
+                    Token.string("abc"),
+                    Token.italicAsta()
+                )
+            }
+
+        MfmTokenParser.tokenize("<i>abc</i>")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.italicTagStart(),
+                    Token.string("abc"),
+                    Token.italicTagEnd()
+                )
+            }
+    }
+
+    @Test
     fun tokenize_Function() {
 
         MfmTokenParser.tokenize("$[x2 abc]")
@@ -286,6 +276,19 @@ class MfmTokenParserTest {
                     Token.string("abc"),
                     Token.functionEnd(),
                     Token.functionEnd()
+                )
+            }
+    }
+
+    @Test
+    fun tokenize_InlineCode() {
+
+        MfmTokenParser.tokenize("hoge\ntest=>`fuga`")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.string("hoge\ntest=>"),
+                    Token.inlineCode("fuga")
                 )
             }
     }

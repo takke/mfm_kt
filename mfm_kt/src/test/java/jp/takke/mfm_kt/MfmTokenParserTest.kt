@@ -387,6 +387,24 @@ class MfmTokenParserTest {
     }
 
     @Test
+    fun tokenize_その他() {
+
+        MfmTokenParser.tokenize("\$[x2 **:vjtakagi_confused:**]")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.functionStart("x2"),
+                    Token.boldAsta(),
+                    Token.string(":vjtakagi"),
+                    Token.italicUnder(),
+                    Token.string("confused:"),
+                    Token.boldAsta(),
+                    Token.functionEnd()
+                )
+            }
+    }
+
+    @Test
     fun tokenize_InlineCode() {
 
         MfmTokenParser.tokenize("hoge\ntest=>`fuga`")

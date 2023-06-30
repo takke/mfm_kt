@@ -5,6 +5,7 @@ package jp.takke.mfm_kt
 import jp.takke.mfm_kt.syntax_parser.MfmSyntaxParser
 import jp.takke.mfm_kt.syntax_parser.MfmNode
 import jp.takke.mfm_kt.token_parser.MfmTokenParser
+import jp.takke.mfm_kt.token_parser.Token
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -963,6 +964,27 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Text("`in\nline`")
+            )
+        )
+    }
+
+    @Test
+    fun parse_その他() {
+
+        checkSyntaxParser("その他",
+            "\$[x2 **:vjtakagi_confused:**]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "x2",
+                    listOf(
+                        MfmNode.Bold(
+                            listOf(
+                                MfmNode.Text(":vjtakagi_confused:")
+                            )
+                        )
+                    )
+                ),
             )
         )
     }

@@ -289,6 +289,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         return ParseResult(true, nodes)
                     } else {
                         // Italic 開始
+                        val savedPos = tokenPos
                         val italicResult = parse(ParseState.ItalicUnder)
 
                         if (italicResult.success) {
@@ -305,9 +306,11 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                                 nodes.addOrMergeText("_")
                             }
                         } else {
-                            // Italic が終了しないまま終端に達した
+                            // ItalicUnder が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
-                            nodes.addAllWithMergeText(italicResult.nodes)
+
+                            // pos を戻して再度パースする
+                            tokenPos = savedPos
                         }
                     }
                 }

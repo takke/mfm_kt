@@ -965,6 +965,15 @@ class MfmSyntaxParserTest {
                 MfmNode.Text("`in\nline`")
             )
         )
+
+        checkSyntaxParser(
+            "inline 3",
+            "なにか(´･ω･`)あれこれ(´･ω･`)",
+            option,
+            listOf(
+                MfmNode.Text("なにか(´･ω･`)あれこれ(´･ω･`)")
+            )
+        )
     }
 
     @Test

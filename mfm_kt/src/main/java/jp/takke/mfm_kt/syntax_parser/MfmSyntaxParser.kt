@@ -399,13 +399,13 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         println("InlineCode: ${strikeResult.nodes} (${strikeResult.success})")
 
                         if (strikeResult.success) {
-                            // ` の間は改行不可
+                            // ` の間は改行および´不可
                             if (strikeResult.nodes.size == 1 &&
-                                (strikeResult.nodes[0] as? MfmNode.Text)?.value?.matches(Regex("^[^\n]+")) == true
+                                (strikeResult.nodes[0] as? MfmNode.Text)?.value?.matches(Regex("^[^´\n]+")) == true
                             ) {
                                 nodes.add(MfmNode.InlineCode(strikeResult.nodes))
                             } else {
-                                // ~~ の間に対象外の文字がある場合は無視する
+                                // ` の間に対象外の文字がある場合は無視する
                                 nodes.addOrMergeText("`")
                                 nodes.addAllWithMergeText(strikeResult.nodes)
                                 nodes.addOrMergeText("`")

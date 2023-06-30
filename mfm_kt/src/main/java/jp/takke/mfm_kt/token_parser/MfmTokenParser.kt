@@ -120,29 +120,29 @@ object MfmTokenParser {
         }
     }
 
+    // 末尾が改行であることに注意(改行コードなしの場合はマッチしない)
+    val pQuoteLine1: () -> TokenParser = { pRegex(TokenType.QuoteLine1, "^> ?([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+\n)".toRegex()) }
+    val pQuoteLine2: () -> TokenParser = { pRegex(TokenType.QuoteLine2, "^>> ?([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+\n)".toRegex()) }
+
     val pCenterStart: () -> TokenParser = { pRegex(TokenType.CenterStart, "^(<center>)\n?".toRegex()) }
     val pCenterEnd: () -> TokenParser = { pRegex(TokenType.CenterEnd, "^\n?(</center>)".toRegex()) }
+
+    val pBoldAsta: () -> TokenParser = { pWord(TokenType.BoldAsta, "**") }
+    val pBoldTagStart: () -> TokenParser = { pWord(TokenType.BoldTagStart, "<b>") }
+    val pBoldTagEnd: () -> TokenParser = { pWord(TokenType.BoldTagEnd, "</b>") }
+    val pBoldUnder: () -> TokenParser = { pWord(TokenType.BoldUnder, "__") }
 
     val pSmallStart: () -> TokenParser = { pWord(TokenType.SmallStart, "<small>") }
     val pSmallEnd: () -> TokenParser = { pWord(TokenType.SmallEnd, "</small>") }
 
-    val pBoldTagStart: () -> TokenParser = { pWord(TokenType.BoldTagStart, "<b>") }
-    val pBoldTagEnd: () -> TokenParser = { pWord(TokenType.BoldTagEnd, "</b>") }
+    val pItalicTagStart: () -> TokenParser = { pWord(TokenType.ItalicTagStart, "<i>") }
+    val pItalicTagEnd: () -> TokenParser = { pWord(TokenType.ItalicTagEnd, "</i>") }
+
+    val pItalicAsta: () -> TokenParser = { pWord(TokenType.ItalicAsta, "*") }
 
     // $[shake ...] のような形式のうち $[shake まで。
     val pFunctionStart: () -> TokenParser = { pRegex(TokenType.FunctionStart, "^\\$\\[([$ANY_ASCII_WITHOUT_SPACE_CLS]+) ".toRegex()) }
     val pFunctionEnd: () -> TokenParser = { pWord(TokenType.FunctionEnd, "]") }
-
-    val pBoldAsta: () -> TokenParser = { pWord(TokenType.BoldAsta, "**") }
-    val pBoldUnder: () -> TokenParser = { pWord(TokenType.BoldUnder, "__") }
-
-    val pItalicAsta: () -> TokenParser = { pWord(TokenType.ItalicAsta, "*") }
-    val pItalicTagStart: () -> TokenParser = { pWord(TokenType.ItalicTagStart, "<i>") }
-    val pItalicTagEnd: () -> TokenParser = { pWord(TokenType.ItalicTagEnd, "</i>") }
-
-    // 末尾が改行であることに注意(改行コードなしの場合はマッチしない)
-    val pQuoteLine1: () -> TokenParser = { pRegex(TokenType.QuoteLine1, "^> ?([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+\n)".toRegex()) }
-    val pQuoteLine2: () -> TokenParser = { pRegex(TokenType.QuoteLine2, "^>> ?([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+\n)".toRegex()) }
 
     // `$abc <- 1` のような形式
     val pInlineCode: () -> TokenParser = { pRegex(TokenType.InlineCode, "^`([$ANY_ASCII_CLS$ANY_ひらがなカナカナ漢字_CLS]+)`".toRegex()) }
@@ -150,14 +150,15 @@ object MfmTokenParser {
     // TODO Mention, URL も追加すること
     val mfmParser = many(
         pQuoteLine2() or pQuoteLine1() or
-                pBoldUnder() or
-                pBoldAsta() or pItalicAsta() or
-                pInlineCode() or
                 pCenterStart() or pCenterEnd() or
-                pItalicTagStart() or pItalicTagEnd() or
-                pSmallStart() or pSmallEnd() or
+                pBoldAsta() or
                 pBoldTagStart() or pBoldTagEnd() or
+                pBoldUnder() or
+                pSmallStart() or pSmallEnd() or
+                pItalicTagStart() or pItalicTagEnd() or
+                pItalicAsta() or
                 pFunctionStart() or pFunctionEnd() or
+                pInlineCode() or
                 pAnyChar()
     )
 

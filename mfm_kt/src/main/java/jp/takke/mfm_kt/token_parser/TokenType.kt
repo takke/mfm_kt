@@ -17,6 +17,9 @@ enum class TokenType {
     // <center>...</center>
     CenterStart, CenterEnd,
 
+    // ***
+    Big,
+
     // **
     BoldAsta,
 

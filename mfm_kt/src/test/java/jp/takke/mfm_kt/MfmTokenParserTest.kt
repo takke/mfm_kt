@@ -185,6 +185,20 @@ class MfmTokenParserTest {
     }
 
     @Test
+    fun tokenize_Big() {
+
+        MfmTokenParser.tokenize("***abc***")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.big(),
+                    Token.string("abc"),
+                    Token.big()
+                )
+            }
+    }
+
+    @Test
     fun tokenize_BoldTag() {
 
         MfmTokenParser.tokenize("<b>abc</b>")

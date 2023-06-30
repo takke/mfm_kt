@@ -34,6 +34,7 @@ class MfmSyntaxParserTest {
 
         // オプションを全てオフにするとただのテキストになること
         val option = MfmSyntaxParser.Option(
+            enableBig = false,
             enableBold = false,
             enableItalic = false,
             enableCenter = false,
@@ -48,6 +49,15 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Text("hoge"),
+            )
+        )
+
+        checkSyntaxParser(
+            "big",
+            "hoge***big***",
+            option,
+            listOf(
+                MfmNode.Text("hoge***big***"),
             )
         )
 
@@ -107,10 +117,10 @@ class MfmSyntaxParserTest {
 
         checkSyntaxParser(
             "bold+italic+center+small+quote+fn",
-            "<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n",
+            "<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***",
             option,
             listOf(
-                MfmNode.Text("<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n")
+                MfmNode.Text("<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***")
             )
         )
     }
@@ -227,6 +237,54 @@ class MfmSyntaxParserTest {
                     listOf(MfmNode.Text("hoge"))
                 ),
                 MfmNode.Text("__bbb"),
+            )
+        )
+    }
+
+    @Test
+    fun parse_big() {
+
+        val option = optionAll
+
+        checkSyntaxParser(
+            "big1",
+            "***hoge***",
+            option,
+            listOf(
+                MfmNode.Big(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "big2",
+            "aaa***hoge***bbb",
+            option,
+            listOf(
+                MfmNode.Text("aaa"),
+                MfmNode.Big(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+                MfmNode.Text("bbb"),
+            )
+        )
+
+        // *** の間は いろいろOK
+        checkSyntaxParser(
+            "big + tag",
+            "aaa***<i>hoge</i>***bbb",
+            option,
+            listOf(
+                MfmNode.Text("aaa"),
+                MfmNode.Big(
+                    listOf(
+                        MfmNode.Italic(
+                            listOf(MfmNode.Text("hoge"))
+                        )
+                    )
+                ),
+                MfmNode.Text("bbb"),
             )
         )
     }
@@ -823,28 +881,32 @@ class MfmSyntaxParserTest {
                 is MfmNode.Text -> {
                     println("Text: \"${spr.value.replace("\n", "\\n")}\"")
                 }
-                is MfmNode.Bold -> {
-                    println("Bold: ")
-                    traverse(spr.children, level + 1)
-                }
-                is MfmNode.Italic -> {
-                    println("Italic: ")
+                is MfmNode.Quote -> {
+                    println("Quote: (${spr.level})")
                     traverse(spr.children, level + 1)
                 }
                 is MfmNode.Center -> {
                     println("Center: ")
                     traverse(spr.children, level + 1)
                 }
+                is MfmNode.Big -> {
+                    println("Big: ")
+                    traverse(spr.children, level + 1)
+                }
+                is MfmNode.Bold -> {
+                    println("Bold: ")
+                    traverse(spr.children, level + 1)
+                }
                 is MfmNode.Small -> {
                     println("Small: ")
                     traverse(spr.children, level + 1)
                 }
-                is MfmNode.Function -> {
-                    println("Function: ${spr.name} ${spr.args.joinToString(", ")}")
+                is MfmNode.Italic -> {
+                    println("Italic: ")
                     traverse(spr.children, level + 1)
                 }
-                is MfmNode.Quote -> {
-                    println("Quote: (${spr.level})")
+                is MfmNode.Function -> {
+                    println("Function: ${spr.name} ${spr.args.joinToString(", ")}")
                     traverse(spr.children, level + 1)
                 }
             }

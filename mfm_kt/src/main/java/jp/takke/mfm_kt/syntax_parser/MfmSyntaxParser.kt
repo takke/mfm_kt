@@ -14,6 +14,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
     private var tokenPos = 0
 
     data class Option(
+        val enableBig: Boolean = true,
         val enableBold: Boolean = true,
         val enableItalic: Boolean = true,
         val enableCenter: Boolean = true,
@@ -29,6 +30,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
     private enum class ParseState {
         Normal,
         Center,
+        Big,
         BoldAsta,
         BoldTag,
         BoldUnder,
@@ -96,6 +98,23 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // <center>じゃないところで</center>が来たので無視する
                         nodes.addOrMergeText(token.wholeText)
+                    }
+                }
+
+                TokenType.Big -> {
+                    if (state == ParseState.Big) {
+                        // Big 終了
+                        return ParseResult(true, nodes)
+                    } else {
+                        // Big 開始
+                        val bigResult = parse(ParseState.Big)
+                        if (bigResult.success) {
+                            nodes.add(MfmNode.Big(bigResult.nodes))
+                        } else {
+                            // Big が終了しないまま終端に達した
+                            nodes.addOrMergeText(token.wholeText)
+                            nodes.addAllWithMergeText(bigResult.nodes)
+                        }
                     }
                 }
 
@@ -308,6 +327,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             TokenType.QuoteLine2 -> option.enableQuote
             TokenType.CenterStart -> option.enableCenter
             TokenType.CenterEnd -> option.enableCenter
+            TokenType.Big -> option.enableBig
             TokenType.BoldAsta -> option.enableBold
             TokenType.BoldTagStart -> option.enableBold
             TokenType.BoldTagEnd -> option.enableBold

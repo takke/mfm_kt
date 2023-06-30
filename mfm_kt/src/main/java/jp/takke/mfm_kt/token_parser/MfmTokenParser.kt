@@ -127,6 +127,8 @@ object MfmTokenParser {
     val pCenterStart: () -> TokenParser = { pRegex(TokenType.CenterStart, "^(<center>)\n?".toRegex()) }
     val pCenterEnd: () -> TokenParser = { pRegex(TokenType.CenterEnd, "^\n?(</center>)".toRegex()) }
 
+    val pBig: () -> TokenParser = { pWord(TokenType.Big, "***") }
+
     val pBoldAsta: () -> TokenParser = { pWord(TokenType.BoldAsta, "**") }
     val pBoldTagStart: () -> TokenParser = { pWord(TokenType.BoldTagStart, "<b>") }
     val pBoldTagEnd: () -> TokenParser = { pWord(TokenType.BoldTagEnd, "</b>") }
@@ -152,6 +154,7 @@ object MfmTokenParser {
     val mfmParser = many(
         pQuoteLine2() or pQuoteLine1() or
                 pCenterStart() or pCenterEnd() or
+                pBig() or
                 pBoldAsta() or
                 pBoldTagStart() or pBoldTagEnd() or
                 pBoldUnder() or

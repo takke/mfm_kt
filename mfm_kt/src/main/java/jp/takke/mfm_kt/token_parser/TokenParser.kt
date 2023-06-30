@@ -13,6 +13,7 @@ data class Token(
         fun string(string: String) = Token(TokenType.String, string)
         fun centerStart() = Token(TokenType.CenterStart, "<center>")
         fun centerEnd() = Token(TokenType.CenterEnd, "</center>")
+        fun big() = Token(TokenType.Big, "***")
         fun boldAsta() = Token(TokenType.BoldAsta, "**")
         fun boldTagStart() = Token(TokenType.BoldTagStart, "<b>")
         fun boldTagEnd() = Token(TokenType.BoldTagEnd, "</b>")

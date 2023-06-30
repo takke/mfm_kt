@@ -217,20 +217,20 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
     private fun isOptionEnabled(type: TokenType): Boolean {
         return when (type) {
-            TokenType.BoldAsta -> option.enableBold
-            TokenType.ItalicAsta -> option.enableItalic
-            TokenType.ItalicTagStart -> option.enableItalic
-            TokenType.ItalicTagEnd -> option.enableItalic
-            TokenType.CenterStart -> option.enableCenter
-            TokenType.CenterEnd -> option.enableCenter
-            TokenType.SmallStart -> option.enableSmall
-            TokenType.SmallEnd -> option.enableSmall
-            TokenType.FunctionStart -> option.enableFunction
-            TokenType.FunctionEnd -> option.enableFunction
-            TokenType.QuoteLine1 -> option.enableQuote
-            TokenType.QuoteLine2 -> option.enableQuote
             TokenType.Char -> true
             TokenType.String -> true
+            TokenType.QuoteLine1 -> option.enableQuote
+            TokenType.QuoteLine2 -> option.enableQuote
+            TokenType.CenterStart -> option.enableCenter
+            TokenType.CenterEnd -> option.enableCenter
+            TokenType.BoldAsta -> option.enableBold
+            TokenType.SmallStart -> option.enableSmall
+            TokenType.SmallEnd -> option.enableSmall
+            TokenType.ItalicTagStart -> option.enableItalic
+            TokenType.ItalicTagEnd -> option.enableItalic
+            TokenType.ItalicAsta -> option.enableItalic
+            TokenType.FunctionStart -> option.enableFunction
+            TokenType.FunctionEnd -> option.enableFunction
             TokenType.InlineCode -> true
         }
     }

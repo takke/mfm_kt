@@ -17,6 +17,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         val enableBig: Boolean = true,
         val enableBold: Boolean = true,
         val enableItalic: Boolean = true,
+        val enableStrike: Boolean = true,
         val enableCenter: Boolean = true,
         val enableSmall: Boolean = true,
         val enableQuote: Boolean = true,
@@ -38,6 +39,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         ItalicTag,
         ItalicAsta,
         ItalicUnder,
+        StrikeTag,
         Function,
     }
 
@@ -287,6 +289,28 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     }
                 }
 
+                TokenType.StrikeTagStart -> {
+                    // Strike 開始
+                    val strikeTagResult = parse(ParseState.StrikeTag)
+                    if (strikeTagResult.success) {
+                        nodes.add(MfmNode.Strike(strikeTagResult.nodes))
+                    } else {
+                        // Strike が終了しないまま終端に達した
+                        nodes.addOrMergeText(token.wholeText)
+                        nodes.addAllWithMergeText(strikeTagResult.nodes)
+                    }
+                }
+
+                TokenType.StrikeTagEnd -> {
+                    // Strike 終了
+                    if (state == ParseState.StrikeTag) {
+                        return ParseResult(true, nodes)
+                    } else {
+                        // <s>じゃないところで</s>が来たので無視する
+                        nodes.addOrMergeText(token.wholeText)
+                    }
+                }
+
                 TokenType.FunctionStart -> {
                     // Function 開始
                     val functionResult = parse(ParseState.Function)
@@ -338,6 +362,8 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             TokenType.ItalicTagEnd -> option.enableItalic
             TokenType.ItalicAsta -> option.enableItalic
             TokenType.ItalicUnder -> option.enableItalic
+            TokenType.StrikeTagStart -> option.enableStrike
+            TokenType.StrikeTagEnd -> option.enableStrike
             TokenType.FunctionStart -> option.enableFunction
             TokenType.FunctionEnd -> option.enableFunction
             TokenType.InlineCode -> true

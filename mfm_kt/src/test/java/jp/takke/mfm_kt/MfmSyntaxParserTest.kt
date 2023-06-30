@@ -11,6 +11,8 @@ import org.junit.Test
 
 class MfmSyntaxParserTest {
 
+    private val optionAll = MfmSyntaxParser.Option()
+
     @Test
     fun parse_simple() {
 
@@ -37,10 +39,11 @@ class MfmSyntaxParserTest {
             enableBig = false,
             enableBold = false,
             enableItalic = false,
+            enableStrike = false,
             enableCenter = false,
             enableSmall = false,
             enableQuote = false,
-            enableFunction = false
+            enableFunction = false,
         )
 
         checkSyntaxParser(
@@ -58,6 +61,15 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Text("hoge***big***"),
+            )
+        )
+
+        checkSyntaxParser(
+            "strike",
+            "hoge<s>big</s>",
+            option,
+            listOf(
+                MfmNode.Text("hoge<s>big</s>"),
             )
         )
 
@@ -116,11 +128,267 @@ class MfmSyntaxParserTest {
         )
 
         checkSyntaxParser(
-            "bold+italic+center+small+quote+fn",
+            "bold+italic+center+small+quote+fn+big",
             "<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***",
             option,
             listOf(
                 MfmNode.Text("<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***")
+            )
+        )
+    }
+
+    @Test
+    fun parse_quote() {
+
+        val option = MfmSyntaxParser.Option(
+            enableBold = true,
+            enableItalic = true,
+            enableCenter = true,
+            enableSmall = true,
+            enableQuote = true,
+            enableFunction = false
+        )
+
+        // >aaa
+        // > aaa
+        // >bbb
+        // >>a
+        // >> b
+
+        checkSyntaxParser(
+            "quote1 1行(改行なし)",
+            ">aaa",
+            option,
+            listOf(
+                MfmNode.Text(">aaa"),
+            )
+        )
+
+        checkSyntaxParser(
+            "quote1 1行",
+            ">aaa\n",
+            option,
+            listOf(
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level1,
+                    listOf(MfmNode.Text("aaa\n"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "quote1 2行 => 結合されること",
+            ">aaa\n>bbb\n",
+            option,
+            listOf(
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level1,
+                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "quote1 2行 => 行頭のスペースは無視されること",
+            ">aaa\n> bbb\n",
+            option,
+            listOf(
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level1,
+                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "quote2 2行 => 行頭のスペースは無視されること",
+            ">>aaa\n>> bbb\n",
+            option,
+            listOf(
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level2,
+                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "quote1+2 2行 => 行頭のスペースは無視されること",
+            ">>aaa\n>> bbb\n>c\n",
+            option,
+            listOf(
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level2,
+                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                ),
+                MfmNode.Quote(
+                    MfmNode.QuoteLevel.Level1,
+                    listOf(MfmNode.Text("c\n"))
+                ),
+            )
+        )
+    }
+
+    @Test
+    fun parse_center() {
+
+        val option = MfmSyntaxParser.Option(
+            enableBold = true,
+            enableItalic = true,
+            enableCenter = true,
+            enableSmall = false,
+            enableQuote = false,
+            enableFunction = false
+        )
+
+        // <center>...</center>
+
+        checkSyntaxParser(
+            "center",
+            "<center>hoge</center>",
+            option,
+            listOf(
+                MfmNode.Center(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "center 複数行1",
+            "a\n<center>hoge</center>\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Center(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+                MfmNode.Text("\nb"),
+            )
+        )
+
+        checkSyntaxParser(
+            "center 複数行2",
+            "a\n<center>\nhoge1\nhoge2\n</center>\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Center(
+                    listOf(
+                        MfmNode.Text("hoge1\nhoge2")
+                    )
+                ),
+                MfmNode.Text("\nb"),
+            )
+        )
+
+        checkSyntaxParser(
+            "center 複数行+bold",
+            "a\n<center>\n**hoge1**\nhoge2\n</center>\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n"),
+                MfmNode.Center(
+                    listOf(
+                        MfmNode.Bold(
+                            listOf(MfmNode.Text("hoge1"))
+                        ),
+                        MfmNode.Text("\nhoge2")
+                    )
+                ),
+                MfmNode.Text("\nb"),
+            )
+        )
+    }
+
+    @Test
+    fun parse_center_閉じず() {
+
+        val option = MfmSyntaxParser.Option(
+            enableBold = true,
+            enableItalic = true,
+            enableCenter = true,
+            enableSmall = false,
+            enableQuote = false,
+            enableFunction = false
+        )
+
+        checkSyntaxParser(
+            "center",
+            "<center>hoge",
+            option,
+            listOf(
+                MfmNode.Text("<center>hoge"),
+            )
+        )
+
+        checkSyntaxParser(
+            "center 複数行1",
+            "a\n<center>hoge\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n<center>hoge\nb"),
+            )
+        )
+
+        checkSyntaxParser(
+            "center 複数行+bold",
+            "a\n<center>\n**hoge1**\nhoge2\n\nb",
+            option,
+            listOf(
+                MfmNode.Text("a\n<center>\n"),
+                MfmNode.Bold(
+                    listOf(MfmNode.Text("hoge1"))
+                ),
+                MfmNode.Text("\nhoge2\n\nb"),
+            )
+        )
+    }
+
+    @Test
+    fun parse_big() {
+
+        val option = optionAll
+
+        checkSyntaxParser(
+            "big1",
+            "***hoge***",
+            option,
+            listOf(
+                MfmNode.Big(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "big2",
+            "aaa***hoge***bbb",
+            option,
+            listOf(
+                MfmNode.Text("aaa"),
+                MfmNode.Big(
+                    listOf(MfmNode.Text("hoge"))
+                ),
+                MfmNode.Text("bbb"),
+            )
+        )
+
+        // *** の間は いろいろOK
+        checkSyntaxParser(
+            "big + tag",
+            "aaa***<i>hoge</i>***bbb",
+            option,
+            listOf(
+                MfmNode.Text("aaa"),
+                MfmNode.Big(
+                    listOf(
+                        MfmNode.Italic(
+                            listOf(MfmNode.Text("hoge"))
+                        )
+                    )
+                ),
+                MfmNode.Text("bbb"),
             )
         )
     }
@@ -242,54 +510,6 @@ class MfmSyntaxParserTest {
     }
 
     @Test
-    fun parse_big() {
-
-        val option = optionAll
-
-        checkSyntaxParser(
-            "big1",
-            "***hoge***",
-            option,
-            listOf(
-                MfmNode.Big(
-                    listOf(MfmNode.Text("hoge"))
-                ),
-            )
-        )
-
-        checkSyntaxParser(
-            "big2",
-            "aaa***hoge***bbb",
-            option,
-            listOf(
-                MfmNode.Text("aaa"),
-                MfmNode.Big(
-                    listOf(MfmNode.Text("hoge"))
-                ),
-                MfmNode.Text("bbb"),
-            )
-        )
-
-        // *** の間は いろいろOK
-        checkSyntaxParser(
-            "big + tag",
-            "aaa***<i>hoge</i>***bbb",
-            option,
-            listOf(
-                MfmNode.Text("aaa"),
-                MfmNode.Big(
-                    listOf(
-                        MfmNode.Italic(
-                            listOf(MfmNode.Text("hoge"))
-                        )
-                    )
-                ),
-                MfmNode.Text("bbb"),
-            )
-        )
-    }
-
-    @Test
     fun parse_bold_閉じず() {
 
         checkSyntaxParser(
@@ -298,239 +518,6 @@ class MfmSyntaxParserTest {
             optionAll,
             listOf(
                 MfmNode.Text("aaa**hoge"),
-            )
-        )
-    }
-
-    @Test
-    fun parse_italic() {
-
-        val option = MfmSyntaxParser.Option(
-            enableBold = true,
-            enableItalic = true,
-            enableCenter = false,
-            enableSmall = false,
-            enableQuote = false,
-            enableFunction = false
-        )
-
-        // *...* と <i>...</i>, _..._ の3パターンある
-
-        checkSyntaxParser(
-            "italic*",
-            "*hoge1*",
-            option,
-            listOf(
-                MfmNode.Italic(
-                    listOf(MfmNode.Text("hoge1"))
-                ),
-            )
-        )
-
-        // *と*の間はローマ字と数値のみ許可
-        checkSyntaxParser(
-            "italic* ローマ字と数値以外",
-            "*ほげ*",
-            option,
-            listOf(
-                MfmNode.Text("*ほげ*"),
-            )
-        )
-
-        checkSyntaxParser(
-            "italic tag",
-            "<i>hoge</i>",
-            option,
-            listOf(
-                MfmNode.Italic(
-                    listOf(MfmNode.Text("hoge"))
-                ),
-            )
-        )
-
-        checkSyntaxParser(
-            "italic + bold",
-            "<i>**hoge**</i>",
-            option,
-            listOf(
-                MfmNode.Italic(
-                    listOf(
-                        MfmNode.Bold(
-                            listOf(MfmNode.Text("hoge"))
-                        )
-                    )
-                ),
-            )
-        )
-
-        checkSyntaxParser(
-            "italic_",
-            "_hoge1_",
-            option,
-            listOf(
-                MfmNode.Italic(
-                    listOf(MfmNode.Text("hoge1"))
-                ),
-            )
-        )
-
-        // _と_の間はローマ字と数値のみ許可
-        checkSyntaxParser(
-            "italic_ ローマ字と数値以外",
-            "_ほげ_",
-            option,
-            listOf(
-                MfmNode.Text("_ほげ_"),
-            )
-        )
-    }
-
-    @Test
-    fun parse_italic_閉じず() {
-
-        checkSyntaxParser(
-            "italic* 閉じず",
-            "*hoge",
-            optionAll,
-            listOf(
-                MfmNode.Text("*hoge"),
-            )
-        )
-
-        checkSyntaxParser(
-            "italic tag 閉じず",
-            "<i>hoge",
-            optionAll,
-            listOf(
-                MfmNode.Text("<i>hoge"),
-            )
-        )
-
-        checkSyntaxParser(
-            "italic + bold 閉じず",
-            "<i>**hoge**",
-            optionAll,
-            listOf(
-                MfmNode.Text("<i>"),
-                MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge"))
-                )
-            )
-        )
-    }
-
-    @Test
-    fun parse_center() {
-
-        val option = MfmSyntaxParser.Option(
-            enableBold = true,
-            enableItalic = true,
-            enableCenter = true,
-            enableSmall = false,
-            enableQuote = false,
-            enableFunction = false
-        )
-
-        // <center>...</center>
-
-        checkSyntaxParser(
-            "center",
-            "<center>hoge</center>",
-            option,
-            listOf(
-                MfmNode.Center(
-                    listOf(MfmNode.Text("hoge"))
-                ),
-            )
-        )
-
-        checkSyntaxParser(
-            "center 複数行1",
-            "a\n<center>hoge</center>\nb",
-            option,
-            listOf(
-                MfmNode.Text("a\n"),
-                MfmNode.Center(
-                    listOf(MfmNode.Text("hoge"))
-                ),
-                MfmNode.Text("\nb"),
-            )
-        )
-
-        checkSyntaxParser(
-            "center 複数行2",
-            "a\n<center>\nhoge1\nhoge2\n</center>\nb",
-            option,
-            listOf(
-                MfmNode.Text("a\n"),
-                MfmNode.Center(
-                    listOf(
-                        MfmNode.Text("hoge1\nhoge2")
-                    )
-                ),
-                MfmNode.Text("\nb"),
-            )
-        )
-
-        checkSyntaxParser(
-            "center 複数行+bold",
-            "a\n<center>\n**hoge1**\nhoge2\n</center>\nb",
-            option,
-            listOf(
-                MfmNode.Text("a\n"),
-                MfmNode.Center(
-                    listOf(
-                        MfmNode.Bold(
-                            listOf(MfmNode.Text("hoge1"))
-                        ),
-                        MfmNode.Text("\nhoge2")
-                    )
-                ),
-                MfmNode.Text("\nb"),
-            )
-        )
-    }
-
-    @Test
-    fun parse_center_閉じず() {
-
-        val option = MfmSyntaxParser.Option(
-            enableBold = true,
-            enableItalic = true,
-            enableCenter = true,
-            enableSmall = false,
-            enableQuote = false,
-            enableFunction = false
-        )
-
-        checkSyntaxParser(
-            "center",
-            "<center>hoge",
-            option,
-            listOf(
-                MfmNode.Text("<center>hoge"),
-            )
-        )
-
-        checkSyntaxParser(
-            "center 複数行1",
-            "a\n<center>hoge\nb",
-            option,
-            listOf(
-                MfmNode.Text("a\n<center>hoge\nb"),
-            )
-        )
-
-        checkSyntaxParser(
-            "center 複数行+bold",
-            "a\n<center>\n**hoge1**\nhoge2\n\nb",
-            option,
-            listOf(
-                MfmNode.Text("a\n<center>\n"),
-                MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge1"))
-                ),
-                MfmNode.Text("\nhoge2\n\nb"),
             )
         )
     }
@@ -653,98 +640,138 @@ class MfmSyntaxParserTest {
     }
 
     @Test
-    fun parse_quote() {
+    fun parse_italic() {
 
         val option = MfmSyntaxParser.Option(
             enableBold = true,
             enableItalic = true,
-            enableCenter = true,
-            enableSmall = true,
-            enableQuote = true,
+            enableCenter = false,
+            enableSmall = false,
+            enableQuote = false,
             enableFunction = false
         )
 
-        // >aaa
-        // > aaa
-        // >bbb
-        // >>a
-        // >> b
+        // *...* と <i>...</i>, _..._ の3パターンある
 
         checkSyntaxParser(
-            "quote1 1行(改行なし)",
-            ">aaa",
+            "italic*",
+            "*hoge1*",
             option,
             listOf(
-                MfmNode.Text(">aaa"),
-            )
-        )
-
-        checkSyntaxParser(
-            "quote1 1行",
-            ">aaa\n",
-            option,
-            listOf(
-                MfmNode.Quote(
-                    MfmNode.QuoteLevel.Level1,
-                    listOf(MfmNode.Text("aaa\n"))
+                MfmNode.Italic(
+                    listOf(MfmNode.Text("hoge1"))
                 ),
             )
         )
 
+        // *と*の間はローマ字と数値のみ許可
         checkSyntaxParser(
-            "quote1 2行 => 結合されること",
-            ">aaa\n>bbb\n",
+            "italic* ローマ字と数値以外",
+            "*ほげ*",
             option,
             listOf(
-                MfmNode.Quote(
-                    MfmNode.QuoteLevel.Level1,
-                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                MfmNode.Text("*ほげ*"),
+            )
+        )
+
+        checkSyntaxParser(
+            "italic tag",
+            "<i>hoge</i>",
+            option,
+            listOf(
+                MfmNode.Italic(
+                    listOf(MfmNode.Text("hoge"))
                 ),
             )
         )
 
         checkSyntaxParser(
-            "quote1 2行 => 行頭のスペースは無視されること",
-            ">aaa\n> bbb\n",
+            "italic + bold",
+            "<i>**hoge**</i>",
             option,
             listOf(
-                MfmNode.Quote(
-                    MfmNode.QuoteLevel.Level1,
-                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                MfmNode.Italic(
+                    listOf(
+                        MfmNode.Bold(
+                            listOf(MfmNode.Text("hoge"))
+                        )
+                    )
                 ),
             )
         )
 
         checkSyntaxParser(
-            "quote2 2行 => 行頭のスペースは無視されること",
-            ">>aaa\n>> bbb\n",
+            "italic_",
+            "_hoge1_",
             option,
             listOf(
-                MfmNode.Quote(
-                    MfmNode.QuoteLevel.Level2,
-                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                MfmNode.Italic(
+                    listOf(MfmNode.Text("hoge1"))
                 ),
             )
         )
 
+        // _と_の間はローマ字と数値のみ許可
         checkSyntaxParser(
-            "quote1+2 2行 => 行頭のスペースは無視されること",
-            ">>aaa\n>> bbb\n>c\n",
+            "italic_ ローマ字と数値以外",
+            "_ほげ_",
             option,
             listOf(
-                MfmNode.Quote(
-                    MfmNode.QuoteLevel.Level2,
-                    listOf(MfmNode.Text("aaa\nbbb\n"))
-                ),
-                MfmNode.Quote(
-                    MfmNode.QuoteLevel.Level1,
-                    listOf(MfmNode.Text("c\n"))
-                ),
+                MfmNode.Text("_ほげ_"),
             )
         )
     }
 
-    private val optionAll = MfmSyntaxParser.Option()
+    @Test
+    fun parse_italic_閉じず() {
+
+        checkSyntaxParser(
+            "italic* 閉じず",
+            "*hoge",
+            optionAll,
+            listOf(
+                MfmNode.Text("*hoge"),
+            )
+        )
+
+        checkSyntaxParser(
+            "italic tag 閉じず",
+            "<i>hoge",
+            optionAll,
+            listOf(
+                MfmNode.Text("<i>hoge"),
+            )
+        )
+
+        checkSyntaxParser(
+            "italic + bold 閉じず",
+            "<i>**hoge**",
+            optionAll,
+            listOf(
+                MfmNode.Text("<i>"),
+                MfmNode.Bold(
+                    listOf(MfmNode.Text("hoge"))
+                )
+            )
+        )
+    }
+
+    @Test
+    fun parse_strike() {
+
+        val option = optionAll
+
+        checkSyntaxParser(
+            "<s>strike</s>",
+            "<s>strike</s>",
+            option,
+            listOf(
+                MfmNode.Strike(
+                    listOf(MfmNode.Text("strike"))
+                ),
+            )
+        )
+    }
 
     @Test
     fun parse_function() {
@@ -903,6 +930,10 @@ class MfmSyntaxParserTest {
                 }
                 is MfmNode.Italic -> {
                     println("Italic: ")
+                    traverse(spr.children, level + 1)
+                }
+                is MfmNode.Strike -> {
+                    println("Strike: ")
                     traverse(spr.children, level + 1)
                 }
                 is MfmNode.Function -> {

@@ -325,6 +325,30 @@ class MfmTokenParserTest {
     }
 
     @Test
+    fun tokenize_Strike() {
+
+        MfmTokenParser.tokenize("<s>abc</s>")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.strikeTagStart(),
+                    Token.string("abc"),
+                    Token.strikeTagEnd()
+                )
+            }
+
+        MfmTokenParser.tokenize("_abc_")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.italicUnder(),
+                    Token.string("abc"),
+                    Token.italicUnder(),
+                )
+            }
+    }
+
+    @Test
     fun tokenize_Function() {
 
         MfmTokenParser.tokenize("$[x2 abc]")

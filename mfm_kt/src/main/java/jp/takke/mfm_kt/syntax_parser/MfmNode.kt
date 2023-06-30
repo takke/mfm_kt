@@ -17,11 +17,13 @@ sealed class MfmNode(val isInline: Boolean) {
 
     data class Bold(val children: List<MfmNode>) : MfmNode(true)
 
-    data class Small(val children: List<MfmNode>) : MfmNode(false)
+    data class Small(val children: List<MfmNode>) : MfmNode(true)
 
     data class Italic(val children: List<MfmNode>) : MfmNode(true)
 
-    data class Function(val props: String, val children: List<MfmNode>) : MfmNode(false) {
+    data class Strike(val children: List<MfmNode>) : MfmNode(true)
+
+    data class Function(val props: String, val children: List<MfmNode>) : MfmNode(true) {
         // TODO name+propsに変換すること
         val name: String
             get() = props

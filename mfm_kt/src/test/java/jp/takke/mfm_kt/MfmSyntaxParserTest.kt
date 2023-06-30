@@ -247,7 +247,7 @@ class MfmSyntaxParserTest {
             enableFunction = false
         )
 
-        // *...* と <i>...</i> の2パターンある
+        // *...* と <i>...</i>, _..._ の3パターンある
 
         checkSyntaxParser(
             "italic*",
@@ -293,6 +293,27 @@ class MfmSyntaxParserTest {
                         )
                     )
                 ),
+            )
+        )
+
+        checkSyntaxParser(
+            "italic_",
+            "_hoge1_",
+            option,
+            listOf(
+                MfmNode.Italic(
+                    listOf(MfmNode.Text("hoge1"))
+                ),
+            )
+        )
+
+        // _と_の間はローマ字と数値のみ許可
+        checkSyntaxParser(
+            "italic_ ローマ字と数値以外",
+            "_ほげ_",
+            option,
+            listOf(
+                MfmNode.Text("_ほげ_"),
             )
         )
     }

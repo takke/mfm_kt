@@ -8,6 +8,15 @@ enum class TokenType {
     // Charを連結した任意の文字列
     String,
 
+    // >...
+    QuoteLine1,
+
+    // >>...
+    QuoteLine2,
+
+    // <center>...</center>
+    CenterStart, CenterEnd,
+
     // **
     BoldAsta,
 
@@ -17,27 +26,22 @@ enum class TokenType {
     // __
     BoldUnder,
 
-    // *
-    ItalicAsta,
+    // <small>...</small>
+    SmallStart, SmallEnd,
 
     // <i>...</i>
     ItalicTagStart, ItalicTagEnd,
 
-    // `...`
-    InlineCode,
+    // *
+    ItalicAsta,
 
-    // >...
-    QuoteLine1,
-
-    // >>...
-    QuoteLine2,
+    // _
+    ItalicUnder,
 
     // $[...]
     FunctionStart, FunctionEnd,
 
-    // <center>...</center>
-    CenterStart, CenterEnd,
+    // `...`
+    InlineCode,
 
-    // <small>...</small>
-    SmallStart, SmallEnd,
 }

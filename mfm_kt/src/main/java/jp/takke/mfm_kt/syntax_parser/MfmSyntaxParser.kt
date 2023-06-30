@@ -35,6 +35,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         Small,
         ItalicTag,
         ItalicAsta,
+        ItalicUnder,
         Function,
     }
 
@@ -238,6 +239,35 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     }
                 }
 
+                TokenType.ItalicUnder -> {
+                    if (state == ParseState.ItalicUnder) {
+                        // Italic 終了
+                        return ParseResult(true, nodes)
+                    } else {
+                        // Italic 開始
+                        val italicResult = parse(ParseState.ItalicUnder)
+
+                        if (italicResult.success) {
+                            // _ の間は[a-zA-Z0-9_]のみ許可
+                            // https://github.com/misskey-dev/mfm.js/blob/develop/src/internal/parser.ts#L354
+                            if (italicResult.nodes.size == 1 &&
+                                (italicResult.nodes[0] as? MfmNode.Text)?.value?.matches(Regex("^[a-zA-Z0-9]+")) == true
+                            ) {
+                                nodes.add(MfmNode.Italic(italicResult.nodes))
+                            } else {
+                                // _ の間に対象外の文字がある場合は無視する
+                                nodes.addOrMergeText("_")
+                                nodes.addAllWithMergeText(italicResult.nodes)
+                                nodes.addOrMergeText("_")
+                            }
+                        } else {
+                            // Italic が終了しないまま終端に達した
+                            nodes.addOrMergeText(token.wholeText)
+                            nodes.addAllWithMergeText(italicResult.nodes)
+                        }
+                    }
+                }
+
                 TokenType.FunctionStart -> {
                     // Function 開始
                     val functionResult = parse(ParseState.Function)
@@ -287,6 +317,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             TokenType.ItalicTagStart -> option.enableItalic
             TokenType.ItalicTagEnd -> option.enableItalic
             TokenType.ItalicAsta -> option.enableItalic
+            TokenType.ItalicUnder -> option.enableItalic
             TokenType.FunctionStart -> option.enableFunction
             TokenType.FunctionEnd -> option.enableFunction
             TokenType.InlineCode -> true

@@ -298,6 +298,16 @@ class MfmTokenParserTest {
                     Token.italicTagEnd()
                 )
             }
+
+        MfmTokenParser.tokenize("_abc_")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.italicUnder(),
+                    Token.string("abc"),
+                    Token.italicUnder(),
+                )
+            }
     }
 
     @Test

@@ -22,6 +22,7 @@ data class Token(
         fun italicTagStart() = Token(TokenType.ItalicTagStart, "<i>")
         fun italicTagEnd() = Token(TokenType.ItalicTagEnd, "</i>")
         fun italicAsta() = Token(TokenType.ItalicAsta, "*")
+        fun italicUnder() = Token(TokenType.ItalicUnder, "_")
         fun functionStart(s: String) = Token(TokenType.FunctionStart, s, "$[$s ")
         fun functionEnd() = Token(TokenType.FunctionEnd, "]", "]")
         fun inlineCode(s: String) = Token(TokenType.InlineCode, s, "`$s`")

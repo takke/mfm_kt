@@ -979,7 +979,8 @@ class MfmSyntaxParserTest {
     @Test
     fun parse_その他() {
 
-        checkSyntaxParser("その他",
+        checkSyntaxParser(
+            "その他",
             "\$[x2 **:vjtakagi_confused:**]",
             optionAll,
             listOf(
@@ -996,11 +997,43 @@ class MfmSyntaxParserTest {
             )
         )
 
-        checkSyntaxParser("その他2",
+        checkSyntaxParser(
+            "その他2",
             "あれこれ[第1話]ほげほげ",
             optionAll,
             listOf(
                 MfmNode.Text("あれこれ[第1話]ほげほげ")
+            )
+        )
+    }
+
+    @Test
+    fun parse_その他2() {
+
+        checkSyntaxParser(
+            "その他2 途中に*を含むパターン",
+            "\$[bg.color=ECB1C6 \$[fg \$[x2       xxx    ]\n" +
+                    "hoge*:･ﾟ✧\n" +
+                    "]]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "bg.color=ECB1C6",
+                    listOf(
+                        MfmNode.Function(
+                            "fg",
+                            listOf(
+                                MfmNode.Function(
+                                    "x2",
+                                    listOf(
+                                        MfmNode.Text("      xxx    ")
+                                    )
+                                ),
+                                MfmNode.Text("\nhoge*:･ﾟ✧\n")
+                            )
+                        )
+                    )
+                ),
             )
         )
     }
@@ -1045,10 +1078,15 @@ class MfmSyntaxParserTest {
 
     private fun checkSyntaxParser(scenarioName: String, inputText: String, option: MfmSyntaxParser.Option, expected: List<MfmNode>) {
 
-        val result = MfmSyntaxParser(MfmTokenParser.tokenize(inputText), option).parse()
+        val tokens = MfmTokenParser.tokenize(inputText)
+        val result = MfmSyntaxParser(tokens, option).parse()
 
         println("---- [$scenarioName] start")
         println("input: [$inputText]")
+
+//        println("tokens:")
+//        println(tokens.holder.tokenList.joinToString("\n"))
+
         println("actual:")
         dump(result)
         println("expected:")

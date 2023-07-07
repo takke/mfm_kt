@@ -113,6 +113,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // Center が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
+                        // TODO pos を戻して再度パースすべき
                         nodes.addAllWithMergeText(centerResult.nodes)
                     }
                 }
@@ -139,6 +140,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // Big が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
+                            // TODO pos を戻して再度パースすべき
                             nodes.addAllWithMergeText(bigResult.nodes)
                         }
                     }
@@ -156,6 +158,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // Bold が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
+                            // TODO pos を戻して再度パースすべき
                             nodes.addAllWithMergeText(boldResult.nodes)
                         }
                     }
@@ -169,6 +172,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // Bold が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
+                        // TODO pos を戻して再度パースすべき
                         nodes.addAllWithMergeText(boldTagResult.nodes)
                     }
                 }
@@ -206,6 +210,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // __ が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
+                            // TODO pos を戻して再度パースすべき
                             nodes.addAllWithMergeText(boldResult.nodes)
                         }
                     }
@@ -219,6 +224,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // Small が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
+                        // TODO pos を戻して再度パースすべき
                         nodes.addAllWithMergeText(smallResult.nodes)
                     }
                 }
@@ -241,6 +247,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // Italic が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
+                        // TODO pos を戻して再度パースすべき
                         nodes.addAllWithMergeText(italicResult.nodes)
                     }
                 }
@@ -261,6 +268,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         return ParseResult(true, nodes)
                     } else {
                         // Italic 開始
+                        val savedPos = tokenPos
                         val italicResult = parse(ParseState.ItalicAsta)
 
                         if (italicResult.success) {
@@ -279,7 +287,8 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // Italic が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
-                            nodes.addAllWithMergeText(italicResult.nodes)
+                            // pos を戻して再度パースする
+                            tokenPos = savedPos
                         }
                     }
                 }
@@ -290,6 +299,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         return ParseResult(true, nodes)
                     } else {
                         // Italic 開始
+                        // TODO 他もこの方式で実装すべき
                         val savedPos = tokenPos
                         val italicResult = parse(ParseState.ItalicUnder)
 
@@ -324,6 +334,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // Strike が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
+                        // TODO pos を戻して再度パースすべき
                         nodes.addAllWithMergeText(strikeTagResult.nodes)
                     }
                 }
@@ -361,6 +372,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // StrikeWave が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
+                            // TODO pos を戻して再度パースすべき
                             nodes.addAllWithMergeText(strikeResult.nodes)
                         }
                     }
@@ -374,6 +386,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // Function が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
+                        // TODO pos を戻して再度パースすべき
                         nodes.addAllWithMergeText(functionResult.nodes)
                     }
                 }
@@ -413,6 +426,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // InlineCode が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
+                            // TODO pos を戻して再度パースすべき
                             nodes.addAllWithMergeText(strikeResult.nodes)
                         }
                     }

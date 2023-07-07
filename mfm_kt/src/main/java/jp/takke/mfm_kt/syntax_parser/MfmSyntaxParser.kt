@@ -168,19 +168,21 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 }
 
                 TokenType.BoldTagStart -> {
-                    // Bold 開始
+                    // Bold 開始: <b>
+                    val savedPos = tokenPos
                     val boldTagResult = parse(ParseState.BoldTag)
                     if (boldTagResult.success) {
                         nodes.add(MfmNode.Bold(boldTagResult.nodes))
                     } else {
                         // Bold が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
-                        nodes.addAllWithMergeText(boldTagResult.nodes)
+                        // pos を戻して再度パースする
+                        tokenPos = savedPos
                     }
                 }
 
                 TokenType.BoldTagEnd -> {
-                    // Bold 終了
+                    // Bold 終了: </b>
                     if (state == ParseState.BoldTag) {
                         return ParseResult(true, nodes)
                     } else {
@@ -221,14 +223,15 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.SmallStart -> {
                     // Small 開始
+                    val savedPos = tokenPos
                     val smallResult = parse(ParseState.Small)
                     if (smallResult.success) {
                         nodes.add(MfmNode.Small(smallResult.nodes))
                     } else {
                         // Small が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
-                        // TODO pos を戻して再度パースすべき
-                        nodes.addAllWithMergeText(smallResult.nodes)
+                        // pos を戻して再度パースする
+                        tokenPos = savedPos
                     }
                 }
 

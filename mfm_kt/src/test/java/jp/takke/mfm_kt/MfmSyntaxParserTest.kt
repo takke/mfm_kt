@@ -1011,13 +1011,13 @@ class MfmSyntaxParserTest {
         )
 
         checkSyntaxParser(
-            "途中に<bold>を含むパターン",
-            "\$[bg.color=ECB1C6 hoge<bold>:･ﾟ✧\n]",
+            "途中に<b>を含むパターン",
+            "\$[bg.color=ECB1C6 hoge<b>:･ﾟ✧\n]",
             optionAll,
             listOf(
                 MfmNode.Function(
                     "bg.color=ECB1C6",
-                    MfmNode.Text("hoge<bold>:･ﾟ✧\n")
+                    MfmNode.Text("hoge<b>:･ﾟ✧\n")
                 ),
             )
         )
@@ -1054,6 +1054,18 @@ class MfmSyntaxParserTest {
                 MfmNode.Function(
                     "bg.color=ECB1C6",
                     MfmNode.Text("hoge__:･ﾟ✧\n")
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "途中に<small>を含むパターン",
+            "\$[bg.color=ECB1C6 hoge<small>:･ﾟ✧\n]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "bg.color=ECB1C6",
+                    MfmNode.Text("hoge<small>:･ﾟ✧\n")
                 ),
             )
         )

@@ -416,9 +416,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         return ParseResult(true, nodes)
                     } else {
                         // InlineCode 開始
+                        val savedPos = tokenPos
                         val strikeResult = parse(ParseState.InlineCode)
 
-                        println("InlineCode: ${strikeResult.nodes} (${strikeResult.success})")
+//                        println("InlineCode: ${strikeResult.nodes} (${strikeResult.success})")
 
                         if (strikeResult.success) {
                             // ` の間は改行および´不可
@@ -435,8 +436,8 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // InlineCode が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
-                            // TODO pos を戻して再度パースすべき
-                            nodes.addAllWithMergeText(strikeResult.nodes)
+                            // pos を戻して再度パースする
+                            tokenPos = savedPos
                         }
                     }
                 }

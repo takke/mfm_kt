@@ -333,20 +333,21 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 }
 
                 TokenType.StrikeTagStart -> {
-                    // Strike 開始
+                    // Strike 開始: <s>
+                    val savedPos = tokenPos
                     val strikeTagResult = parse(ParseState.StrikeTag)
                     if (strikeTagResult.success) {
                         nodes.add(MfmNode.Strike(strikeTagResult.nodes))
                     } else {
                         // Strike が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
-                        // TODO pos を戻して再度パースすべき
-                        nodes.addAllWithMergeText(strikeTagResult.nodes)
+                        // pos を戻して再度パースする
+                        tokenPos = savedPos
                     }
                 }
 
                 TokenType.StrikeTagEnd -> {
-                    // Strike 終了
+                    // Strike 終了: </s>
                     if (state == ParseState.StrikeTag) {
                         return ParseResult(true, nodes)
                     } else {

@@ -195,6 +195,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         return ParseResult(true, nodes)
                     } else {
                         // __ 開始
+                        val savedPos = tokenPos
                         val boldResult = parse(ParseState.BoldUnder)
                         if (boldResult.success) {
                             // __ の間は[a-zA-Z0-9_ ]のみ許可
@@ -212,8 +213,8 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                         } else {
                             // __ が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
-                            // TODO pos を戻して再度パースすべき
-                            nodes.addAllWithMergeText(boldResult.nodes)
+                            // pos を戻して再度パースする
+                            tokenPos = savedPos
                         }
                     }
                 }

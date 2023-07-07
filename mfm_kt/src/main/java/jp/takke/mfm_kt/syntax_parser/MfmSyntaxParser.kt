@@ -130,36 +130,38 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.Big -> {
                     if (state == ParseState.Big) {
-                        // Big 終了
+                        // *** 終了
                         return ParseResult(true, nodes)
                     } else {
-                        // Big 開始
+                        // *** 開始
+                        val savedPos = tokenPos
                         val bigResult = parse(ParseState.Big)
                         if (bigResult.success) {
                             nodes.add(MfmNode.Big(bigResult.nodes))
                         } else {
                             // Big が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
-                            // TODO pos を戻して再度パースすべき
-                            nodes.addAllWithMergeText(bigResult.nodes)
+                            // pos を戻して再度パースする
+                            tokenPos = savedPos
                         }
                     }
                 }
 
                 TokenType.BoldAsta -> {
                     if (state == ParseState.BoldAsta) {
-                        // Bold 終了
+                        // ** 終了
                         return ParseResult(true, nodes)
                     } else {
-                        // Bold 開始
+                        // ** 開始
+                        val savedPos = tokenPos
                         val boldResult = parse(ParseState.BoldAsta)
                         if (boldResult.success) {
                             nodes.add(MfmNode.Bold(boldResult.nodes))
                         } else {
                             // Bold が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
-                            // TODO pos を戻して再度パースすべき
-                            nodes.addAllWithMergeText(boldResult.nodes)
+                            // pos を戻して再度パースする
+                            tokenPos = savedPos
                         }
                     }
                 }
@@ -172,7 +174,6 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // Bold が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
-                        // TODO pos を戻して再度パースすべき
                         nodes.addAllWithMergeText(boldTagResult.nodes)
                     }
                 }

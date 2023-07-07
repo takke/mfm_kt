@@ -984,16 +984,52 @@ class MfmSyntaxParserTest {
     }
 
     @Test
-    fun parse_その他2() {
+    fun parse_途中に含むパターン() {
 
         checkSyntaxParser(
-            "その他2 途中に*を含むパターン",
+            "途中に*を含むパターン",
             "\$[bg.color=ECB1C6 hoge*:･ﾟ✧\n]",
             optionAll,
             listOf(
                 MfmNode.Function(
                     "bg.color=ECB1C6",
                     MfmNode.Text("hoge*:･ﾟ✧\n")
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "途中に***を含むパターン",
+            "\$[bg.color=ECB1C6 hoge***:･ﾟ✧\n]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "bg.color=ECB1C6",
+                    MfmNode.Text("hoge***:･ﾟ✧\n")
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "途中に<bold>を含むパターン",
+            "\$[bg.color=ECB1C6 hoge<bold>:･ﾟ✧\n]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "bg.color=ECB1C6",
+                    MfmNode.Text("hoge<bold>:･ﾟ✧\n")
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "途中に**を含むパターン",
+            "\$[bg.color=ECB1C6 hoge**:･ﾟ✧\n]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "bg.color=ECB1C6",
+                    MfmNode.Text("hoge**:･ﾟ✧\n")
                 ),
             )
         )

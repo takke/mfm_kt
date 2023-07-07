@@ -107,14 +107,15 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.CenterStart -> {
                     // Center 開始
+                    val savedPos = tokenPos
                     val centerResult = parse(ParseState.Center)
                     if (centerResult.success) {
                         nodes.add(MfmNode.Center(centerResult.nodes))
                     } else {
                         // Center が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
-                        // TODO pos を戻して再度パースすべき
-                        nodes.addAllWithMergeText(centerResult.nodes)
+                        // pos を戻して再度パースする
+                        tokenPos = savedPos
                     }
                 }
 

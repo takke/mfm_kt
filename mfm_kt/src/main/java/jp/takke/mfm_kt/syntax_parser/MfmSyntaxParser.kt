@@ -358,10 +358,11 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.StrikeWave -> {
                     if (state == ParseState.StrikeWave) {
-                        // StrikeWave 終了
+                        // ~~ 終了
                         return ParseResult(true, nodes)
                     } else {
-                        // StrikeWave 開始
+                        // ~~ 開始
+                        val savedPos = tokenPos
                         val strikeResult = parse(ParseState.StrikeWave)
 
                         if (strikeResult.success) {
@@ -377,10 +378,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                                 nodes.addOrMergeText("~~")
                             }
                         } else {
-                            // StrikeWave が終了しないまま終端に達した
+                            // ~~ が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
-                            // TODO pos を戻して再度パースすべき
-                            nodes.addAllWithMergeText(strikeResult.nodes)
+                            // pos を戻して再度パースする
+                            tokenPos = savedPos
                         }
                     }
                 }

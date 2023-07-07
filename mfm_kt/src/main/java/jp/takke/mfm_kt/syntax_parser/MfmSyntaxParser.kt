@@ -388,14 +388,15 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.FunctionStart -> {
                     // Function 開始
+                    val savedPos = tokenPos
                     val functionResult = parse(ParseState.Function)
                     if (functionResult.success) {
                         nodes.add(MfmNode.Function(token.extractedValue, functionResult.nodes))
                     } else {
                         // Function が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
-                        // TODO pos を戻して再度パースすべき
-                        nodes.addAllWithMergeText(functionResult.nodes)
+                        // pos を戻して再度パースする
+                        tokenPos = savedPos
                     }
                 }
 

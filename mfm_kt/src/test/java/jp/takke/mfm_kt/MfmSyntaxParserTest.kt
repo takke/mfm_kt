@@ -1069,6 +1069,18 @@ class MfmSyntaxParserTest {
                 ),
             )
         )
+
+        checkSyntaxParser(
+            "途中に<i>を含むパターン",
+            "\$[bg.color=ECB1C6 hoge<i>:･ﾟ✧\n]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "bg.color=ECB1C6",
+                    MfmNode.Text("hoge<i>:･ﾟ✧\n")
+                ),
+            )
+        )
     }
 
     @Test

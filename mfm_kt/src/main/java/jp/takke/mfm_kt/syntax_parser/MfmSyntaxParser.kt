@@ -247,14 +247,15 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.ItalicTagStart -> {
                     // Italic 開始
+                    val savedPos = tokenPos
                     val italicResult = parse(ParseState.ItalicTag)
                     if (italicResult.success) {
                         nodes.add(MfmNode.Italic(italicResult.nodes))
                     } else {
                         // Italic が終了しないまま終端に達した
                         nodes.addOrMergeText(token.wholeText)
-                        // TODO pos を戻して再度パースすべき
-                        nodes.addAllWithMergeText(italicResult.nodes)
+                        // pos を戻して再度パースする
+                        tokenPos = savedPos
                     }
                 }
 
@@ -270,10 +271,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.ItalicAsta -> {
                     if (state == ParseState.ItalicAsta) {
-                        // Italic 終了
+                        // * 終了
                         return ParseResult(true, nodes)
                     } else {
-                        // Italic 開始
+                        // * 開始
                         val savedPos = tokenPos
                         val italicResult = parse(ParseState.ItalicAsta)
 
@@ -291,7 +292,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                                 nodes.addOrMergeText("*")
                             }
                         } else {
-                            // Italic が終了しないまま終端に達した
+                            // * が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
                             // pos を戻して再度パースする
                             tokenPos = savedPos
@@ -301,11 +302,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
 
                 TokenType.ItalicUnder -> {
                     if (state == ParseState.ItalicUnder) {
-                        // Italic 終了
+                        // _ 終了
                         return ParseResult(true, nodes)
                     } else {
-                        // Italic 開始
-                        // TODO 他もこの方式で実装すべき
+                        // _ 開始
                         val savedPos = tokenPos
                         val italicResult = parse(ParseState.ItalicUnder)
 
@@ -323,7 +323,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                                 nodes.addOrMergeText("_")
                             }
                         } else {
-                            // ItalicUnder が終了しないまま終端に達した
+                            // _ が終了しないまま終端に達した
                             nodes.addOrMergeText(token.wholeText)
 
                             // pos を戻して再度パースする

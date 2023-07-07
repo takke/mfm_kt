@@ -813,7 +813,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Function(
                     "x2",
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -824,7 +824,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Function(
                     "x3",
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -835,7 +835,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Function(
                     "x4",
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -848,7 +848,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Function(
                     "x1",
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -859,7 +859,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Function(
                     "x5",
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -871,10 +871,8 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Function(
                     "x4",
-                    listOf(
-                        MfmNode.Bold(
-                            listOf(MfmNode.Text("hoge"))
-                        )
+                    MfmNode.Bold(
+                        listOf(MfmNode.Text("hoge"))
                     )
                 ),
             )
@@ -894,9 +892,7 @@ class MfmSyntaxParserTest {
                 MfmNode.Text("でした！\n今日のラッキーカラーはこんにゃ色 -> "),
                 MfmNode.Function(
                     "bg.color=86DB67",
-                    listOf(
-                        MfmNode.Text(":blank::blank::blank:")
-                    )
+                    MfmNode.Text(":blank::blank::blank:")
                 ),
             )
         )
@@ -908,9 +904,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Function(
                     "x2",
-                    listOf(
-                        MfmNode.Text("大きな文字！ :hyper_vibecat:")
-                    )
+                    MfmNode.Text("大きな文字！ :hyper_vibecat:")
                 ),
             )
         )
@@ -986,11 +980,9 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Function(
                     "x2",
-                    listOf(
-                        MfmNode.Bold(
-                            listOf(
-                                MfmNode.Text(":vjtakagi_confused:")
-                            )
+                    MfmNode.Bold(
+                        listOf(
+                            MfmNode.Text(":vjtakagi_confused:")
                         )
                     )
                 ),

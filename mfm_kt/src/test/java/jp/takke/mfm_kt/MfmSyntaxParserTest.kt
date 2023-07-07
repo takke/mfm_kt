@@ -181,7 +181,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Quote(
                     MfmNode.QuoteLevel.Level1,
-                    listOf(MfmNode.Text("aaa\n"))
+                    MfmNode.Text("aaa\n")
                 ),
             )
         )
@@ -193,7 +193,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Quote(
                     MfmNode.QuoteLevel.Level1,
-                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                    MfmNode.Text("aaa\nbbb\n")
                 ),
             )
         )
@@ -205,7 +205,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Quote(
                     MfmNode.QuoteLevel.Level1,
-                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                    MfmNode.Text("aaa\nbbb\n")
                 ),
             )
         )
@@ -217,7 +217,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Quote(
                     MfmNode.QuoteLevel.Level2,
-                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                    MfmNode.Text("aaa\nbbb\n")
                 ),
             )
         )
@@ -229,11 +229,11 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Quote(
                     MfmNode.QuoteLevel.Level2,
-                    listOf(MfmNode.Text("aaa\nbbb\n"))
+                    MfmNode.Text("aaa\nbbb\n")
                 ),
                 MfmNode.Quote(
                     MfmNode.QuoteLevel.Level1,
-                    listOf(MfmNode.Text("c\n"))
+                    MfmNode.Text("c\n")
                 ),
             )
         )
@@ -259,7 +259,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Center(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -271,7 +271,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("a\n"),
                 MfmNode.Center(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
                 MfmNode.Text("\nb"),
             )
@@ -284,9 +284,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("a\n"),
                 MfmNode.Center(
-                    listOf(
-                        MfmNode.Text("hoge1\nhoge2")
-                    )
+                    MfmNode.Text("hoge1\nhoge2")
                 ),
                 MfmNode.Text("\nb"),
             )
@@ -299,12 +297,10 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("a\n"),
                 MfmNode.Center(
-                    listOf(
-                        MfmNode.Bold(
-                            listOf(MfmNode.Text("hoge1"))
-                        ),
-                        MfmNode.Text("\nhoge2")
-                    )
+                    MfmNode.Bold(
+                        MfmNode.Text("hoge1")
+                    ),
+                    MfmNode.Text("\nhoge2")
                 ),
                 MfmNode.Text("\nb"),
             )
@@ -348,7 +344,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("a\n<center>\n"),
                 MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge1"))
+                    MfmNode.Text("hoge1")
                 ),
                 MfmNode.Text("\nhoge2\n\nb"),
             )
@@ -366,7 +362,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Big(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -378,7 +374,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("aaa"),
                 MfmNode.Big(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
                 MfmNode.Text("bbb"),
             )
@@ -392,10 +388,8 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("aaa"),
                 MfmNode.Big(
-                    listOf(
-                        MfmNode.Italic(
-                            listOf(MfmNode.Text("hoge"))
-                        )
+                    MfmNode.Italic(
+                        MfmNode.Text("hoge")
                     )
                 ),
                 MfmNode.Text("bbb"),
@@ -430,7 +424,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -442,7 +436,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("aaa"),
                 MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
                 MfmNode.Text("bbb"),
             )
@@ -455,7 +449,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("aaa"),
                 MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
                 MfmNode.Text("bbb"),
             )
@@ -468,10 +462,8 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("aaa"),
                 MfmNode.Bold(
-                    listOf(
-                        MfmNode.Italic(
-                            listOf(MfmNode.Text("hoge"))
-                        )
+                    MfmNode.Italic(
+                        MfmNode.Text("hoge")
                     )
                 ),
                 MfmNode.Text("bbb"),
@@ -485,7 +477,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("aaa"),
                 MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
                 MfmNode.Text("bbb"),
             )
@@ -498,7 +490,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("aaa"),
                 MfmNode.Bold(
-                    listOf(MfmNode.Text("ho ge"))
+                    MfmNode.Text("ho ge")
                 ),
                 MfmNode.Text("bbb"),
             )
@@ -512,7 +504,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("aaa__"),
                 MfmNode.Italic(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
                 MfmNode.Text("__bbb"),
             )
@@ -552,7 +544,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Small(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -564,7 +556,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("a\n"),
                 MfmNode.Small(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
                 MfmNode.Text("\nb"),
             )
@@ -577,9 +569,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("a\n"),
                 MfmNode.Small(
-                    listOf(
-                        MfmNode.Text("\nhoge1\nhoge2\n")
-                    )
+                    MfmNode.Text("\nhoge1\nhoge2\n")
                 ),
                 MfmNode.Text("\nb"),
             )
@@ -592,13 +582,11 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("a\n"),
                 MfmNode.Small(
-                    listOf(
-                        MfmNode.Text("\n"),
-                        MfmNode.Bold(
-                            listOf(MfmNode.Text("hoge1"))
-                        ),
-                        MfmNode.Text("\nhoge2\n")
-                    )
+                    MfmNode.Text("\n"),
+                    MfmNode.Bold(
+                        MfmNode.Text("hoge1")
+                    ),
+                    MfmNode.Text("\nhoge2\n")
                 ),
                 MfmNode.Text("\nb"),
             )
@@ -642,7 +630,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("a\n<small>\n"),
                 MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge1"))
+                    MfmNode.Text("hoge1")
                 ),
                 MfmNode.Text("\nhoge2\n\nb"),
             )
@@ -669,7 +657,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Italic(
-                    listOf(MfmNode.Text("hoge1"))
+                    MfmNode.Text("hoge1")
                 ),
             )
         )
@@ -690,7 +678,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Italic(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -701,10 +689,8 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Italic(
-                    listOf(
-                        MfmNode.Bold(
-                            listOf(MfmNode.Text("hoge"))
-                        )
+                    MfmNode.Bold(
+                        MfmNode.Text("hoge")
                     )
                 ),
             )
@@ -716,7 +702,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Italic(
-                    listOf(MfmNode.Text("hoge1"))
+                    MfmNode.Text("hoge1")
                 ),
             )
         )
@@ -760,7 +746,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("<i>"),
                 MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 )
             )
         )
@@ -777,7 +763,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Strike(
-                    listOf(MfmNode.Text("strike"))
+                    MfmNode.Text("strike")
                 ),
             )
         )
@@ -788,7 +774,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Strike(
-                    listOf(MfmNode.Text("strike"))
+                    MfmNode.Text("strike")
                 ),
             )
         )
@@ -872,7 +858,7 @@ class MfmSyntaxParserTest {
                 MfmNode.Function(
                     "x4",
                     MfmNode.Bold(
-                        listOf(MfmNode.Text("hoge"))
+                        MfmNode.Text("hoge")
                     )
                 ),
             )
@@ -887,7 +873,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("#ラッキーカラー診断\n今日のラッキーカラーは"),
                 MfmNode.InlineCode(
-                    listOf(MfmNode.Text("#86DB67"))
+                    MfmNode.Text("#86DB67")
                 ),
                 MfmNode.Text("でした！\n今日のラッキーカラーはこんにゃ色 -> "),
                 MfmNode.Function(
@@ -929,7 +915,7 @@ class MfmSyntaxParserTest {
             listOf(
                 MfmNode.Text("$[x4 "),
                 MfmNode.Bold(
-                    listOf(MfmNode.Text("hoge"))
+                    MfmNode.Text("hoge")
                 ),
             )
         )
@@ -946,7 +932,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.InlineCode(
-                    listOf(MfmNode.Text("inline"))
+                    MfmNode.Text("inline")
                 ),
             )
         )
@@ -981,9 +967,7 @@ class MfmSyntaxParserTest {
                 MfmNode.Function(
                     "x2",
                     MfmNode.Bold(
-                        listOf(
-                            MfmNode.Text(":vjtakagi_confused:")
-                        )
+                        MfmNode.Text(":vjtakagi_confused:")
                     )
                 ),
             )

@@ -9,19 +9,33 @@ sealed class MfmNode(val isInline: Boolean) {
         Level2,
     }
 
-    data class Quote(val level: QuoteLevel, val children: List<MfmNode>) : MfmNode(false)
+    data class Quote(val level: QuoteLevel, val children: List<MfmNode>) : MfmNode(false) {
+        internal constructor(level: QuoteLevel, vararg children: MfmNode) : this(level, children.toList())
+    }
 
-    data class Center(val children: List<MfmNode>) : MfmNode(false)
+    data class Center(val children: List<MfmNode>) : MfmNode(false) {
+        internal constructor(vararg children: MfmNode) : this(children.toList())
+    }
 
-    data class Big(val children: List<MfmNode>) : MfmNode(true)
+    data class Big(val children: List<MfmNode>) : MfmNode(true) {
+        internal constructor(vararg children: MfmNode) : this(children.toList())
+    }
 
-    data class Bold(val children: List<MfmNode>) : MfmNode(true)
+    data class Bold(val children: List<MfmNode>) : MfmNode(true) {
+        internal constructor(vararg children: MfmNode) : this(children.toList())
+    }
 
-    data class Small(val children: List<MfmNode>) : MfmNode(true)
+    data class Small(val children: List<MfmNode>) : MfmNode(true) {
+        internal constructor(vararg children: MfmNode) : this(children.toList())
+    }
 
-    data class Italic(val children: List<MfmNode>) : MfmNode(true)
+    data class Italic(val children: List<MfmNode>) : MfmNode(true) {
+        internal constructor(vararg children: MfmNode) : this(children.toList())
+    }
 
-    data class Strike(val children: List<MfmNode>) : MfmNode(true)
+    data class Strike(val children: List<MfmNode>) : MfmNode(true) {
+        internal constructor(vararg children: MfmNode) : this(children.toList())
+    }
 
     data class Function(val props: String, val children: List<MfmNode>) : MfmNode(true) {
         internal constructor(props: String, vararg children: MfmNode) : this(props, children.toList())
@@ -52,7 +66,9 @@ sealed class MfmNode(val isInline: Boolean) {
         }
     }
 
-    data class InlineCode(val children: List<MfmNode>) : MfmNode(true)
+    data class InlineCode(val children: List<MfmNode>) : MfmNode(true) {
+        internal constructor(vararg children: MfmNode) : this(children.toList())
+    }
 
     data class EmojiCode(val value: String) : MfmNode(true)
 

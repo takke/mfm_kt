@@ -24,6 +24,8 @@ sealed class MfmNode(val isInline: Boolean) {
     data class Strike(val children: List<MfmNode>) : MfmNode(true)
 
     data class Function(val props: String, val children: List<MfmNode>) : MfmNode(true) {
+        internal constructor(props: String, vararg children: MfmNode) : this(props, children.toList())
+
         val name: String by lazy { props.substringBefore('.') }
         val args: Map<String, String> by lazy {
             // $[x2 ] => []

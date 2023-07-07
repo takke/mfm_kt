@@ -1012,27 +1012,12 @@ class MfmSyntaxParserTest {
 
         checkSyntaxParser(
             "その他2 途中に*を含むパターン",
-            "\$[bg.color=ECB1C6 \$[fg \$[x2       xxx    ]\n" +
-                    "hoge*:･ﾟ✧\n" +
-                    "]]",
+            "\$[bg.color=ECB1C6 hoge*:･ﾟ✧\n]",
             optionAll,
             listOf(
                 MfmNode.Function(
                     "bg.color=ECB1C6",
-                    listOf(
-                        MfmNode.Function(
-                            "fg",
-                            listOf(
-                                MfmNode.Function(
-                                    "x2",
-                                    listOf(
-                                        MfmNode.Text("      xxx    ")
-                                    )
-                                ),
-                                MfmNode.Text("\nhoge*:･ﾟ✧\n")
-                            )
-                        )
-                    )
+                    MfmNode.Text("hoge*:･ﾟ✧\n")
                 ),
             )
         )

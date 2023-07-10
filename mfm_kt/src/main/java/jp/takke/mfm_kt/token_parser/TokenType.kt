@@ -56,4 +56,7 @@ enum class TokenType {
     // :emoji:
     EmojiCode,
 
+    // @...
+    Mention,
+
 }

@@ -54,6 +54,8 @@ sealed class MfmNode(val isInline: Boolean) {
 
     data class EmojiCode(val value: String) : MfmNode(true)
 
+    data class Mention(val value: String) : MfmNode(true)
+
     companion object {
         // vararg version: for test purposes
         internal fun Quote(level: QuoteLevel, vararg children: MfmNode) = Quote(level, children.toList())

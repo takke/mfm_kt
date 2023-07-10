@@ -156,22 +156,41 @@ object MfmTokenParser {
 
     val pEmojiCode: () -> TokenParser = { pRegex(TokenType.EmojiCode, "^(:[a-zA-Z0-9_+-]+:)".toRegex()) }
 
-    // TODO Mention, URL も追加すること
+    val pMention: () -> TokenParser = { pRegex(TokenType.Mention, "^(@[a-zA-Z0-9_-]+(@[a-zA-Z0-9_-]+)?)".toRegex()) }
+
+    // TODO URL も追加すること
     val mfmParser = many(
+        // ">" block
         pQuoteLine2() or pQuoteLine1() or
+                // "<center>" block
                 pCenterStart() or pCenterEnd() or
+                // "***"
                 pBig() or
+                // "**"
                 pBoldAsta() or
+                // "<b>"
                 pBoldTagStart() or pBoldTagEnd() or
+                // "__"
                 pBoldUnder() or
+                // "<small>"
                 pSmallStart() or pSmallEnd() or
+                // "<i>"
                 pItalicTagStart() or pItalicTagEnd() or
+                // "*"
                 pItalicAsta() or
+                // "_"
                 pItalicUnder() or
+                // "<s>"
                 pStrikeTagStart() or pStrikeTagEnd() or
+                // "~~"
                 pStrikeWave() or
+                // "$[xxx ...]"
                 pFunctionStart() or pFunctionEnd() or
+                // "@"
+                pMention() or
+                // "`"
                 pInlineCode() or
+                // ":"
                 pEmojiCode() or
                 pAnyChar()
     )

@@ -45,6 +45,8 @@ class MfmSyntaxParserTest {
             enableQuote = false,
             enableFunction = false,
             enableInline = false,
+            enableEmoji = false,
+            enableMention = false,
         )
 
         checkSyntaxParser(
@@ -139,10 +141,10 @@ class MfmSyntaxParserTest {
 
         checkSyntaxParser(
             "bold+italic+center+small+quote+fn+big",
-            "<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***",
+            "<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***@hoge@huga",
             option,
             listOf(
-                MfmNode.Text("<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***")
+                MfmNode.Text("<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***@hoge@huga")
             )
         )
     }
@@ -520,6 +522,52 @@ class MfmSyntaxParserTest {
             optionAll,
             listOf(
                 MfmNode.Text("aaa**hoge"),
+            )
+        )
+    }
+
+    @Test
+    fun parse_emoji() {
+
+        checkSyntaxParser(
+            "emoji",
+            ":hoge:",
+            MfmSyntaxParser.Option(),
+            listOf(
+                MfmNode.EmojiCode(":hoge:"),
+            )
+        )
+
+        checkSyntaxParser(
+            "emoji2",
+            "aaa:hoge:bbb",
+            MfmSyntaxParser.Option(),
+            listOf(
+                MfmNode.Text("aaa"),
+                MfmNode.EmojiCode(":hoge:"),
+                MfmNode.Text("bbb"),
+            )
+        )
+    }
+
+    @Test
+    fun parse_mention() {
+
+        checkSyntaxParser(
+            "mention1",
+            "@hoge",
+            optionAll,
+            listOf(
+                MfmNode.Mention("@hoge"),
+            )
+        )
+
+        checkSyntaxParser(
+            "mention2",
+            "@hoge@fuga",
+            optionAll,
+            listOf(
+                MfmNode.Mention("@hoge@fuga"),
             )
         )
     }
@@ -957,10 +1005,58 @@ class MfmSyntaxParserTest {
     }
 
     @Test
-    fun parse_その他() {
+    fun parse_カッコを含む() {
 
         checkSyntaxParser(
-            "その他",
+            "[]を含む",
+            "あれこれ[第1話]ほげほげ",
+            optionAll,
+            listOf(
+                MfmNode.Text("あれこれ[第1話]ほげほげ")
+            )
+        )
+    }
+
+    @Test
+    fun parse_アカウント名に_を含む() {
+
+        checkSyntaxParser(
+            "アカウント名に_を含む",
+            "@hoge_fuga_",
+            MfmSyntaxParser.Option(),
+            listOf(
+                MfmNode.Mention("@hoge_fuga_")
+            )
+        )
+
+        checkSyntaxParser(
+            "アカウント名に_を含む",
+            "@hoge_fuga_",
+            MfmSyntaxParser.Option(enableMention = false),
+            listOf(
+                MfmNode.Text("@hoge_fuga_")
+            )
+        )
+    }
+
+//    @Test
+//    fun parse_URLに_を含む() {
+//
+//        checkSyntaxParser(
+//            "URLに_を含む",
+//            "https://twitpane.com/left_right_",
+//            optionAll,
+//            listOf(
+//                MfmNode.Text("https://twitpane.com/left_right_")
+//            )
+//        )
+//    }
+
+    @Test
+    fun parse_Functionの途中に含むパターン() {
+
+        checkSyntaxParser(
+            "Functionに**を含む",
             "\$[x2 **:vjtakagi_confused:**]",
             optionAll,
             listOf(
@@ -972,19 +1068,6 @@ class MfmSyntaxParserTest {
                 ),
             )
         )
-
-        checkSyntaxParser(
-            "その他2",
-            "あれこれ[第1話]ほげほげ",
-            optionAll,
-            listOf(
-                MfmNode.Text("あれこれ[第1話]ほげほげ")
-            )
-        )
-    }
-
-    @Test
-    fun parse_途中に含むパターン() {
 
         checkSyntaxParser(
             "途中に*を含むパターン",
@@ -1239,6 +1322,9 @@ class MfmSyntaxParserTest {
                 }
                 is MfmNode.EmojiCode -> {
                     println("EmojiCode: ${spr.value}")
+                }
+                is MfmNode.Mention -> {
+                    println("Mention: ${spr.value}")
                 }
             }
         }

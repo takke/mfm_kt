@@ -59,4 +59,7 @@ enum class TokenType {
     // @...
     Mention,
 
+    // http
+    Url,
+
 }

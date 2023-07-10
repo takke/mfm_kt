@@ -26,6 +26,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         val enableInline: Boolean = true,
         val enableEmoji: Boolean = true,
         val enableMention: Boolean = true,
+        val enableUrl: Boolean = true,
     )
 
     fun parse(): List<MfmNode> {
@@ -450,6 +451,10 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 TokenType.Mention -> {
                     nodes.add(MfmNode.Mention(token.extractedValue))
                 }
+
+                TokenType.Url -> {
+                    nodes.add(MfmNode.Url(token.extractedValue))
+                }
             }
         }
 
@@ -484,6 +489,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             TokenType.InlineCode -> option.enableInline
             TokenType.EmojiCode -> option.enableEmoji
             TokenType.Mention -> option.enableMention
+            TokenType.Url -> option.enableUrl
         }
     }
 

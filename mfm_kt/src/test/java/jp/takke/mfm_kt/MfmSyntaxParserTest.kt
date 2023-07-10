@@ -47,6 +47,7 @@ class MfmSyntaxParserTest {
             enableInline = false,
             enableEmoji = false,
             enableMention = false,
+            enableUrl = false,
         )
 
         checkSyntaxParser(
@@ -140,11 +141,20 @@ class MfmSyntaxParserTest {
         )
 
         checkSyntaxParser(
-            "bold+italic+center+small+quote+fn+big",
+            "bold+italic+center+small+quote+fn+big+mention",
             "<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***@hoge@huga",
             option,
             listOf(
                 MfmNode.Text("<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***@hoge@huga")
+            )
+        )
+
+        checkSyntaxParser(
+            "bold+italic+center+small+quote+fn+big+url",
+            "<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***@hoge@hugahttps://misskey.io/@ai",
+            option,
+            listOf(
+                MfmNode.Text("<center>hoge**bold**$[x2 and]*italic*</center><small>ちいさい</small>\n>a\n>>b\n***hou***@hoge@hugahttps://misskey.io/@ai")
             )
         )
     }
@@ -1004,6 +1014,281 @@ class MfmSyntaxParserTest {
         )
     }
 
+    // https://github.com/misskey-dev/mfm.js/blob/develop/test/parser.ts#L906
+    @Test
+    fun parse_url() {
+
+
+        val option = MfmSyntaxParser.Option()
+
+        //		test('basic', () => {
+        //			const input = 'https://misskey.io/@ai';
+        //			const output = [
+        //				N_URL('https://misskey.io/@ai'),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "basic",
+            "https://misskey.io/@ai",
+            option,
+            listOf(
+                MfmNode.Url("https://misskey.io/@ai"),
+            )
+        )
+
+        // 		test('with other texts', () => {
+        //			const input = 'official instance: https://misskey.io/@ai.';
+        //			const output = [
+        //				TEXT('official instance: '),
+        //				N_URL('https://misskey.io/@ai'),
+        //				TEXT('.')
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "with other texts",
+            "official instance: https://misskey.io/@ai.",
+            option,
+            listOf(
+                MfmNode.Text("official instance: "),
+                MfmNode.Url("https://misskey.io/@ai"),
+                MfmNode.Text("."),
+            )
+        )
+
+        // 		test('ignore trailing period', () => {
+        //			const input = 'https://misskey.io/@ai.';
+        //			const output = [
+        //				N_URL('https://misskey.io/@ai'),
+        //				TEXT('.')
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "ignore trailing periods",
+            "https://misskey.io/@ai.",
+            option,
+            listOf(
+                MfmNode.Url("https://misskey.io/@ai"),
+                MfmNode.Text("."),
+            )
+        )
+
+        //		test('disallow period only', () => {
+        //			const input = 'https://.';
+        //			const output = [
+        //				TEXT('https://.')
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "disallow period only",
+            "https://.",
+            option,
+            listOf(
+                MfmNode.Text("https://."),
+            )
+        )
+
+        //		test('ignore trailing periods', () => {
+        //			const input = 'https://misskey.io/@ai...';
+        //			const output = [
+        //				N_URL('https://misskey.io/@ai'),
+        //				TEXT('...')
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "ignore trailing periods",
+            "https://misskey.io/@ai...",
+            option,
+            listOf(
+                MfmNode.Url("https://misskey.io/@ai"),
+                MfmNode.Text("..."),
+            )
+        )
+
+        //		test('with comma', () => {
+        //			const input = 'https://example.com/foo?bar=a,b';
+        //			const output = [
+        //				N_URL('https://example.com/foo?bar=a,b'),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "with comma",
+            "https://example.com/foo?bar=a,b",
+            option,
+            listOf(
+                MfmNode.Url("https://example.com/foo?bar=a,b"),
+            )
+        )
+
+        //		test('ignore trailing comma', () => {
+        //			const input = 'https://example.com/foo, bar';
+        //			const output = [
+        //				N_URL('https://example.com/foo'),
+        //				TEXT(', bar')
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "ignore trailing comma",
+            "https://example.com/foo, bar",
+            option,
+            listOf(
+                MfmNode.Url("https://example.com/foo"),
+                MfmNode.Text(", bar"),
+            )
+        )
+
+        //		test('with brackets', () => {
+        //			const input = 'https://example.com/foo(bar)';
+        //			const output = [
+        //				N_URL('https://example.com/foo(bar)'),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "with brackets",
+            "https://example.com/foo(bar)",
+            option,
+            listOf(
+                MfmNode.Url("https://example.com/foo(bar)"),
+            )
+        )
+
+        //		test('ignore parent brackets', () => {
+        //			const input = '(https://example.com/foo)';
+        //			const output = [
+        //				TEXT('('),
+        //				N_URL('https://example.com/foo'),
+        //				TEXT(')'),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "ignore parent brackets",
+            "(https://example.com/foo)",
+            option,
+            listOf(
+                MfmNode.Text("("),
+                MfmNode.Url("https://example.com/foo"),
+                MfmNode.Text(")"),
+            )
+        )
+
+        //		test('ignore parent brackets (2)', () => {
+        //			const input = '(foo https://example.com/foo)';
+        //			const output = [
+        //				TEXT('(foo '),
+        //				N_URL('https://example.com/foo'),
+        //				TEXT(')'),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "ignore parent brackets (2)",
+            "(foo https://example.com/foo)",
+            option,
+            listOf(
+                MfmNode.Text("(foo "),
+                MfmNode.Url("https://example.com/foo"),
+                MfmNode.Text(")"),
+            )
+        )
+
+        //		test('ignore parent brackets with internal brackets', () => {
+        //			const input = '(https://example.com/foo(bar))';
+        //			const output = [
+        //				TEXT('('),
+        //				N_URL('https://example.com/foo(bar)'),
+        //				TEXT(')'),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "ignore parent brackets with internal brackets",
+            "(https://example.com/foo(bar))",
+            option,
+            listOf(
+                MfmNode.Text("("),
+                MfmNode.Url("https://example.com/foo(bar)"),
+                MfmNode.Text(")"),
+            )
+        )
+
+        //		test('ignore parent []', () => {
+        //			const input = 'foo [https://example.com/foo] bar';
+        //			const output = [
+        //				TEXT('foo ['),
+        //				N_URL('https://example.com/foo'),
+        //				TEXT('] bar'),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "ignore parent []",
+            "foo [https://example.com/foo] bar",
+            option,
+            listOf(
+                MfmNode.Text("foo ["),
+                MfmNode.Url("https://example.com/foo"),
+                MfmNode.Text("] bar"),
+            )
+        )
+
+        //		test('ignore non-ascii characters contained url without angle brackets', () => {
+        //			const input = 'https://大石泉すき.example.com';
+        //			const output = [
+        //				TEXT('https://大石泉すき.example.com'),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "ignore non-ascii characters contained url without angle brackets",
+            "https://大石泉すき.example.com",
+            option,
+            listOf(
+                MfmNode.Text("https://大石泉すき.example.com"),
+            )
+        )
+
+        //
+        //		test('match non-ascii characters contained url with angle brackets', () => {
+        //			const input = '<https://大石泉すき.example.com>';
+        //			const output = [
+        //				N_URL('https://大石泉すき.example.com', true),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+//        checkSyntaxParser(
+//            "match non-ascii characters contained url with angle brackets",
+//            "<https://大石泉すき.example.com>",
+//            option,
+//            listOf(
+//                MfmNode.Url("https://大石泉すき.example.com", true),
+//            )
+//        )
+
+        //		test('prevent xss', () => {
+        //			const input = 'javascript:foo';
+        //			const output = [
+        //				TEXT('javascript:foo')
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "prevent xss",
+            "javascript:foo",
+            option,
+            listOf(
+                MfmNode.Text("javascript:foo")
+            )
+        )
+    }
+
     @Test
     fun parse_カッコを含む() {
 
@@ -1039,18 +1324,27 @@ class MfmSyntaxParserTest {
         )
     }
 
-//    @Test
-//    fun parse_URLに_を含む() {
-//
-//        checkSyntaxParser(
-//            "URLに_を含む",
-//            "https://twitpane.com/left_right_",
-//            optionAll,
-//            listOf(
-//                MfmNode.Text("https://twitpane.com/left_right_")
-//            )
-//        )
-//    }
+    @Test
+    fun parse_URLに_を含む() {
+
+        checkSyntaxParser(
+            "URLに_を含む",
+            "https://twitpane.com/left_right_",
+            optionAll,
+            listOf(
+                MfmNode.Url("https://twitpane.com/left_right_")
+            )
+        )
+
+        checkSyntaxParser(
+            "URLに_を含む",
+            "https://twitpane.com/left_right_",
+            MfmSyntaxParser.Option(enableUrl = false),
+            listOf(
+                MfmNode.Text("https://twitpane.com/left_right_")
+            )
+        )
+    }
 
     @Test
     fun parse_Functionの途中に含むパターン() {
@@ -1325,6 +1619,9 @@ class MfmSyntaxParserTest {
                 }
                 is MfmNode.Mention -> {
                     println("Mention: ${spr.value}")
+                }
+                is MfmNode.Url -> {
+                    println("Url: ${spr.value}")
                 }
             }
         }

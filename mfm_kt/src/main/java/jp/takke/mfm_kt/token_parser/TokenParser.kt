@@ -31,6 +31,7 @@ data class Token(
         fun functionEnd() = Token(TokenType.FunctionEnd, "]", "]")
         fun inlineCode() = Token(TokenType.InlineCode, "`", "`")
         fun emojiCode(emojiCode: String) = Token(TokenType.EmojiCode, emojiCode)
+        fun url(string: String) = Token(TokenType.Url, string)
     }
 }
 

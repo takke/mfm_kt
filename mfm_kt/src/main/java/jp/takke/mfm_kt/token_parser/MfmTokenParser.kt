@@ -158,7 +158,31 @@ object MfmTokenParser {
 
     val pMention: () -> TokenParser = { pRegex(TokenType.Mention, "^(@[a-zA-Z0-9_-]+(@[a-zA-Z0-9_-]+)?)".toRegex()) }
 
-    // TODO URL も追加すること
+    private const val URL_C = ".,a-zA-Z0-9_/:%#@\$&?!~=+-"
+    private const val URL_TAIL_C = "a-zA-Z0-9_/:%#@\$&?!~=+-"   // 末尾は ",." 不可
+    val pUrl1: () -> TokenParser = {
+        pRegex(
+            TokenType.Url,
+            ("^" +
+                    "(" +
+                    "https?://" +
+                    "[${URL_C}]+\\([${URL_C}]+\\)" +
+                    ")"
+                    ).toRegex()
+        )
+    }
+    val pUrl2: () -> TokenParser = {
+        pRegex(
+            TokenType.Url,
+            ("^" +
+                    "(" +
+                    "https?://" +
+                    "([${URL_C}]+|\\([${URL_C}]+\\))+[${URL_TAIL_C}]" +
+                    ")"
+                    ).toRegex()
+        )
+    }
+
     val mfmParser = many(
         // ">" block
         pQuoteLine2() or pQuoteLine1() or
@@ -188,6 +212,8 @@ object MfmTokenParser {
                 pFunctionStart() or pFunctionEnd() or
                 // "@"
                 pMention() or
+                // http
+                pUrl1() or pUrl2() or
                 // "`"
                 pInlineCode() or
                 // ":"

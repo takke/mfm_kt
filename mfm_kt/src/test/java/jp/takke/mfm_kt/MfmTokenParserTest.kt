@@ -349,6 +349,18 @@ class MfmTokenParserTest {
     }
 
     @Test
+    fun tokenize_Url() {
+
+        MfmTokenParser.tokenize("https://misskey.io/@ai")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.url("https://misskey.io/@ai")
+                )
+            }
+    }
+
+    @Test
     fun tokenize_Function() {
 
         MfmTokenParser.tokenize("$[x2 abc]")

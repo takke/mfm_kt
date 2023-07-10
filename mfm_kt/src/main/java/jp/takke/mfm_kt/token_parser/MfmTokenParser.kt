@@ -160,24 +160,17 @@ object MfmTokenParser {
 
     private const val URL_C = ".,a-zA-Z0-9_/:%#@\$&?!~=+-"
     private const val URL_TAIL_C = "a-zA-Z0-9_/:%#@\$&?!~=+-"   // 末尾は ",." 不可
-    val pUrl1: () -> TokenParser = {
+
+    // https://twitpane.com/hoge(abc) のように末尾が (xxx) のパターン
+    val pUrl: () -> TokenParser = {
         pRegex(
             TokenType.Url,
             ("^" +
                     "(" +
                     "https?://" +
-                    "[${URL_C}]+\\([${URL_C}]+\\)" +
-                    ")"
-                    ).toRegex()
-        )
-    }
-    val pUrl2: () -> TokenParser = {
-        pRegex(
-            TokenType.Url,
-            ("^" +
-                    "(" +
-                    "https?://" +
-                    "([${URL_C}]+|\\([${URL_C}]+\\))+[${URL_TAIL_C}]" +
+                    "([${URL_C}]+|\\([${URL_C}]+\\))+" +
+                    // 末尾は "(...)" または ",." 以外
+                    "(\\([${URL_C}]+\\)|[${URL_TAIL_C}])" +
                     ")"
                     ).toRegex()
         )
@@ -213,7 +206,7 @@ object MfmTokenParser {
                 // "@"
                 pMention() or
                 // http
-                pUrl1() or pUrl2() or
+                pUrl() or
                 // "`"
                 pInlineCode() or
                 // ":"

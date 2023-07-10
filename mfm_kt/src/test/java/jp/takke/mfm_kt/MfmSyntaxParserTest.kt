@@ -1255,7 +1255,6 @@ class MfmSyntaxParserTest {
             )
         )
 
-        //
         //		test('match non-ascii characters contained url with angle brackets', () => {
         //			const input = '<https://大石泉すき.example.com>';
         //			const output = [

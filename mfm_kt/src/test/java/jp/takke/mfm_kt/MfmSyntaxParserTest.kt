@@ -1507,6 +1507,39 @@ class MfmSyntaxParserTest {
     }
 
     @Test
+    fun parse_smallが大量にあるパターン() {
+
+        // https://misskey.io/notes/9h3z1y499e
+        checkSyntaxParser(
+            "smallが大量にあるパターン(深すぎる＆閉じタグがあっていない)",
+            "<small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small>v<small><small>うんち</small></small></small></small></small></small></small></small></small></small></small></small></small></small></small></small></small></small></small></small>",
+            optionAll,
+            listOf(
+                MfmNode.Small(
+                    MfmNode.Small(
+                        MfmNode.Small(
+                            MfmNode.Small(
+                                MfmNode.Small(
+                                    MfmNode.Small(
+                                        MfmNode.Small(
+                                            MfmNode.Small(
+                                                MfmNode.Small(
+                                                    MfmNode.Text("<small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small><small>v<small><small>うんち")
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                ),
+                MfmNode.Text("</small></small></small></small></small></small></small></small></small></small></small>")
+            )
+        )
+    }
+
+    @Test
     fun function_props() {
 
         val option = optionAll

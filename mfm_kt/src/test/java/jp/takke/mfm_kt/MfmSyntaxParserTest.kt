@@ -1540,6 +1540,60 @@ class MfmSyntaxParserTest {
     }
 
     @Test
+    fun parse_small_閉じタグが多いパターン() {
+
+        checkSyntaxParser(
+            "small_閉じタグが多いパターン",
+            "<small><small>aaa</small></small></small>",
+            optionAll,
+            listOf(
+                MfmNode.Small(
+                    MfmNode.Small(
+                        MfmNode.Text("aaa")
+                    )
+                ),
+                MfmNode.Text("</small>")
+            )
+        )
+    }
+
+    @Test
+    fun parse_small_開きタグが多いパターン() {
+
+        checkSyntaxParser(
+            "small_開きタグが多いパターン",
+            "<small><small><small><small>aaa</small></small></small>",
+            optionAll,
+            listOf(
+                MfmNode.Text("<small>"),
+                MfmNode.Small(
+                    MfmNode.Small(
+                        MfmNode.Small(
+                            MfmNode.Text("aaa")
+                        )
+                    )
+                ),
+            )
+        )
+
+        checkSyntaxParser(
+            "small_開きタグが多いパターン2",
+            "<small><small><small><small><small><small><small><small><small><small><small><small>aaa</small></small></small>",
+            optionAll,
+            listOf(
+                MfmNode.Text("<small><small><small><small><small><small><small><small><small>"),
+                MfmNode.Small(
+                    MfmNode.Small(
+                        MfmNode.Small(
+                            MfmNode.Text("aaa")
+                        )
+                    )
+                ),
+            )
+        )
+    }
+
+    @Test
     fun function_props() {
 
         val option = optionAll

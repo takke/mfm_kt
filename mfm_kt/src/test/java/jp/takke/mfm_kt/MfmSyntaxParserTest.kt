@@ -1,4 +1,4 @@
-@file:Suppress("TestFunctionName", "NonAsciiCharacters")
+@file:Suppress("TestFunctionName", "NonAsciiCharacters", "SpellCheckingInspection")
 
 package jp.takke.mfm_kt
 
@@ -1467,7 +1467,8 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Text("official instance: "),
-                MfmNode.UrlWithTitle("https://misskey.io/@ai",
+                MfmNode.UrlWithTitle(
+                    "https://misskey.io/@ai",
                     MfmNode.Text("https://misskey.io/@ai"),
                     MfmNode.Bold(
                         MfmNode.Text("https://misskey.io/@ai")
@@ -1476,8 +1477,6 @@ class MfmSyntaxParserTest {
                 MfmNode.Text(".")
             )
         )
-
-        // TODO 下記も対応すること
 
         //		describe('cannot nest a link in a link label', () => {
         //			test('basic', () => {
@@ -1493,6 +1492,22 @@ class MfmSyntaxParserTest {
         //				];
         //				assert.deepStrictEqual(mfm.parse(input), output);
         //			});
+        checkSyntaxParser(
+            "cannot nest a link in a link label: basic",
+            "official instance: [[https://misskey.io/@ai](https://misskey.io/@ai)](https://misskey.io/@ai).",
+            option,
+            listOf(
+                MfmNode.Text("official instance: "),
+                MfmNode.UrlWithTitle(
+                    "https://misskey.io/@ai",
+                    MfmNode.Text("[https://misskey.io/@ai"),
+                ),
+                MfmNode.Text("]("),
+                MfmNode.Url("https://misskey.io/@ai"),
+                MfmNode.Text(").")
+            )
+        )
+
         //			test('nested', () => {
         //				const input = 'official instance: [**[https://misskey.io/@ai](https://misskey.io/@ai)**](https://misskey.io/@ai).';
         //				const output = [
@@ -1506,7 +1521,24 @@ class MfmSyntaxParserTest {
         //				];
         //			});
         //		});
-        //
+
+        // mfm.js は上記の動きだが mfm.kt では下記の動作を許容する
+        checkSyntaxParser(
+            "cannot nest a link in a link label: nested",
+            "official instance: [**[https://misskey.io/@ai](https://misskey.io/@ai)**](https://misskey.io/@ai).",
+            option,
+            listOf(
+                MfmNode.Text("official instance: "),
+                MfmNode.UrlWithTitle(
+                    "https://misskey.io/@ai",
+                    MfmNode.Text("**[https://misskey.io/@ai"),
+                ),
+                MfmNode.Text("**]("),
+                MfmNode.Url("https://misskey.io/@ai"),
+                MfmNode.Text(").")
+            )
+        )
+
         //		describe('cannot nest a mention in a link label', () => {
         //			test('basic', () => {
         //				const input = '[@example](https://example.com)';
@@ -1517,6 +1549,18 @@ class MfmSyntaxParserTest {
         //				];
         //				assert.deepStrictEqual(mfm.parse(input), output);
         //			});
+        checkSyntaxParser(
+            "cannot nest a mention in a link label: basic",
+            "[@example](https://example.com)",
+            option,
+            listOf(
+                MfmNode.UrlWithTitle(
+                    "https://example.com",
+                    MfmNode.Text("@example")
+                )
+            )
+        )
+
         //			test('nested', () => {
         //				const input = '[@example**@example**](https://example.com)';
         //				const output = [
@@ -1530,7 +1574,23 @@ class MfmSyntaxParserTest {
         //				assert.deepStrictEqual(mfm.parse(input), output);
         //			});
         //		});
-        //
+        checkSyntaxParser(
+            "cannot nest a mention in a link label: nested",
+            "[@example**@example**](https://example.com)",
+            option,
+            listOf(
+                MfmNode.UrlWithTitle(
+                    "https://example.com",
+                    MfmNode.Text("@example"),
+                    MfmNode.Bold(
+                        MfmNode.Text("@example")
+                    )
+                )
+            )
+        )
+
+        // TODO URL 内の () 等も必要であれば対応すること
+
         //		test('with brackets', () => {
         //			const input = '[foo](https://example.com/foo(bar))';
         //			const output = [
@@ -1564,7 +1624,6 @@ class MfmSyntaxParserTest {
         //			assert.deepStrictEqual(mfm.parse(input), output);
         //		});
         //	});
-
     }
 
     @Test

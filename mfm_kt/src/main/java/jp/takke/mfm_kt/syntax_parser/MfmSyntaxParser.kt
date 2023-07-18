@@ -479,7 +479,9 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option0: Op
                     val url = afterMark.substringAfter("](").substringBefore(")")
 
                     // title 部分は "hoge**bold**" のようにマークアップを含むことがあるので再度パースする
-                    val children = MfmSyntaxParser(MfmTokenParser.tokenize(title), option.copy(enableUrl = false)).parse()
+                    val children = MfmSyntaxParser(MfmTokenParser.tokenize(title),
+                        option.copy(enableUrl = false, enableMention = false)
+                    ).parse()
                     nodes.add(MfmNode.UrlWithTitle(url, children))
                 }
             }

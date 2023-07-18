@@ -62,4 +62,7 @@ enum class TokenType {
     // http
     Url,
 
+    // [title](url)
+    UrlWithTitle,
+
 }

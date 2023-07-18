@@ -361,6 +361,26 @@ class MfmTokenParserTest {
     }
 
     @Test
+    fun tokenize_UrlWithTitle() {
+
+        MfmTokenParser.tokenize("[ai](https://misskey.io/@ai)")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.urlWithTitle("[ai](https://misskey.io/@ai)")
+                )
+            }
+
+        MfmTokenParser.tokenize("[すごーく 長い 説明文](https://twitpane.com/)")
+            .let {
+                assertThat(it.success).isEqualTo(true)
+                assertThat(it.holder.tokenList).containsExactly(
+                    Token.urlWithTitle("[すごーく 長い 説明文](https://twitpane.com/)")
+                )
+            }
+    }
+
+    @Test
     fun tokenize_Function() {
 
         MfmTokenParser.tokenize("$[x2 abc]")

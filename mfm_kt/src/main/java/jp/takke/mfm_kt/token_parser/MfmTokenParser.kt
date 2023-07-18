@@ -176,6 +176,23 @@ object MfmTokenParser {
         )
     }
 
+    // [abc](https://twitpane.com/hoge) のようなパターン
+    val pUrlWithTitle: () -> TokenParser = {
+        pRegex(
+            TokenType.UrlWithTitle,
+            ("^" +
+                    "(" +
+                    "\\[" +
+                    "[^\n\\]]+" +
+                    "\\]" +
+                    "\\(" +
+                    "([${URL_C}]+)" +
+                    "\\)" +
+                    ")"
+                    ).toRegex()
+        )
+    }
+
     val mfmParser = many(
         // ">" block
         pQuoteLine2() or pQuoteLine1() or
@@ -207,6 +224,8 @@ object MfmTokenParser {
                 pMention() or
                 // http
                 pUrl() or
+                // "[title](url)"
+                pUrlWithTitle() or
                 // "`"
                 pInlineCode() or
                 // ":"

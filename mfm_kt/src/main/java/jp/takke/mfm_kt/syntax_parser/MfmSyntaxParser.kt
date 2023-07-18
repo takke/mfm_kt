@@ -471,6 +471,14 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option0: Op
                 TokenType.Url -> {
                     nodes.add(MfmNode.Url(token.extractedValue))
                 }
+
+                TokenType.UrlWithTitle -> {
+                    // token.extractedValue は [title](url) なのでここで分離する
+                    val afterMark = token.extractedValue.substringAfter("[")
+                    val title = afterMark.substringBefore("](")
+                    val url = afterMark.substringAfter("](").substringBefore(")")
+                    nodes.add(MfmNode.UrlWithTitle(title, url))
+                }
             }
         }
 
@@ -506,6 +514,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option0: Op
             TokenType.EmojiCode -> option.enableEmoji
             TokenType.Mention -> option.enableMention
             TokenType.Url -> option.enableUrl
+            TokenType.UrlWithTitle -> option.enableUrl
         }
     }
 

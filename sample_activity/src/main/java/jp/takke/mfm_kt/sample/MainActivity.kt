@@ -169,6 +169,9 @@ $[x2 なにか]
                 is MfmNode.Url -> {
                     ssb.append("Url: ${spr.value}\n")
                 }
+                is MfmNode.UrlWithTitle -> {
+                    ssb.append("UrlWithTitle: ${spr.title}, ${spr.url}\n")
+                }
             }
         }
     }

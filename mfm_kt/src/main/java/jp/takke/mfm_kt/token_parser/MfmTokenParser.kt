@@ -186,7 +186,7 @@ object MfmTokenParser {
                     "[^\n\\]]+" +
                     "\\]" +
                     "\\(" +
-                    "([${URL_C}]+)" +
+                    "(https?://[${URL_C}]+)" +
                     "\\)" +
                     ")"
                     ).toRegex()

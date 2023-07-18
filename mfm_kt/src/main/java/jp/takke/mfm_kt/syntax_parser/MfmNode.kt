@@ -58,6 +58,8 @@ sealed class MfmNode(val isInline: Boolean) {
 
     data class Url(val value: String) : MfmNode(true)
 
+    data class UrlWithTitle(val title: String, val url: String) : MfmNode(true)
+
     companion object {
         // vararg version: for test purposes
         internal fun Quote(level: QuoteLevel, vararg children: MfmNode) = Quote(level, children.toList())

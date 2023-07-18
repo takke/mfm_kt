@@ -1077,7 +1077,6 @@ class MfmSyntaxParserTest {
     @Test
     fun parse_url() {
 
-
         val option = MfmSyntaxParser.Option()
 
         //		test('basic', () => {
@@ -1345,6 +1344,224 @@ class MfmSyntaxParserTest {
                 MfmNode.Text("javascript:foo")
             )
         )
+    }
+
+    // https://github.com/misskey-dev/mfm.js/blob/develop/test/parser.ts#L1041
+    @Test
+    fun parse_urlWithTitle() {
+
+        val option = MfmSyntaxParser.Option()
+
+        checkSyntaxParser(
+            "urlWithTitle",
+            "[title](https://twitpane.com/)",
+            option,
+            listOf(
+                MfmNode.UrlWithTitle("title", "https://twitpane.com/")
+            )
+        )
+
+        //		test('basic', () => {
+        //			const input = '[official instance](https://misskey.io/@ai).';
+        //			const output = [
+        //				LINK(false, 'https://misskey.io/@ai', [
+        //					TEXT('official instance')
+        //				]),
+        //				TEXT('.')
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "basic",
+            "[official instance](https://misskey.io/@ai).",
+            option,
+            listOf(
+                MfmNode.UrlWithTitle("official instance", "https://misskey.io/@ai"),
+                MfmNode.Text(".")
+            )
+        )
+
+        // TODO ?[title](url) の形式をサポートしたら下記を有効にすること
+
+        //		test('silent flag', () => {
+        //			const input = '?[official instance](https://misskey.io/@ai).';
+        //			const output = [
+        //				LINK(true, 'https://misskey.io/@ai', [
+        //					TEXT('official instance')
+        //				]),
+        //				TEXT('.')
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+
+        // TODO ?[title](<url>) の形式をサポートしたら下記を有効にすること
+
+        //		test('with angle brackets url', () => {
+        //			const input = '[official instance](<https://misskey.io/@ai>).';
+        //			const output = [
+        //				LINK(false, 'https://misskey.io/@ai', [
+        //					TEXT('official instance')
+        //				]),
+        //				TEXT('.')
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+
+        //		test('prevent xss', () => {
+        //			const input = '[click here](javascript:foo)';
+        //			const output = [
+        //				TEXT('[click here](javascript:foo)')
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "prevent xss",
+            "[click here](javascript:foo)",
+            option,
+            listOf(
+                MfmNode.Text("[click here](javascript:foo)")
+            )
+        )
+
+        //		describe('cannot nest a url in a link label', () => {
+        //			test('basic', () => {
+        //				const input = 'official instance: [https://misskey.io/@ai](https://misskey.io/@ai).';
+        //				const output = [
+        //					TEXT('official instance: '),
+        //					LINK(false, 'https://misskey.io/@ai', [
+        //						TEXT('https://misskey.io/@ai'),
+        //					]),
+        //					TEXT('.'),
+        //				];
+        //				assert.deepStrictEqual(mfm.parse(input), output);
+        //			});
+        checkSyntaxParser(
+            "cannot nest a url in a link label: basic",
+            "official instance: [https://misskey.io/@ai](https://misskey.io/@ai).",
+            option,
+            listOf(
+                MfmNode.Text("official instance: "),
+                MfmNode.UrlWithTitle("https://misskey.io/@ai", "https://misskey.io/@ai"),
+                MfmNode.Text(".")
+            )
+        )
+
+        //			test('nested', () => {
+        //				const input = 'official instance: [https://misskey.io/@ai**https://misskey.io/@ai**](https://misskey.io/@ai).';
+        //				const output = [
+        //					TEXT('official instance: '),
+        //					LINK(false, 'https://misskey.io/@ai', [
+        //						TEXT('https://misskey.io/@ai'),
+        //						BOLD([
+        //							TEXT('https://misskey.io/@ai'),
+        //						]),
+        //					]),
+        //					TEXT('.'),
+        //				];
+        //				assert.deepStrictEqual(mfm.parse(input), output);
+        //			});
+        //		});
+
+        // TODO ネストできるようにすること
+        checkSyntaxParser(
+            "cannot nest a url in a link label: nested",
+            "official instance: [https://misskey.io/@ai**https://misskey.io/@ai**](https://misskey.io/@ai).",
+            option,
+            listOf(
+                MfmNode.Text("official instance: "),
+                MfmNode.UrlWithTitle("https://misskey.io/@ai**https://misskey.io/@ai**", "https://misskey.io/@ai"),
+                MfmNode.Text(".")
+            )
+        )
+
+        // TODO 下記も対応すること
+
+        //		describe('cannot nest a link in a link label', () => {
+        //			test('basic', () => {
+        //				const input = 'official instance: [[https://misskey.io/@ai](https://misskey.io/@ai)](https://misskey.io/@ai).';
+        //				const output = [
+        //					TEXT('official instance: '),
+        //					LINK(false, 'https://misskey.io/@ai', [
+        //						TEXT('[https://misskey.io/@ai'),
+        //					]),
+        //					TEXT(']('),
+        //					N_URL('https://misskey.io/@ai'),
+        //					TEXT(').'),
+        //				];
+        //				assert.deepStrictEqual(mfm.parse(input), output);
+        //			});
+        //			test('nested', () => {
+        //				const input = 'official instance: [**[https://misskey.io/@ai](https://misskey.io/@ai)**](https://misskey.io/@ai).';
+        //				const output = [
+        //					TEXT('official instance: '),
+        //					LINK(false, 'https://misskey.io/@ai', [
+        //						BOLD([
+        //							TEXT('[https://misskey.io/@ai](https://misskey.io/@ai)'),
+        //						]),
+        //					]),
+        //					TEXT('.'),
+        //				];
+        //			});
+        //		});
+        //
+        //		describe('cannot nest a mention in a link label', () => {
+        //			test('basic', () => {
+        //				const input = '[@example](https://example.com)';
+        //				const output = [
+        //					LINK(false, 'https://example.com', [
+        //						TEXT('@example'),
+        //					]),
+        //				];
+        //				assert.deepStrictEqual(mfm.parse(input), output);
+        //			});
+        //			test('nested', () => {
+        //				const input = '[@example**@example**](https://example.com)';
+        //				const output = [
+        //					LINK(false, 'https://example.com', [
+        //						TEXT('@example'),
+        //						BOLD([
+        //							TEXT('@example'),
+        //						]),
+        //					]),
+        //				];
+        //				assert.deepStrictEqual(mfm.parse(input), output);
+        //			});
+        //		});
+        //
+        //		test('with brackets', () => {
+        //			const input = '[foo](https://example.com/foo(bar))';
+        //			const output = [
+        //				LINK(false, 'https://example.com/foo(bar)', [
+        //					TEXT('foo')
+        //				]),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        //
+        //		test('with parent brackets', () => {
+        //			const input = '([foo](https://example.com/foo(bar)))';
+        //			const output = [
+        //				TEXT('('),
+        //				LINK(false, 'https://example.com/foo(bar)', [
+        //					TEXT('foo')
+        //				]),
+        //				TEXT(')'),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        //
+        //		test('with brackets before', () => {
+        //			const input = '[test] foo [bar](https://example.com)';
+        //			const output = [
+        //				TEXT('[test] foo '),
+        //				LINK(false, 'https://example.com', [
+        //					TEXT('bar')
+        //				]),
+        //			];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        //	});
+
     }
 
     @Test
@@ -1767,6 +1984,9 @@ class MfmSyntaxParserTest {
                 }
                 is MfmNode.Url -> {
                     println("Url: ${spr.value}")
+                }
+                is MfmNode.UrlWithTitle -> {
+                    println("UrlWithTitle: ${spr.title}, ${spr.url}")
                 }
             }
         }

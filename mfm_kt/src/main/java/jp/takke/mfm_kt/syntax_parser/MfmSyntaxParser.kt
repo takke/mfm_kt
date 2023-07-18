@@ -477,7 +477,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option0: Op
                     val afterMark = token.extractedValue.substringAfter("[")
                     val title = afterMark.substringBefore("](")
                     val url = afterMark.substringAfter("](").substringBefore(")")
-                    nodes.add(MfmNode.UrlWithTitle(title, url))
+                    nodes.add(MfmNode.UrlWithTitle(url, MfmNode.Text(title)))
                 }
             }
         }

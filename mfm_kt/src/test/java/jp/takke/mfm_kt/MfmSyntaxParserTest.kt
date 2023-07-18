@@ -1357,7 +1357,7 @@ class MfmSyntaxParserTest {
             "[title](https://twitpane.com/)",
             option,
             listOf(
-                MfmNode.UrlWithTitle("title", "https://twitpane.com/")
+                MfmNode.UrlWithTitle("https://twitpane.com/", MfmNode.Text("title"))
             )
         )
 
@@ -1376,7 +1376,7 @@ class MfmSyntaxParserTest {
             "[official instance](https://misskey.io/@ai).",
             option,
             listOf(
-                MfmNode.UrlWithTitle("official instance", "https://misskey.io/@ai"),
+                MfmNode.UrlWithTitle("https://misskey.io/@ai", MfmNode.Text("official instance")),
                 MfmNode.Text(".")
             )
         )
@@ -1441,7 +1441,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Text("official instance: "),
-                MfmNode.UrlWithTitle("https://misskey.io/@ai", "https://misskey.io/@ai"),
+                MfmNode.UrlWithTitle("https://misskey.io/@ai", MfmNode.Text("https://misskey.io/@ai")),
                 MfmNode.Text(".")
             )
         )
@@ -1469,7 +1469,7 @@ class MfmSyntaxParserTest {
             option,
             listOf(
                 MfmNode.Text("official instance: "),
-                MfmNode.UrlWithTitle("https://misskey.io/@ai**https://misskey.io/@ai**", "https://misskey.io/@ai"),
+                MfmNode.UrlWithTitle("https://misskey.io/@ai", MfmNode.Text("https://misskey.io/@ai**https://misskey.io/@ai**")),
                 MfmNode.Text(".")
             )
         )
@@ -1986,7 +1986,8 @@ class MfmSyntaxParserTest {
                     println("Url: ${spr.value}")
                 }
                 is MfmNode.UrlWithTitle -> {
-                    println("UrlWithTitle: ${spr.title}, ${spr.url}")
+                    println("UrlWithTitle: ${spr.url}")
+                    traverse(spr.children, level + 1)
                 }
             }
         }

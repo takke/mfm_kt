@@ -58,7 +58,7 @@ sealed class MfmNode(val isInline: Boolean) {
 
     data class Url(val value: String) : MfmNode(true)
 
-    data class UrlWithTitle(val title: String, val url: String) : MfmNode(true)
+    data class UrlWithTitle(val url: String, val children: List<MfmNode>) : MfmNode(true)
 
     companion object {
         // vararg version: for test purposes
@@ -71,6 +71,7 @@ sealed class MfmNode(val isInline: Boolean) {
         internal fun Strike(vararg children: MfmNode) = Strike(children.toList())
         internal fun Function(props: String, vararg children: MfmNode) = Function(props, children.toList())
         internal fun InlineCode(vararg children: MfmNode) = InlineCode(children.toList())
+        internal fun UrlWithTitle(url: String, vararg children: MfmNode) = UrlWithTitle(url, children.toList())
     }
 
 }

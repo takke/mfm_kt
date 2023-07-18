@@ -1461,15 +1461,18 @@ class MfmSyntaxParserTest {
         //				assert.deepStrictEqual(mfm.parse(input), output);
         //			});
         //		});
-
-        // TODO ネストできるようにすること
         checkSyntaxParser(
             "cannot nest a url in a link label: nested",
             "official instance: [https://misskey.io/@ai**https://misskey.io/@ai**](https://misskey.io/@ai).",
             option,
             listOf(
                 MfmNode.Text("official instance: "),
-                MfmNode.UrlWithTitle("https://misskey.io/@ai", MfmNode.Text("https://misskey.io/@ai**https://misskey.io/@ai**")),
+                MfmNode.UrlWithTitle("https://misskey.io/@ai",
+                    MfmNode.Text("https://misskey.io/@ai"),
+                    MfmNode.Bold(
+                        MfmNode.Text("https://misskey.io/@ai")
+                    )
+                ),
                 MfmNode.Text(".")
             )
         )

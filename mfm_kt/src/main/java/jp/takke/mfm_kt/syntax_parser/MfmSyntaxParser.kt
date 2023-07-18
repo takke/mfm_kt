@@ -8,7 +8,7 @@ import jp.takke.mfm_kt.token_parser.TokenType
 /**
  * 構文解析を行い、構文解析木を返す
  */
-class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Option) {
+class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option0: Option) {
 
     // 解析対象
     private val tokenList = tokenizedResult.holder.tokenList
@@ -30,7 +30,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
     )
 
     fun parse(): List<MfmNode> {
-        return parse(ParseState.Normal, 0).nodes
+        return parse(ParseState.Normal, option0, 0).nodes
     }
 
     private enum class ParseState {
@@ -55,7 +55,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         val nodes: List<MfmNode>,
     )
 
-    private fun parse(state: ParseState, depth: Int): ParseResult {
+    private fun parse(state: ParseState, option: Option, depth: Int): ParseResult {
 
         val nodes = ArrayList<MfmNode>(tokenList.size)
 
@@ -64,7 +64,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
             tokenPos++
 
             // ネストが深すぎる または オプションで無効化されたタグはそのまま出力する
-            if (depth >= 10 || !isOptionEnabled(token.type)) {
+            if (depth >= 10 || !isOptionEnabled(token.type, option)) {
                 when (token.type) {
                     TokenType.QuoteLine1 -> {
                         // extractedValue をさらに字句解析から行う
@@ -110,7 +110,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 TokenType.CenterStart -> {
                     // Center 開始
                     val savedPos = tokenPos
-                    val centerResult = parse(ParseState.Center, depth + 1)
+                    val centerResult = parse(ParseState.Center, option, depth + 1)
                     if (centerResult.success) {
                         nodes.add(MfmNode.Center(centerResult.nodes))
                     } else {
@@ -138,7 +138,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // *** 開始
                         val savedPos = tokenPos
-                        val bigResult = parse(ParseState.Big, depth + 1)
+                        val bigResult = parse(ParseState.Big, option, depth + 1)
                         if (bigResult.success) {
                             nodes.add(MfmNode.Big(bigResult.nodes))
                         } else {
@@ -157,7 +157,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // ** 開始
                         val savedPos = tokenPos
-                        val boldResult = parse(ParseState.BoldAsta, depth + 1)
+                        val boldResult = parse(ParseState.BoldAsta, option, depth + 1)
                         if (boldResult.success) {
                             nodes.add(MfmNode.Bold(boldResult.nodes))
                         } else {
@@ -172,7 +172,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 TokenType.BoldTagStart -> {
                     // Bold 開始: <b>
                     val savedPos = tokenPos
-                    val boldTagResult = parse(ParseState.BoldTag, depth + 1)
+                    val boldTagResult = parse(ParseState.BoldTag, option, depth + 1)
                     if (boldTagResult.success) {
                         nodes.add(MfmNode.Bold(boldTagResult.nodes))
                     } else {
@@ -200,7 +200,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // __ 開始
                         val savedPos = tokenPos
-                        val boldResult = parse(ParseState.BoldUnder, depth + 1)
+                        val boldResult = parse(ParseState.BoldUnder, option, depth + 1)
                         if (boldResult.success) {
                             // __ の間は[a-zA-Z0-9_ ]のみ許可
                             // https://github.com/misskey-dev/mfm.js/blob/develop/src/internal/parser.ts#L354
@@ -226,7 +226,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 TokenType.SmallStart -> {
                     // Small 開始
                     val savedPos = tokenPos
-                    val smallResult = parse(ParseState.Small, depth + 1)
+                    val smallResult = parse(ParseState.Small, option, depth + 1)
                     if (smallResult.success) {
                         nodes.add(MfmNode.Small(smallResult.nodes))
                     } else {
@@ -250,7 +250,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 TokenType.ItalicTagStart -> {
                     // Italic 開始
                     val savedPos = tokenPos
-                    val italicResult = parse(ParseState.ItalicTag, depth + 1)
+                    val italicResult = parse(ParseState.ItalicTag, option, depth + 1)
                     if (italicResult.success) {
                         nodes.add(MfmNode.Italic(italicResult.nodes))
                     } else {
@@ -278,7 +278,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // * 開始
                         val savedPos = tokenPos
-                        val italicResult = parse(ParseState.ItalicAsta, depth + 1)
+                        val italicResult = parse(ParseState.ItalicAsta, option, depth + 1)
 
                         if (italicResult.success) {
                             // * の間は[a-zA-Z0-9_]のみ許可
@@ -309,7 +309,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // _ 開始
                         val savedPos = tokenPos
-                        val italicResult = parse(ParseState.ItalicUnder, depth + 1)
+                        val italicResult = parse(ParseState.ItalicUnder, option, depth + 1)
 
                         if (italicResult.success) {
                             // _ の間は[a-zA-Z0-9_]のみ許可
@@ -337,7 +337,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 TokenType.StrikeTagStart -> {
                     // Strike 開始: <s>
                     val savedPos = tokenPos
-                    val strikeTagResult = parse(ParseState.StrikeTag, depth + 1)
+                    val strikeTagResult = parse(ParseState.StrikeTag, option, depth + 1)
                     if (strikeTagResult.success) {
                         nodes.add(MfmNode.Strike(strikeTagResult.nodes))
                     } else {
@@ -365,7 +365,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // ~~ 開始
                         val savedPos = tokenPos
-                        val strikeResult = parse(ParseState.StrikeWave, depth + 1)
+                        val strikeResult = parse(ParseState.StrikeWave, option, depth + 1)
 
                         if (strikeResult.success) {
                             // ~~ の間は改行不可
@@ -391,7 +391,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                 TokenType.FunctionStart -> {
                     // Function 開始
                     val savedPos = tokenPos
-                    val functionResult = parse(ParseState.Function, depth + 1)
+                    val functionResult = parse(ParseState.Function, option, depth + 1)
                     if (functionResult.success) {
                         nodes.add(MfmNode.Function(token.extractedValue, functionResult.nodes))
                     } else {
@@ -419,7 +419,23 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
                     } else {
                         // InlineCode 開始
                         val savedPos = tokenPos
-                        val strikeResult = parse(ParseState.InlineCode, depth + 1)
+
+                        // InlineCode の間は特殊なので Option を全て無効化して InlineCode 終了まで探す
+                        val optionInlineCodeOnly = Option(
+                            enableQuote = false,
+                            enableCenter = false,
+                            enableBig = false,
+                            enableBold = false,
+                            enableSmall = false,
+                            enableItalic = false,
+                            enableStrike = false,
+                            enableFunction = false,
+                            enableInline = true,
+                            enableEmoji = false,
+                            enableMention = false,
+                            enableUrl = false
+                        )
+                        val strikeResult = parse(ParseState.InlineCode, optionInlineCodeOnly, depth + 1)
 
 //                        println("InlineCode: ${strikeResult.nodes} (${strikeResult.success})")
 
@@ -462,7 +478,7 @@ class MfmSyntaxParser(tokenizedResult: TokenParseResult, private val option: Opt
         return ParseResult(state == ParseState.Normal, nodes)
     }
 
-    private fun isOptionEnabled(type: TokenType): Boolean {
+    private fun isOptionEnabled(type: TokenType, option: Option): Boolean {
         return when (type) {
             TokenType.Char -> true
             TokenType.String -> true

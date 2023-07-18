@@ -1012,6 +1012,65 @@ class MfmSyntaxParserTest {
                 MfmNode.Text("なにか(´･ω･`)あれこれ(´･ω･`)")
             )
         )
+
+        checkSyntaxParser(
+            "inline + underline",
+            "`foo _bar_ baz`",
+            option,
+            listOf(
+                MfmNode.InlineCode(
+                    MfmNode.Text("foo _bar_ baz")
+                ),
+            )
+        )
+    }
+
+    // https://github.com/misskey-dev/mfm.js/blob/develop/test/parser.ts#L647
+    @Test
+    fun parse_inlineCode() {
+        // 		test('basic', () => {
+        //			const input = '`var x = "Strawberry Pasta";`';
+        //			const output = [INLINE_CODE('var x = "Strawberry Pasta";')];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "basic",
+            "`var x = \"Strawberry Pasta\";`",
+            optionAll,
+            listOf(
+                MfmNode.InlineCode(
+                    MfmNode.Text("var x = \"Strawberry Pasta\";")
+                ),
+            )
+        )
+
+        //		test('disallow line break', () => {
+        //			const input = '`foo\nbar`';
+        //			const output = [TEXT('`foo\nbar`')];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "disallow line break",
+            "`foo\nbar`",
+            optionAll,
+            listOf(
+                MfmNode.Text("`foo\nbar`")
+            )
+        )
+
+        //		test('disallow ´', () => {
+        //			const input = '`foo´bar`';
+        //			const output = [TEXT('`foo´bar`')];
+        //			assert.deepStrictEqual(mfm.parse(input), output);
+        //		});
+        checkSyntaxParser(
+            "disallow ´",
+            "`foo´bar`",
+            optionAll,
+            listOf(
+                MfmNode.Text("`foo´bar`")
+            )
+        )
     }
 
     // https://github.com/misskey-dev/mfm.js/blob/develop/test/parser.ts#L906

@@ -163,6 +163,12 @@ $[x2 なにか]
                     ssb.append("Strike: \n")
                     traverse(spr.children, level + 1, ssb)
                 }
+                is MfmNode.Mention -> {
+                    ssb.append("Mention: ${spr.value}\n")
+                }
+                is MfmNode.Url -> {
+                    ssb.append("Url: ${spr.value}\n")
+                }
             }
         }
     }

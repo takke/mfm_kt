@@ -955,6 +955,22 @@ class MfmSyntaxParserTest {
     }
 
     @Test
+    fun parse_function_ruby() {
+
+        checkSyntaxParser(
+            "Function ruby",
+            "$[ruby 三須木 みすき]",
+            optionAll,
+            listOf(
+                MfmNode.Function(
+                    "ruby",
+                    MfmNode.Text("三須木 みすき"),
+                ),
+            )
+        )
+    }
+
+    @Test
     fun parse_function_閉じず() {
 
         checkSyntaxParser(

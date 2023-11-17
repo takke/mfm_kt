@@ -67,9 +67,9 @@ sealed class MfmNode(val isInline: Boolean) {
         internal fun Big(vararg children: MfmNode) = Big(children.toList())
         internal fun Bold(vararg children: MfmNode) = Bold(children.toList())
         internal fun Small(vararg children: MfmNode) = Small(children.toList())
-        internal fun Italic(vararg children: MfmNode) = Italic(children.toList())
+        fun Italic(vararg children: MfmNode) = Italic(children.toList())
         internal fun Strike(vararg children: MfmNode) = Strike(children.toList())
-        internal fun Function(props: String, vararg children: MfmNode) = Function(props, children.toList())
+        fun Function(props: String, vararg children: MfmNode) = Function(props, children.toList())
         internal fun InlineCode(vararg children: MfmNode) = InlineCode(children.toList())
         internal fun UrlWithTitle(url: String, vararg children: MfmNode) = UrlWithTitle(url, children.toList())
     }

@@ -33,11 +33,8 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Build library
-      run: ./gradlew :mfm_kt:build
-
-    - name: Test
-      run: ./gradlew :mfm_kt:test
+    - name: Build and Test library
+      run: ./gradlew :mfm_kt:test :mfm_kt:build
 
     # Generates a debug APK
     - name: Build Sample Activity (debug version only)

@@ -156,7 +156,7 @@ object MfmTokenParser {
 
     val pEmojiCode: () -> TokenParser = { pRegex(TokenType.EmojiCode, "^(:[a-zA-Z0-9_+-]+:)".toRegex()) }
 
-    val pMention: () -> TokenParser = { pRegex(TokenType.Mention, "^(@[a-zA-Z0-9_-]+(@[a-zA-Z0-9_-]+)?)".toRegex()) }
+    val pMention: () -> TokenParser = { pRegex(TokenType.Mention, "^(@[a-zA-Z0-9_-]+(@[.a-zA-Z0-9_-]+)?)".toRegex()) }
 
     private const val URL_C = ".,a-zA-Z0-9_/:%#@\$&?!~=+-"
     private const val URL_TAIL_C = "a-zA-Z0-9_/:%#@\$&?!~=+-"   // 末尾は ",." 不可
